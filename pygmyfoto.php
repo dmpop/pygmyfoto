@@ -38,7 +38,7 @@ $db = NULL;
 print "<hr>";
 
 ?>
-	<center><div class="footer"><a href="pfarchive.php">Pygmyfoto archive</a>.</div></center>
+	<center><div class="footer"><a href="pfarchive.php">Pygmyfoto archive</a></div></center>
 	
 	<script type="text/javascript" src="/slimstat/?js"></script>
 	</body>

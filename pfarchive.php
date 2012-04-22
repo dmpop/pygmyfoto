@@ -38,7 +38,7 @@ $db = NULL;
 print "<hr>";
 
 ?>
-	<center><div class="footer">Pygmysnip is based on <a href="https://github.com/dmpop/pygmynote">Pygmynote</a>.</div></center>
+	<center><div class="footer"><a href="pygmyfoto.php">Pygmyfoto</a></div></center>
 	
 	<script type="text/javascript" src="/slimstat/?js"></script>
 	</body>
