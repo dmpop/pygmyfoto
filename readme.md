@@ -8,3 +8,4 @@ Grab the latest release of software, unpack the downloaded archive, and move the
 ##Limitations
 
 * The *pygmyfoto-publish.py* can handle only one photo at a time.
+* There is no easy way to edit records in the database.
