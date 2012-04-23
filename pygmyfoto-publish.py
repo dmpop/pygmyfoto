@@ -17,7 +17,6 @@ DB = "pygmyfoto.sqlite"
 PHOTOS = "photos/"
 
 if os.path.exists(DB):
-	print "The database already exists."
 	CREATE = False
 else:
 	print "A new database has been created."
@@ -63,7 +62,7 @@ description = raw_input("Text: ")
 photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
 article = header + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
-pub = "+"
+pub = "1"
 sqlquery = "INSERT INTO photos (article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s')" % (article, tags, added, pub)
 cursor.execute(sqlquery)
 conn.commit()

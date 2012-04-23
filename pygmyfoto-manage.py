@@ -22,7 +22,7 @@ try:
 except:
 	sys.exit("Connection to the SQLite database failed!")
 
-cursor.execute ("SELECT id, article FROM photos WHERE pub = '+' ORDER BY id ASC")
+cursor.execute ("SELECT id, article FROM photos WHERE pub = '1' ORDER BY id ASC")
 for row in cursor:
 	print "\n%s -- %s" % (row[0], row[1])
 
@@ -45,7 +45,7 @@ q	Quit"""
 
 	elif command == "a":
 		recordid = raw_input("Record id: ")
-		pub = "-"
+		pub = "0"
 		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
 		conn.commit()
 		print "\nRecord has been archived."
@@ -57,7 +57,7 @@ q	Quit"""
 
 	elif command == "r":
 		recordid = raw_input("Record id: ")
-		pub = "+"
+		pub = "1"
 		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
 		conn.commit()
 		print "\nRecord has been re-published."
