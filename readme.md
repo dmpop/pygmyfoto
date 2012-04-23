@@ -9,4 +9,4 @@ Grab the latest release of software, unpack the downloaded archive, and move the
 ##Limitations
 
 * Photos must reside in the *pygmyfoto* directory.
-* The *pygmyfoto-publish.py* can handle only one photo at the time.
+* The *pygmyfoto-publish.py* can handle only one photo at a time.
