@@ -1,6 +1,6 @@
 #Pygmyfoto
 
-Pygmyfoto is a crude solution for maintaining a no-frills photography blog.
+Pygmyfoto is a crude solution for maintaining a no-frills photography blog. The current version of Pygmyfoto is a proof of concept and should be treated as such.
 
 ##Usage
 
