@@ -6,7 +6,7 @@ __license__ = "GPLv3"
 __version__ = "0.0.3"
 __URL__ = "http://www.github.com/dmpop"
 
-import sys, os, time
+import sys, os
 
 try:
 	import sqlite3 as sqlite
@@ -38,21 +38,36 @@ Commands:
 ===================
 
 a	Archive record
+s	Show archived records
+r	Re-publish record
 d	Delete record
 h	Help
 q	Quit"""
 
-	elif command == "d":
-		recordid = raw_input("Delete note ID: ")
-		cursor.execute("DELETE FROM photos WHERE ID='"  +  recordid  +  "'")
-		print '\nRecord has been deleted.'
-		conn.commit()
 	elif command == "a":
 		recordid = raw_input("Record id: ")
 		pub = "-"
 		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
 		conn.commit()
 		print "\nRecord has been archived."
+
+	elif command == "s":
+		cursor.execute ("SELECT id, article FROM photos WHERE pub = '-' ORDER BY id ASC")
+		for row in cursor:
+			print "\n%s -- %s" % (row[0], row[1])
+
+	elif command == "r":
+		recordid = raw_input("Record id: ")
+		pub = "+"
+		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
+		conn.commit()
+		print "\nRecord has been re-published."
+
+	elif command == "d":
+		recordid = raw_input("Record ID: ")
+		cursor.execute("DELETE FROM photos WHERE ID='"  +  recordid  +  "'")
+		print '\nRecord has been deleted.'
+		conn.commit()
 
 cursor.close()
 conn.close()
