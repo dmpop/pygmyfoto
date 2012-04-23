@@ -12,7 +12,7 @@ Version: 1.0
 Basic Tags
  */
 body { color: #e3e3e3; font: 13px/175% 'Droid Serif', serif; text-align:justify; background-color: #4a525a;}
-h1 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:right; background-color: #4a525a;}
+h1 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:left; background-color: #4a525a;}
 a:hover { color: #e3e3e3; }
 h2 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:left; background-color: #4a525a;}
 p.box { border-style:dashed; border-width:1px; padding:5px; }

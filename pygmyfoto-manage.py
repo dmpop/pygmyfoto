@@ -14,14 +14,13 @@ except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
 DB = "pygmyfoto.sqlite"
+command = ""
 
 try:
 	conn = sqlite.connect(DB)
 	cursor = conn.cursor()
 except:
 	sys.exit("Connection to the SQLite database failed!")
-
-command = ""
 
 cursor.execute ("SELECT id, article FROM photos WHERE pub = '+' ORDER BY id ASC")
 for row in cursor:
