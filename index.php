@@ -25,7 +25,7 @@
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<hr>";
 print "<table border=0>";
-$result = $db->query("SELECT id, article, tags FROM photos WHERE pub = '1' ORDER BY id ASC");
+$result = $db->query("SELECT id, article, tags FROM photos WHERE pub = '+' ORDER BY id ASC");
 foreach($result as $row)
 {
 print "<tr><td><p>".$row['article']."</p></td></tr>";
@@ -38,8 +38,6 @@ $db = NULL;
 print "<hr>";
 
 ?>
-	<center><div class="footer"><a href="pfarchive.php">Pygmyfoto archive</a></div></center>
-	
-	<script type="text/javascript" src="/slimstat/?js"></script>
+	<center><div class="footer"><a href="archive.php">Pygmyfoto archive</a></div></center>
 	</body>
 </html>
