@@ -14,6 +14,7 @@ except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
 DB = "pygmyfoto.sqlite"
+PHOTOS = "photos/"
 
 if os.path.exists(DB):
 	print "The database already exists."
@@ -52,15 +53,15 @@ cursor = conn.cursor()
 size = 500, 500
 
 photo = raw_input("Photo: ")
-ph = Image.open(photo)
+ph = Image.open(PHOTOS + photo)
 ph.thumbnail(size,Image.ANTIALIAS)
-ph.save("t_" + photo, "JPEG")
+ph.save(PHOTOS +  "t_" + photo, "JPEG")
 
 title = raw_input("Title: ")
 header = "<h1>"+title+"</h1>"
 description = raw_input("Text: ")
-photolink = escapechar("<a href='"+photo+"'>"+"<img src='"+"t_"+photo+"'"+"></a>")
-article = header + "<p> " + description + "</p> " + photolink
+photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
+article = header + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
 pub = "+"
 sqlquery = "INSERT INTO photos (article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s')" % (article, tags, added, pub)
