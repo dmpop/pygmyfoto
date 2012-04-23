@@ -10,34 +10,28 @@
 	</head>
 	
 	<body>
-	<center><div class="sidebar">
-	<div class="sidetext">&#10031; One Photo At A Time &#10031;</div>
+	<center><div class="titlebar">
+	<div class="titlebartext">&#10031; Pygmyfoto Archive &#10031;</div>
 	</div></center>
 	
 	<div id="content">
-	<p class="content"></p>
-	<h2>
-	Pygmyfoto Archive
-	</h2>
 
 <?php
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
-print "<hr>";
 print "<table border=0>";
 $result = $db->query("SELECT id, article, tags FROM photos WHERE pub = '-' ORDER BY id ASC");
 foreach($result as $row)
 {
 print "<tr><td><p>".$row['article']."</p></td></tr>";
-print "<tr><td><small>Tags:<em> ".$row['tags']."</small></em></td></tr>";
+print "<tr><td><p class='box'>Tags:<em> ".$row['tags']."</p></em></td></tr>";
 }
 print "</table>";
 
 $db = NULL;
 
-print "<hr>";
-
 ?>
-	<center><div class="footer"><a href="index.php">Pygmyfoto</a></div></center>
+	<div class="footer"><a href="index.php">Pygmyfoto</a></div>
+	</div>
 	</body>
 </html>
