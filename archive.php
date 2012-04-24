@@ -21,7 +21,7 @@
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, article, tags FROM photos WHERE pub = '0' ORDER BY id ASC");
+$result = $db->query("SELECT id, article, tags FROM photos WHERE pub = '0' ORDER BY id DESC");
 foreach($result as $row)
 {
 print "<tr><td><p>".$row['article']."</p></td></tr>";

@@ -48,6 +48,7 @@ if CREATE == True:
 	CREATE_SQL = \
 		"CREATE TABLE photos (\
 		id INTEGER PRIMARY KEY UNIQUE NOT NULL,\
+		title VARCHAR(256),\
 		article VARCHAR(1024),\
 		tags VARCHAR(256),\
 		added DATE,\
@@ -69,13 +70,12 @@ ph.thumbnail(size,Image.ANTIALIAS)
 ph.save(PHOTOS +  "t_" + photo, "JPEG")
 
 title = raw_input("Title: ")
-header = "<h2>"+title+"</h2>"
 description = raw_input("Text: ")
 photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
-article = header + "<p> " + description + "</p> " + photourl
+article = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
 pub = "1"
-sqlquery = "INSERT INTO photos (article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s')" % (article, tags, added, pub)
+sqlquery = "INSERT INTO photos (title, article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, article, tags, added, pub)
 
 cursor.execute(sqlquery)
 conn.commit()
