@@ -12,7 +12,7 @@ Version: 1.0
 Basic Tags
  */
 body { color: #e3e3e3; font: 13px/175% 'Droid Serif', serif; text-align:justify; background-color: #4a525a;}
-h1 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:left; background-color: #4a525a;}
+h1 { color: #e3e3e3; font: 57px/50% 'Oleo Script', cursive;  text-align:left; background-color: #4a525a;}
 a:hover { color: #e3e3e3; }
 h2 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:left; background-color: #4a525a;}
 p.box { border-style:dashed; border-width:1px; padding:5px; }
@@ -23,10 +23,5 @@ The End of Basic's
 Main Tags; Play Nice with These Ones
 */
 #content   { background-color: #4a525a; margin: auto auto auto; width: 700px; height: auto }
-.titlebar {width: 700px; height: auto; background-color: #4a525a; text-align: right; padding-bottom: 1em; margin-right: 10px;}
 .text { width: 430px; height: auto; background-color: #4a525a; text-align: left; padding: 0px; margin:0px; margin-right: 20px; color:inherit; float: left;}
 .footer { width: 515px; text-align: left; font-family: monospace; font-size: 11px; margin: 0px; margin-top: 15px; }
-/*
-Special Function Tags
-*/
-.titlebartext { width: auto; padding: 1px; background-color: #606870; font: 15px/175% 'Artifika', serif; text-align: center; padding-left: 7px;}

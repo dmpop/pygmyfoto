@@ -6,17 +6,17 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<link href="style.css" rel="stylesheet" type="text/css" media="all" />
 	<link href='http://fonts.googleapis.com/css?family=Artifika' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
 	<link href="http://fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic&v1" rel="stylesheet" type="text/css">
 	<title>Pygmyfoto</title>
 	</head>
 	
 	<body>
-	<center><div class="titlebar">
-	<div class="titlebartext">&#10031; Pygmyfoto Archive &#10031;</div>
-	</div></center>
 	
 	<div id="content">
-
+	<h1>Pygmyfoto Archive</h1>
+	<hr>
+	
 <?php
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');

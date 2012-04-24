@@ -69,7 +69,7 @@ ph.thumbnail(size,Image.ANTIALIAS)
 ph.save(PHOTOS +  "t_" + photo, "JPEG")
 
 title = raw_input("Title: ")
-header = "<h1>"+title+"</h1>"
+header = "<h2>"+title+"</h2>"
 description = raw_input("Text: ")
 photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
 article = header + "<p> " + description + "</p> " + photourl
