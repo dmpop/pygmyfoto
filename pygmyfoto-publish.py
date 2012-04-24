@@ -45,10 +45,6 @@ def escapechar(sel):
 	return sel
 
 added = time.strftime('%Y-%m-%d')
-
-conn = sqlite.connect(DB)
-cursor = conn.cursor()
-
 size = 500, 500
 
 photo = raw_input("Photo: ")
@@ -64,6 +60,11 @@ article = header + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
 pub = "1"
 sqlquery = "INSERT INTO photos (article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s')" % (article, tags, added, pub)
+
 cursor.execute(sqlquery)
 conn.commit()
+
 print "All done!"
+
+cursor.close()
+conn.close()
