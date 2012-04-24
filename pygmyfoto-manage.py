@@ -51,7 +51,7 @@ q	Quit"""
 		print "\nRecord has been archived."
 
 	elif command == "s":
-		cursor.execute ("SELECT id, article FROM photos WHERE pub = '-' ORDER BY id ASC")
+		cursor.execute ("SELECT id, article FROM photos WHERE pub = '0' ORDER BY id ASC")
 		for row in cursor:
 			print "\n%s -- %s" % (row[0], row[1])
 
