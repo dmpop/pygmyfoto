@@ -38,7 +38,7 @@ try:
 except:
 	sys.exit("Connection to the SQLite database failed!")
 
-cursor.execute ("SELECT id, article FROM photos WHERE pub = '1' ORDER BY id ASC")
+cursor.execute ("SELECT id, title FROM photos WHERE pub = '1' ORDER BY id ASC")
 for row in cursor:
 	print "\n%s -- %s" % (row[0], row[1])
 
@@ -67,7 +67,7 @@ q	Quit"""
 		print "\nRecord has been archived."
 
 	elif command == "s":
-		cursor.execute ("SELECT id, article FROM photos WHERE pub = '0' ORDER BY id ASC")
+		cursor.execute ("SELECT id, title FROM photos WHERE pub = '0' ORDER BY id ASC")
 		for row in cursor:
 			print "\n%s -- %s" % (row[0], row[1])
 
