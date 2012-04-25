@@ -3,7 +3,7 @@
 
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
-#       the Free Software Foundation; either version 2 of the License, or
+#       the Free Software Foundation; either version 3 of the License, or
 #       (at your option) any later version.
 #       
 #       This program is distributed in the hope that it will be useful,
@@ -38,7 +38,7 @@ try:
 except:
 	sys.exit("Connection to the SQLite database failed!")
 
-cursor.execute ("SELECT id, title FROM photos WHERE pub = '1' ORDER BY id ASC")
+cursor.execute ("SELECT id, title FROM photos WHERE published = '1' ORDER BY id ASC")
 for row in cursor:
 	print "\n%s -- %s" % (row[0], row[1])
 
@@ -61,20 +61,20 @@ q	Quit"""
 
 	elif command == "a":
 		recordid = raw_input("Record id: ")
-		pub = "0"
-		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
+		published = "0"
+		cursor.execute("UPDATE photos SET published='"  +  published +  "' WHERE id='"  +  recordid  +  "'")
 		conn.commit()
 		print "\nRecord has been archived."
 
 	elif command == "s":
-		cursor.execute ("SELECT id, title FROM photos WHERE pub = '0' ORDER BY id ASC")
+		cursor.execute ("SELECT id, title FROM photos WHERE published = '0' ORDER BY id ASC")
 		for row in cursor:
 			print "\n%s -- %s" % (row[0], row[1])
 
 	elif command == "r":
 		recordid = raw_input("Record id: ")
-		pub = "1"
-		cursor.execute("UPDATE photos SET pub='"  +  pub +  "' WHERE id='"  +  recordid  +  "'")
+		published = "1"
+		cursor.execute("UPDATE photos SET published='"  +  published +  "' WHERE id='"  +  recordid  +  "'")
 		conn.commit()
 		print "\nRecord has been re-published."
 

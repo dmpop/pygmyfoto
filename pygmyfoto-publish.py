@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
    
 #       This program is free software; you can redistribute it and/or modify
-#       it under the terms of the GNU General Public License as published by
-#       the Free Software Foundation; either version 2 of the License, or
+#       it under the terms of the GNU General publishedlic License as publishedlished by
+#       the Free Software Foundation; either version 3 of the License, or
 #       (at your option) any later version.
 #       
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#       GNU General Public License for more details.
+#       GNU General publishedlic License for more details.
 #       
-#       You should have received a copy of the GNU General Public License
+#       You should have received a copy of the GNU General publishedlic License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
@@ -49,10 +49,10 @@ if CREATE == True:
 		"CREATE TABLE photos (\
 		id INTEGER PRIMARY KEY UNIQUE NOT NULL,\
 		title VARCHAR(256),\
-		article VARCHAR(1024),\
+		description VARCHAR(1024),\
 		tags VARCHAR(256),\
-		added DATE,\
-		pub VARCHAR(1));"
+		datum DATE,\
+		published VARCHAR(1));"
 	cursor.execute(CREATE_SQL)
 	conn.commit()
 
@@ -61,7 +61,7 @@ def escapechar(sel):
 	sel=sel.replace("\"", "\"""")
 	return sel
 
-added = time.strftime('%Y-%m-%d')
+datum = time.strftime('%Y-%m-%d')
 size = 500, 500
 
 photo = raw_input("Photo: ")
@@ -72,10 +72,10 @@ ph.save(PHOTOS +  "t_" + photo, "JPEG")
 title = raw_input("Title: ")
 description = raw_input("Text: ")
 photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
-article = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
+description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
-pub = "1"
-sqlquery = "INSERT INTO photos (title, article, tags, added, pub) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, article, tags, added, pub)
+published = "1"
+sqlquery = "INSERT INTO photos (title, description, tags, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, description, tags, datum, published)
 
 cursor.execute(sqlquery)
 conn.commit()
