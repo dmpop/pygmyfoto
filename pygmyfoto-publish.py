@@ -30,7 +30,7 @@ except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
 DB = "pygmyfoto.sqlite"
-PHOTOS = "photos/"
+#PHOTOS = "photos/"
 
 if os.path.exists(DB):
 	CREATE = False
@@ -64,14 +64,14 @@ def escapechar(sel):
 datum = time.strftime('%Y-%m-%d')
 size = 500, 500
 
-photo = raw_input("Photo: ")
-ph = Image.open(PHOTOS + photo)
+#photo = raw_input("Photo: ")
+ph = Image.open(sys.argv[1])
 ph.thumbnail(size,Image.ANTIALIAS)
-ph.save(PHOTOS +  "t_" + photo, "JPEG")
+ph.save(sys.argv[1] + "_", "JPEG")
 
 title = raw_input("Title: ")
 description = raw_input("Text: ")
-photourl = escapechar("<a href='"+PHOTOS + photo+"'>"+"<img src='"+ PHOTOS + "t_"+photo+"'"+"></a>")
+photourl = escapechar("<a href='"+sys.argv[1]+"'>"+"<img src='"+ sys.argv[1] +"_" +"'"+"></a>")
 description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 tags= raw_input("Tags: ")
 published = "1"
