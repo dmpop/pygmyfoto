@@ -8,6 +8,7 @@
 	<link href='http://fonts.googleapis.com/css?family=Artifika' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
 	<link href="http://fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic&v1" rel="stylesheet" type="text/css">
+	<link rel="shortcut icon" href="favicon.ico" />
 	<title>Pygmyfoto</title>
 	</head>
 	
@@ -21,11 +22,12 @@
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, description, tags FROM photos WHERE published = '0' ORDER BY id DESC");
+$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE published = '0' ORDER BY id DESC");
 foreach($result as $row)
 {
 print "<tr><td><p>".$row['description']."</p></td></tr>";
 print "<tr><td><p class='box'>Tags:<em> ".$row['tags']."</p></em></td></tr>";
+print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
 

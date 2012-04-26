@@ -22,7 +22,7 @@ __license__ = "GPLv3"
 __version__ = "0.0.3"
 __URL__ = "http://www.github.com/dmpop"
 
-import os, sys, time, Image
+import os, sys, time, Image, pyexiv2
 
 try:
 	import sqlite3 as sqlite
@@ -50,6 +50,7 @@ if CREATE == True:
 		title VARCHAR(512),\
 		description VARCHAR(1024),\
 		tags VARCHAR(256),\
+		exif VARCHAR(1024),\
 		datum DATE,\
 		published VARCHAR(1));"
 	cursor.execute(CREATE_SQL)
@@ -68,13 +69,32 @@ try:
 	photo.thumbnail(size,Image.ANTIALIAS)
 	photo.save(sys.argv[1] + "_", "JPEG")
 
+	#Retrieve and process EXIF metadata
+
+	metadata = pyexiv2.ImageMetadata(sys.argv[1])
+	metadata.read()
+	exposure = metadata['Exif.Photo.ExposureTime']
+	fnumber= metadata['Exif.Photo.FNumber']
+	iso = metadata['Exif.Photo.ISOSpeedRatings']
+	foclen = metadata['Exif.Photo.FocalLength']
+	date = metadata['Exif.Photo.DateTimeOriginal']
+
+	fnr1 = str(fnumber.value)
+	fnr2 = fnr1.split("/")
+	aperture = float(fnr2[0])/float(fnr2[1])
+	f = str(foclen.value)
+	f2 = f.split("/")
+	focallength = float(f2[0])/float(f2[1])
+
+	exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: " + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+
 	title = escapechar(raw_input("Title: "))
 	description = escapechar(raw_input("Text: "))
 	photourl = escapechar("<a href='"+sys.argv[1]+"'>"+"<img src='"+ sys.argv[1] +"_" +"'"+"></a>")
 	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 	tags= raw_input("Tags: ")
 	published = "1"
-	sqlquery = "INSERT INTO photos (title, description, tags, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, description, tags, datum, published)
+	sqlquery = "INSERT INTO photos (title, description, tags, exif, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, datum, published)
 
 	cursor.execute(sqlquery)
 	conn.commit()
