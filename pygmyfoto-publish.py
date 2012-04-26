@@ -30,7 +30,6 @@ except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
 DB = "pygmyfoto.sqlite"
-#PHOTOS = "photos/"
 
 if os.path.exists(DB):
 	CREATE = False
@@ -48,7 +47,7 @@ if CREATE == True:
 	CREATE_SQL = \
 		"CREATE TABLE photos (\
 		id INTEGER PRIMARY KEY UNIQUE NOT NULL,\
-		title VARCHAR(256),\
+		title VARCHAR(512),\
 		description VARCHAR(1024),\
 		tags VARCHAR(256),\
 		datum DATE,\
@@ -64,23 +63,25 @@ def escapechar(sel):
 datum = time.strftime('%Y-%m-%d')
 size = 500, 500
 
-#photo = raw_input("Photo: ")
-ph = Image.open(sys.argv[1])
-ph.thumbnail(size,Image.ANTIALIAS)
-ph.save(sys.argv[1] + "_", "JPEG")
+try:
+	photo = Image.open(sys.argv[1])
+	photo.thumbnail(size,Image.ANTIALIAS)
+	photo.save(sys.argv[1] + "_", "JPEG")
 
-title = raw_input("Title: ")
-description = raw_input("Text: ")
-photourl = escapechar("<a href='"+sys.argv[1]+"'>"+"<img src='"+ sys.argv[1] +"_" +"'"+"></a>")
-description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
-tags= raw_input("Tags: ")
-published = "1"
-sqlquery = "INSERT INTO photos (title, description, tags, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, description, tags, datum, published)
+	title = escapechar(raw_input("Title: "))
+	description = escapechar(raw_input("Text: "))
+	photourl = escapechar("<a href='"+sys.argv[1]+"'>"+"<img src='"+ sys.argv[1] +"_" +"'"+"></a>")
+	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
+	tags= raw_input("Tags: ")
+	published = "1"
+	sqlquery = "INSERT INTO photos (title, description, tags, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s')" % (title, description, tags, datum, published)
 
-cursor.execute(sqlquery)
-conn.commit()
+	cursor.execute(sqlquery)
+	conn.commit()
+	
+	print "All done!"
 
-print "All done!"
-
-cursor.close()
-conn.close()
+	cursor.close()
+	conn.close()
+except:
+	sys.exit("Something went wrong. Please try again.")
