@@ -51,7 +51,7 @@ if CREATE == True:
 		description VARCHAR(1024),\
 		tags VARCHAR(256),\
 		exif VARCHAR(1024),\
-		datum DATE,\
+		dt DATE,\
 		published VARCHAR(1));"
 	cursor.execute(CREATE_SQL)
 	conn.commit()
@@ -61,7 +61,7 @@ def escapechar(sel):
 	sel=sel.replace("\"", "\"""")
 	return sel
 
-datum = time.strftime('%Y-%m-%d')
+dt = time.strftime('%Y-%m-%d')
 size = 500, 500
 
 try:
@@ -94,7 +94,7 @@ try:
 	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 	tags= raw_input("Tags: ")
 	published = "1"
-	sqlquery = "INSERT INTO photos (title, description, tags, exif, datum, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, datum, published)
+	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, dt, published)
 
 	cursor.execute(sqlquery)
 	conn.commit()
