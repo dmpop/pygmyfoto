@@ -4,6 +4,7 @@ The current version of Pygmyfoto is a proof of concept and should be
 ##Requirements
 
 * Python 2.6
+* Python Image Library (On Debian, install using the `apt-get install python-imaging` command)
 * Apache server with PHP
 
 ##Usage
