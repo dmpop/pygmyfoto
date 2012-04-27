@@ -87,26 +87,29 @@ try:
 
 	# Retrieve and process EXIF metadata
 
-	metadata = pyexiv2.ImageMetadata(sys.argv[1])
-	metadata.read()
-	exposure = metadata['Exif.Photo.ExposureTime']
-	fnumber= metadata['Exif.Photo.FNumber']
-	iso = metadata['Exif.Photo.ISOSpeedRatings']
-	foclen = metadata['Exif.Photo.FocalLength']
-	date = metadata['Exif.Photo.DateTimeOriginal']
+	try:
+		metadata = pyexiv2.ImageMetadata(sys.argv[1])
+		metadata.read()
+		exposure = metadata['Exif.Photo.ExposureTime']
+		fnumber= metadata['Exif.Photo.FNumber']
+		iso = metadata['Exif.Photo.ISOSpeedRatings']
+		foclen = metadata['Exif.Photo.FocalLength']
+		date = metadata['Exif.Photo.DateTimeOriginal']
 
-	# Extract and format values from Exif.Photo.ExposureTime and Exif.Photo.FocalLength
+		# Extract and format values from Exif.Photo.ExposureTime and Exif.Photo.FocalLength
 
-	fnr1 = str(fnumber.value)
-	fnr2 = fnr1.split("/")
-	aperture = float(fnr2[0])/float(fnr2[1])
-	f = str(foclen.value)
-	f2 = f.split("/")
-	focallength = float(f2[0])/float(f2[1])
+		fnr1 = str(fnumber.value)
+		fnr2 = fnr1.split("/")
+		aperture = float(fnr2[0])/float(fnr2[1])
+		f = str(foclen.value)
+		f2 = f.split("/")
+		focallength = float(f2[0])/float(f2[1])
 
-	# Put all retrieved and formatted EXIF values together
+		# Put all retrieved and formatted EXIF values together
 
-	exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: " + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: " + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+	except:
+		exif = "No EXIF  metadata available"
 
 	# Prompt the user to enter title and description, then add a dash of HTML formatting to them
 
