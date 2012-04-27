@@ -24,12 +24,18 @@ __URL__ = "http://www.github.com/dmpop"
 
 import os, sys, time, Image, pyexiv2
 
+# Import the appropriate sqlite module
+
 try:
 	import sqlite3 as sqlite
 except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
+# Specify a database
+
 DB = "pygmyfoto.sqlite"
+
+# Check whether the database exists
 
 if os.path.exists(DB):
 	CREATE = False
@@ -37,11 +43,15 @@ else:
 	print "A new database has been created."
 	CREATE = True
 
+# Try to connect to the database
+
 try:
 	conn = sqlite.connect(DB)
 	cursor = conn.cursor()
 except:
 	sys.exit("Connection to the SQLite database failed!")
+
+# If the database doesn't exist, create it
 
 if CREATE == True:
 	CREATE_SQL = \
@@ -56,20 +66,26 @@ if CREATE == True:
 	cursor.execute(CREATE_SQL)
 	conn.commit()
 
+# Define a function for escaping " and '  in SQL queries
+
 def escapechar(sel):
 	sel=sel.replace("\'", "\''")
 	sel=sel.replace("\"", "\"""")
 	return sel
 
+# Specify date format and resizing dimensions
+
 dt = time.strftime('%Y-%m-%d')
 size = 500, 500
 
 try:
+	# Resize the specified file
+
 	photo = Image.open(sys.argv[1])
 	photo.thumbnail(size,Image.ANTIALIAS)
 	photo.save(sys.argv[1] + "_", "JPEG")
 
-	#Retrieve and process EXIF metadata
+	# Retrieve and process EXIF metadata
 
 	metadata = pyexiv2.ImageMetadata(sys.argv[1])
 	metadata.read()
@@ -79,6 +95,8 @@ try:
 	foclen = metadata['Exif.Photo.FocalLength']
 	date = metadata['Exif.Photo.DateTimeOriginal']
 
+	# Extract and format values from Exif.Photo.ExposureTime and Exif.Photo.FocalLength
+
 	fnr1 = str(fnumber.value)
 	fnr2 = fnr1.split("/")
 	aperture = float(fnr2[0])/float(fnr2[1])
@@ -86,7 +104,11 @@ try:
 	f2 = f.split("/")
 	focallength = float(f2[0])/float(f2[1])
 
+	# Put all retrieved and formatted EXIF values together
+
 	exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: " + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+
+	# Prompt the user to enter title and description, then add a dash of HTML formatting to them
 
 	title = escapechar(raw_input("Title: "))
 	description = escapechar(raw_input("Text: "))
@@ -94,14 +116,17 @@ try:
 	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 	tags= raw_input("Tags: ")
 	published = "1"
-	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, dt, published)
 
+	# Insert all the pieces into the appropriate fields of the 'photos' table, commit the  insert, and close the database connection
+
+	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, dt, published)
 	cursor.execute(sqlquery)
 	conn.commit()
-	
-	print "All done!"
-
 	cursor.close()
 	conn.close()
+
+	# And we are done!
+	
+	print "All done!"
 except:
 	sys.exit("Something went wrong. Please try again.")

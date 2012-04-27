@@ -24,19 +24,27 @@ __URL__ = "http://www.github.com/dmpop"
 
 import sys, os
 
+# Import the appropriate sqlite module
+
 try:
 	import sqlite3 as sqlite
 except ImportError:
 	from pysqlite2 import dbapi2 as sqlite
 
+# Specify a database and reset the command variable
+
 DB = "pygmyfoto.sqlite"
 command = ""
+
+# Try to connect to the database
 
 try:
 	conn = sqlite.connect(DB)
 	cursor = conn.cursor()
 except:
 	sys.exit("Connection to the SQLite database failed!")
+
+# Retrieve all records where published = 1
 
 cursor.execute ("SELECT id, title FROM photos WHERE published = '1' ORDER BY id ASC")
 for row in cursor:
@@ -58,6 +66,8 @@ r	Re-publish record
 d	Delete record
 h	Help
 q	Quit"""
+
+# This part is self-explanatory
 
 	elif command == "a":
 		recordid = raw_input("Record id: ")
