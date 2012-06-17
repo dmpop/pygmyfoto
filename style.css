@@ -16,6 +16,7 @@ h1 { color: #e3e3e3; font: 57px 'Oleo Script', cursive; text-align:left; backgro
 a:hover { color: #e3e3e3; }
 h2 { color: #e3e3e3; font: 31px/50% 'Artifika', serif; text-align:left; background-color: #4a525a;}
 p.box { border-style:dashed; border-width:1px; font-size:11px; padding:5px; }
+img { box-shadow: 5px 5px 25px -2px #333; }
 /*
 The End of Basic's
 */
