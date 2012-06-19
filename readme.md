@@ -24,8 +24,4 @@ Add then the following lines at the end of the file:
 
 Restart then Apache using the `/etc/init.d/apache2 restart` command.
 
-Grab the latest release of software, unpack the downloaded archive, and move the resulting *pygmyfoto* directory to the document root of your server. Create the *pygmyfoto/photos* directory. Add photos  to that directory, and run the `./pygmyfoto-publish.py [foo.jpg]` command in the terminal (replace *foo.jpg* which the actual file name of the photo you want to publish).  Point then your browser to *http://127.0.0.1/pygmyfoto/* (replace *127.0.0.1* with the actual IP address or domain name of your server). To quickly manage published photos, use the `./pygmyfoto-manage.py` command (type `h` for help). Point the browser to *http://127.0.0.1/pygmyfoto/phpliteadmin.php*  to access and manage the *pygmyfoto.sqlite* database.
-
-##Limitations
-
-* The *pygmyfoto-publish.py* script can handle only one photo at a time.
+Grab the latest release of software, unpack the downloaded archive, and move the resulting *pygmyfoto* directory to the document root of your server. Open the *phpliteadmin.php*  in a text editor and replace the default password by editing the *$password = "admin";* line. Create the *pygmyfoto/photos* directory. Add photos  to that directory, and run the `./pygmyfoto-publish.py [foo.jpg]` command in the terminal (replace *foo.jpg* which the actual file name of the photo you want to publish).  Point then your browser to *http://127.0.0.1/pygmyfoto/* (replace *127.0.0.1* with the actual IP address or domain name of your server).  To access and manage the *pygmyfoto.sqlite* database, point the browser to *http://127.0.0.1/pygmyfoto/phpliteadmin.php* .
