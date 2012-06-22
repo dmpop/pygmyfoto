@@ -76,13 +76,14 @@ def escapechar(sel):
 # Specify date format and resizing dimensions
 
 dt = time.strftime('%Y-%m-%d')
-size = 500, 500
+rsize = 1024, 1024
+thumbsize = 500, 500
 
 try:
 	# Resize the specified file
 
 	photo = Image.open(sys.argv[1])
-	photo.thumbnail(size,Image.ANTIALIAS)
+	photo.thumbnail(thumbsize,Image.ANTIALIAS)
 	photo.save(sys.argv[1] + "_", "JPEG")
 
 	# Retrieve and process EXIF metadata
@@ -115,7 +116,7 @@ try:
 
 	title = escapechar(raw_input("Title: "))
 	description = escapechar(raw_input("Text: "))
-	photourl = escapechar("<a href='"+sys.argv[1]+"'>"+"<img src='"+ sys.argv[1] +"_" +"'"+"></a>")
+	photourl = escapechar("<a rel='lightbox' href='"+sys.argv[1]+"'>"+"<img class='dropshadow' src='"+ sys.argv[1] +"_" +"'"+"></a>")
 	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 	tags= raw_input("Tags: ")
 	published = "1"
@@ -127,6 +128,10 @@ try:
 	conn.commit()
 	cursor.close()
 	conn.close()
+
+	photo = Image.open(sys.argv[1])
+	photo.thumbnail(rsize,Image.ANTIALIAS)
+	photo.save(sys.argv[1] , "JPEG")
 
 	# And we are done!
 	

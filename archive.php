@@ -9,6 +9,11 @@
 	<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
 	<link href="http://fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic&v1" rel="stylesheet" type="text/css">
 	<link rel="shortcut icon" href="favicon.ico" />
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.lightbox-0.5.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/jquery.lightbox-0.5.css" media="screen" />
+
 	<title>Pygmyfoto</title>
 	</head>
 	
@@ -17,6 +22,12 @@
 	<div id="content">
 	<h1>Pygmyfoto Archive</h1>
 	<hr>
+
+	<script type="text/javascript">
+	$(function() {
+		$('a[@rel*=lightbox]').lightBox();
+	});
+	</script>
 	
 <?php
 
