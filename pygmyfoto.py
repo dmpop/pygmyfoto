@@ -80,7 +80,7 @@ rsize = 1024, 1024
 thumbsize = 500, 500
 
 try:
-	# Resize the specified file
+	# Generate a thumbnail
 
 	photo = Image.open(sys.argv[1])
 	photo.thumbnail(thumbsize,Image.ANTIALIAS)
@@ -128,6 +128,8 @@ try:
 	conn.commit()
 	cursor.close()
 	conn.close()
+
+	# Resize the original to fit in the lightbox overlay
 
 	photo = Image.open(sys.argv[1])
 	photo.thumbnail(rsize,Image.ANTIALIAS)
