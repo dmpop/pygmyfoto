@@ -28,6 +28,12 @@
 		$('a[@rel*=lightbox]').lightBox();
 	});
 	</script>
+
+	<div id="menu">
+		 <a class="menu" href="index.php">Home</a><br>
+		 <a class="menu" href="archive.php">Archive</a>
+		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a>
+	</div>
 	
 <?php
 
@@ -45,7 +51,7 @@ print "</table>";
 $db = NULL;
 
 ?>
-	<div class="footer"><a href="index.php">Pygmyfoto</a></div>
+	<div class="footer">Powered by Pygmyfoto</div>
 	</div>
 	</body>
 </html>

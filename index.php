@@ -31,6 +31,12 @@
 	});
 	</script>
 
+	<div id="menu">
+		 <a class="menu" href="index.php">Home</a><br>
+		 <a class="menu" href="archive.php">Archive</a>
+		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a>
+	</div>
+
 <?php
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
@@ -47,7 +53,7 @@ print "</table>";
 $db = NULL;
 
 ?>
-	<div class="footer"><a href="archive.php">Pygmyfoto archive</a></div>
+	<div class="footer">Powered by Pygmyfoto</div>
 	</div>
 	</body>
 </html>
