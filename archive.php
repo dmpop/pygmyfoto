@@ -8,7 +8,7 @@
 	<link href='http://fonts.googleapis.com/css?family=Artifika' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
 	<link href="http://fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic&v1" rel="stylesheet" type="text/css">
-	<link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="favicon.ico" />
 
 	<script type="text/javascript" src="js/jquery.js"></script>
@@ -24,9 +24,9 @@
 		 <a class="menu" href="index.php">Home</a><br>
 		 <a class="menu" href="archive.php">Archive</a> &#10081;<br>
 		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a><br>
+		 <hr>
 		 <form method="post" action="search.php">
-		 	<input type="text" name="tag" size="15">
-		 	<input type="submit" value="Search">
+		 	<input type="text" name="tag" size="12"> <input type="submit" value="&#10148;">
 		 </form>
 	</div>
 	
