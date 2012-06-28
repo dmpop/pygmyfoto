@@ -19,6 +19,16 @@
 	</head>
 	
 	<body>
+
+	<div id="menu">
+		 <a class="menu" href="index.php">Home</a><br>
+		 <a class="menu" href="archive.php">Archive</a> &#10081;<br>
+		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a><br>
+		 <form method="post" action="search.php">
+		 	<input type="text" name="tag" size="15">
+		 	<input type="submit" value="Search">
+		 </form>
+	</div>
 	
 	<div id="content">
 	<h1>Pygmyfoto Archive</h1>
@@ -29,12 +39,6 @@
 		$('a[@rel*=lightbox]').lightBox();
 	});
 	</script>
-
-	<div id="menu">
-		 <a class="menu" href="index.php">Home</a><br>
-		 <a class="menu" href="archive.php">Archive</a>
-		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a>
-	</div>
 	
 <?php
 
