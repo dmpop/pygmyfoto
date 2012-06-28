@@ -33,8 +33,12 @@
 
 	<div id="menu">
 		 <a class="menu" href="index.php">Home</a><br>
-		 <a class="menu" href="archive.php">Archive</a>
-		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a>
+		 <a class="menu" href="archive.php">Archive</a><br>
+		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a><br>
+		 <form method="post" action="search.php">
+		 	<input type="text" name="tag" size="15">
+		 	<input type="submit" value="Search">
+		 </form>
 	</div>
 
 <?php
