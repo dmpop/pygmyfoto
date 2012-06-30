@@ -45,11 +45,11 @@
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE published = '1' ORDER BY id DESC");
+$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE published = '1' ORDER BY dt DESC");
 foreach($result as $row)
 {
 print "<tr><td>".$row['description']."</td></tr>";
-print "<tr><td valign='top'><p class='box'>Tags:<em> ".$row['tags']."</p></em></td></tr>";
+print "<tr><td valign='top'><p class='box'>Tags:<em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'>Permalink</a></p></td></tr>";
 print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";

@@ -3,6 +3,7 @@ Basic Tags
  */
 body { background-image:url('../images/background.png'); font: 13px/175% 'Droid Serif', serif; text-align:justify; background-color: #4a525a; }
 h1 { color: #999999; font: 57px 'Averia Gruesa Libre', serif; text-align:left; margin-bottom:11px;}
+a { color: #e3e3e3; }
 a.menu { color: #e3e3e3; font: 17px/175% 'Crete Round', serif; text-decoration:none; }
 h2 { color: #e3e3e3; font: 31px/50% 'Averia Gruesa Libre', serif; text-align:left; }
 p.box { border-style:dashed; border-width:1px;  font-size:11px; padding:5px; color: #e3e3e3; }

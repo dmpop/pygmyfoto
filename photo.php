@@ -47,7 +47,7 @@ $id = $_GET['id'];
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE id='$id' ORDER BY id DESC");
+$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE id='$id'");
 foreach($result as $row)
 {
 print "<tr><td>".$row['description']."</td></tr>";

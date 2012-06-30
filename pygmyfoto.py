@@ -22,7 +22,7 @@ __license__ = "GPLv3"
 __version__ = "0.0.3"
 __URL__ = "http://www.github.com/dmpop"
 
-import os, sys, time, Image, pyexiv2
+import os, sys, time, Image, pyexiv2, random
 
 # Import the appropriate sqlite module
 
@@ -56,7 +56,7 @@ except:
 if CREATE == True:
 	CREATE_SQL = \
 		"CREATE TABLE photos (\
-		id INTEGER PRIMARY KEY UNIQUE NOT NULL,\
+		id VARCHAR(7) PRIMARY KEY UNIQUE NOT NULL,\
 		title VARCHAR(512),\
 		description VARCHAR(1024),\
 		tags VARCHAR(256),\
@@ -112,18 +112,24 @@ try:
 	except:
 		exif = "No EXIF  metadata available"
 
-	# Prompt the user to enter title and description, then add a dash of HTML formatting to them
+	# Prompt the user to enter title, description, and tags, then add a dash of HTML formatting to them
 
 	title = escapechar(raw_input("Title: "))
 	description = escapechar(raw_input("Text: "))
-	photourl = escapechar("<a rel='lightbox' href='"+sys.argv[1]+"'>"+"<img class='dropshadow' src='"+ sys.argv[1] +"_" +"'"+"></a>")
-	description = "<h2>"+title+"</h2>" + "<p> " + description + "</p> " + photourl
 	tags= raw_input("Tags: ")
+	
+	photourl = escapechar("<a rel='lightbox' href='"+sys.argv[1]+"'>"+"<img class='dropshadow' src='"+ sys.argv[1] +"_" +"'"+"></a>")
+	description = "<h2>" +title+"</h2>" + "<p> " + description + "</p> " + photourl
 	published = "1"
+
+	# Generate unique id consisting of the first three letters of the title and a random number
+
+	charstr = title[0:3]
+	id = str(random.randrange(10000)) + (charstr.lower())
 
 	# Insert all the pieces into the appropriate fields of the 'photos' table, commit the  insert, and close the database connection
 
-	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, dt, published)
+	sqlquery = "INSERT INTO photos (id, title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (id, title, description, tags, exif, dt, published)
 	cursor.execute(sqlquery)
 	conn.commit()
 	cursor.close()
@@ -139,4 +145,5 @@ try:
 	
 	print "All done!"
 except:
+	print "Unexpected error:", sys.exc_info()
 	sys.exit("Something went wrong. Please try again.")
