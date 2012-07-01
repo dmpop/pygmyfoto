@@ -19,10 +19,10 @@
 __author__ = "Dmitri Popov [dmpop@linux.com]"
 __copyright__ = "Copyleft 2012 Dmitri Popov"
 __license__ = "GPLv3"
-__version__ = "0.0.3"
+__version__ = "1.0"
 __URL__ = "http://www.github.com/dmpop"
 
-import os, sys, time, Image, pyexiv2, random
+import os, sys, time, Image, pyexiv2
 
 # Import the appropriate sqlite module
 
@@ -56,7 +56,7 @@ except:
 if CREATE == True:
 	CREATE_SQL = \
 		"CREATE TABLE photos (\
-		id VARCHAR(7) PRIMARY KEY UNIQUE NOT NULL,\
+		id INTEGER PRIMARY KEY UNIQUE NOT NULL,\
 		title VARCHAR(512),\
 		description VARCHAR(1024),\
 		tags VARCHAR(256),\
@@ -122,14 +122,9 @@ try:
 	description = "<h2>" +title+"</h2>" + "<p> " + description + "</p> " + photourl
 	published = "1"
 
-	# Generate unique id consisting of the first three letters of the title and a random number
-
-	charstr = title[0:3]
-	id = str(random.randrange(10000)) + (charstr.lower())
-
 	# Insert all the pieces into the appropriate fields of the 'photos' table, commit the  insert, and close the database connection
 
-	sqlquery = "INSERT INTO photos (id, title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (id, title, description, tags, exif, dt, published)
+	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (title, description, tags, exif, dt, published)
 	cursor.execute(sqlquery)
 	conn.commit()
 	cursor.close()
@@ -146,4 +141,4 @@ try:
 	print "All done!"
 except:
 	print "Unexpected error:", sys.exc_info()
-	sys.exit("Something went wrong. Please try again.")
+	sys.exit("Please fix the problem and try again.")
