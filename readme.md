@@ -11,7 +11,7 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web.
 
 Install the required packages. On Debian and Ubuntu, this can be done by running the following command as root:
 
-	apt-get install apache2 php5 sqlite3 php5-sqlite python python-imaging pyexiv2
+	apt-get install apache2 php5 sqlite3 php5-sqlite python python-imaging python-pyexiv2
 
 Enable the PDO SQLite driver in Apache. To do this on Ubuntu or Debian-based Linux distributions, open then the *php.ini* file for editing in a text editor:
 
