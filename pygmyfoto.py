@@ -108,7 +108,7 @@ try:
 
 		# Put all retrieved and formatted EXIF values together
 
-		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: " + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: f/" + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
 	except:
 		exif = "No EXIF  metadata available"
 
