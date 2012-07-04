@@ -10,9 +10,9 @@
 	<link href='http://fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="favicon.ico" />
 
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.lightbox-0.5.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/jquery.lightbox-0.5.css" media="screen" />
+	<script src="js/jquery-1.7.2.min.js"></script>
+	<script src="js/lightbox.js"></script>
+	<link href="css/lightbox.css" rel="stylesheet" />
 
 	<title>Pygmyfoto</title>
 	</head>
