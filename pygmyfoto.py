@@ -94,30 +94,23 @@ try:
 		exposure = metadata['Exif.Photo.ExposureTime']
 		fnumber= metadata['Exif.Photo.FNumber']
 		iso = metadata['Exif.Photo.ISOSpeedRatings']
-		foclen = metadata['Exif.Photo.FocalLength']
 		date = metadata['Exif.Photo.DateTimeOriginal']
 
-		# Extract and format values from Exif.Photo.ExposureTime and Exif.Photo.FocalLength
+		# Extract and format values from Exif.Photo.FNumber
 
-		fnr1 = str(fnumber.value)
-		fnr2 = fnr1.split("/")
-		aperture = float(fnr2[0])/float(fnr2[1])
-		f = str(foclen.value)
-		f2 = f.split("/")
-		focallength = float(f2[0])/float(f2[1])
+		try:
+			fnr1 = str(fnumber.value)
+			fnr2 = fnr1.split("/")
+			aperture = float(fnr2[0])/float(fnr2[1])
+		except:
+			aperture = fnr1
 
 		# Put all retrieved and formatted EXIF values together
 
-		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: f/" + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
+		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: f/" + str(aperture) + " ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
 	except:
-		print "Unexpected error:", sys.exc_info()
-		print "\nEnter the required EXIF data manually"
-		exposurevalue = raw_input("Exposure (e.g., 1/250): ")
-		aperturevalue = raw_input("Aperture (e.g., 13): ")
-		focallengthvalue = raw_input("Focal Length (e.g., 50): ")
-		isovalue = raw_input("ISO (e.g., 400): ")
-		timestampvalue = raw_input("Timestamp (e.g., 2012-07-03 14:59:30): ")
-		exif = "Shutter speed: " + str(exposurevalue) + " sec. " + "Aperture: f/" + str(aperturevalue) + " Focal length: " + str(focallengthvalue) + "mm " + "ISO: " + str(isovalue) + " Timestamp: " + str(timestampvalue)
+		
+		exif = "No EXIF metadata available"
 
 	# Prompt the user to enter title, description, and tags, then add a dash of HTML formatting to them
 
