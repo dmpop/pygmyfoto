@@ -110,7 +110,14 @@ try:
 
 		exif = "Shutter speed: " + str(exposure.value) + " sec. " + "Aperture: f/" + str(aperture) + " Focal length: " + str(focallength) + "mm " + "ISO: " + str(iso.value) + " Timestamp: " + str(date.value)
 	except:
-		exif = "No EXIF  metadata available"
+		print "Unexpected error:", sys.exc_info()
+		print "\nEnter the required EXIF data manually"
+		exposurevalue = raw_input("Exposure (e.g., 1/250): ")
+		aperturevalue = raw_input("Aperture (e.g., 13): ")
+		focallengthvalue = raw_input("Focal Length (e.g., 50): ")
+		isovalue = raw_input("ISO (e.g., 400): ")
+		timestampvalue = raw_input("Timestamp (e.g., 2012-07-03 14:59:30): ")
+		exif = "Shutter speed: " + str(exposurevalue) + " sec. " + "Aperture: f/" + str(aperturevalue) + " Focal length: " + str(focallengthvalue) + "mm " + "ISO: " + str(isovalue) + " Timestamp: " + str(timestampvalue)
 
 	# Prompt the user to enter title, description, and tags, then add a dash of HTML formatting to them
 
