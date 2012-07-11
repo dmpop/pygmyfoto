@@ -17,7 +17,10 @@
 #       MA 02110-1301, USA.
 
 from PIL import Image
-import time, glob, os, pyexiv2, shutil
+import time, glob, os, sys, pyexiv2, shutil
+
+if os.listdir("uploads") == []:
+	sys.exit()
 
 dt = time.strftime('%Y-%m-%d')
 rsize = 1024, 1024
@@ -91,8 +94,6 @@ for infile in glob.glob("uploads/*.jpeg"):
 	sqlquery = "INSERT INTO photos (title, description, tags, exif, dt, published) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (fname, description, tags, exif, dt, published)
 	cursor.execute(sqlquery)
 	conn.commit()
-	cursor.close()
-	conn.close()
 
 	# Resize the original to fit in the lightbox overlay
 
@@ -100,6 +101,9 @@ for infile in glob.glob("uploads/*.jpeg"):
 	photo = Image.open(infile)
 	photo.thumbnail(rsize, Image.ANTIALIAS)
 	photo.save("photos/" + fname + ext, "JPEG")
+
+cursor.close()
+conn.close()
 
 # Empty the uploads directory
 
