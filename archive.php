@@ -30,8 +30,7 @@
 	</div>
 	
 	<div id="content">
-	<h1>Pygmyfoto Archive</h1>
-	<hr>
+	<h1>P * y * g * m * y * f * o * t * o</h1>
 
 	<script type="text/javascript">
 	$(function() {
