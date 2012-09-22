@@ -5,9 +5,7 @@
 	<head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<link href='http://fonts.googleapis.com/css?family=Averia+Gruesa+Libre' rel='stylesheet' type='text/css'>
-	<link href="http://fonts.googleapis.com/css?family=Droid+Serif:regular,italic,bold,bolditalic&v1" rel="stylesheet" type="text/css">
-	<link href='http://fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="favicon.ico" />
 
 	<script src="js/jquery-1.7.2.min.js"></script>
