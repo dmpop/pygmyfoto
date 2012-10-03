@@ -38,28 +38,22 @@
 	});
 	</script>
 
-	<script type="text/javascript">
-	(function() {
-		var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-		po.src = 'https://apis.google.com/js/plusone.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-	})();
-	</script>
-
 <?php
 
 $id = $_GET['id'];
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE id='$id'");
+$result = $db->query("SELECT id, description, tags, exif, count FROM photos WHERE id='$id'");
 foreach($result as $row)
 {
 print "<tr><td>".$row['description']."</td></tr>";
-print "<tr><td valign='top'><p class='box'>Tags:<em> ".$row['tags']."</p></em><div class='g-plusone'></div></td></tr>";
+print "<tr><td valign='top'><p class='box'><strong>Tags:</strong><em> ".$row['tags']."</em> <strong>Views:</strong><em> ".$row['count']."</p></em></td></tr>";
 print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
+
+$db->query("UPDATE photos SET count = count + 1 WHERE id='$id'");
 
 $db = NULL;
 

@@ -62,7 +62,8 @@ if CREATE == True:
 		tags VARCHAR(256),\
 		exif VARCHAR(1024),\
 		dt DATE,\
-		published VARCHAR(1));"
+		published VARCHAR(1),\
+		count INTEGER DEFAULT 0);"
 	cursor.execute(CREATE_SQL)
 	conn.commit()
 

@@ -4,8 +4,8 @@
 
 	<head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="favicon.ico" />
 
 	<script src="js/jquery-1.7.2.min.js"></script>
@@ -44,7 +44,7 @@ $result = $db->query("SELECT id, description, tags, exif FROM photos WHERE publi
 foreach($result as $row)
 {
 print "<tr><td><p>".$row['description']."</p></td></tr>";
-print "<tr><td valign='top'><p class='box'>Tags:<em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'>Permalink</a></p></td></tr>";
+print "<tr><td valign='top'><p class='box'><strong>Tags:</strong><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><strong>Permalink</strong></a></p></td></tr>";
 print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
