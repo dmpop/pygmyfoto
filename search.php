@@ -42,7 +42,7 @@ $tag = $_POST['tag'];
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<table border=0>";
-$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE published = '1' AND tags LIKE '%$tag%' ORDER BY dt DESC");
+$result = $db->query("SELECT id, description, tags, exif FROM photos WHERE tags LIKE '%$tag%' ORDER BY dt DESC");
 foreach($result as $row)
 {
 print "<tr><td>".$row['description']."</td></tr>";
