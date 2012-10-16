@@ -48,7 +48,7 @@ $result = $db->query("SELECT id, description, tags, exif, osm, count FROM photos
 foreach($result as $row)
 {
 print "<tr><td>".$row['description']."</td></tr>";
-print "<tr><td valign='top'><p class='box'><strong>Tags:</strong><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><strong>Permalink</strong></a> <a href='".$row['osm']."'>OpenStreetMap</a> <strong>Views:</strong><em> ".$row['count']."</p></td></tr>";
+print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags'><em> ".$row['tags']."</em> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap'></a> <strong>Views:</strong><em> ".$row['count']."</p></td></tr>";
 print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
