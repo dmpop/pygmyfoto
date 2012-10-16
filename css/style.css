@@ -15,6 +15,6 @@ img{ vertical-align:text-bottom; }
 Main Tags
 */
 #content   {  background-image:url('../images/background.png'); position:absolute; top:0px; left:230px; width: 500px; height: auto; color: #e3e3e3; }
-#menu { position:absolute; top:39px; left:30px; width:150px; padding:10px; text-align: left; color: #e3e3e3; border:1px dashed #999; line-height:17px; }
+#menu { position:absolute; top:40px; left:30px; width:150px; padding:10px; text-align: left; color: #e3e3e3; border:1px dashed #999; line-height:17px; }
 .text { width: 430px; height: auto; text-align: left; padding: 0px; margin:0px; margin-right: 20px; color:inherit; float: left;}
 .footer { width: 515px; text-align: left; font-family: monospace; font-size: 11px; margin: 0px; margin-top: 15px; }
