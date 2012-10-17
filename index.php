@@ -16,18 +16,8 @@
 
 	<title>Pygmyfoto</title>
 	</head>
-	
-	<body>
 
-	<div id="menu">
-		 <a class="menu" href="index.php">Home</a> &#10081;<br>
-		 <a class="menu" href="archive.php">Archive</a><br>
-		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a><br>
-		 <hr>
-		 <form method="post" action="search.php">
-		 	<input type="text" name="tag" size="12"> <input type="submit" value="&#10148;">
-		 </form>
-	</div>
+	<body>
 	
 	<div id="content">
 	<h1>P * y * g * m * y * f * o * t * o</h1>
@@ -41,6 +31,9 @@
 <?php
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
+
+print "<center><a href='index.php'><strong>Home</a></strong> &#10034; <a href='archive.php'>Archive</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
+
 print "<table border=0>";
 $result = $db->query("SELECT id, description, tags, exif, osm FROM photos WHERE published = '1' ORDER BY dt DESC");
 foreach($result as $row)
@@ -52,6 +45,8 @@ print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 print "</table>";
 
 $db = NULL;
+
+print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>"
 
 ?>
 	<div class="footer">Powered by Pygmyfoto</div>

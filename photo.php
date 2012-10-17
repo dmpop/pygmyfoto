@@ -18,16 +18,6 @@
 	</head>
 	
 	<body>
-
-	<div id="menu">
-		 <a class="menu" href="index.php">Home</a><br>
-		 <a class="menu" href="archive.php">Archive</a><br>
-		 <a class="menu" href="https://github.com/dmpop/pygmyfoto">Pygmyfoto</a><br>
-		 <hr>
-		 <form method="post" action="search.php">
-		 	<input type="text" name="tag" size="12"> <input type="submit" value="&#10148;">
-		 </form>
-	</div>
 	
 	<div id="content">
 	<h1>P * y * g * m * y * f * o * t * o</h1>
@@ -43,6 +33,9 @@
 $id = $_GET['id'];
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
+
+print "<center><a href='index.php'>Home</a> &#10034; <a href='archive.php'>Archive</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
+
 print "<table border=0>";
 $result = $db->query("SELECT id, description, tags, exif, osm, count FROM photos WHERE id='$id'");
 foreach($result as $row)
@@ -56,6 +49,8 @@ print "</table>";
 $db->query("UPDATE photos SET count = count + 1 WHERE id='$id'");
 
 $db = NULL;
+
+print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>"
 
 ?>
 	<div class="footer">Powered by Pygmyfoto</div>
