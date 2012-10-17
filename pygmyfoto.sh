@@ -35,7 +35,7 @@ convert $FNAME -resize "500x500>" $FNAME"_"
 convert $FNAME -resize "1024x1024>" $FNAME
 
 PHOTOURL="<a rel=''lightbox'' href=''$FNAME''><img class=''dropshadow'' src=''$FNAME""_''></a>"
-DESCRIPTION="<h2>$TITLE</h2><p> $DESCRIPTION</p> $PHOTOURL"
+DESCRIPTION="<p>$DESCRIPTION</p> $PHOTOURL"
 OSM="http://www.openstreetmap.org/index.html?lat=$GPSLAT&lon=$GPSLON&zoom=18"
 
 sqlite3 pygmyfoto.sqlite "INSERT INTO photos (title, description, tags, exif, osm, dt, published) VALUES ('$TITLE', '$DESCRIPTION', '$TAGS', '$EXIF', '$OSM', '$DATE', '1');"
