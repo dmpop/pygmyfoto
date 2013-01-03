@@ -32,7 +32,7 @@
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 
-print "<center><a href='index.php'><strong>Home</a></strong> &#10034; <a href='archive.php'>Archive</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
+print "<center><a href='index.php'><strong>Home</a></strong> &#10034; <a href='archive.php'>Archive</a> &#10034; <a href='stats.php'>Stats</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
 
 print "<table border=0>";
 $result = $db->query("SELECT id, title, description, tags, exif, osm FROM photos WHERE published = '1' ORDER BY dt DESC");
