@@ -2,17 +2,30 @@
 
 if [ ! -f pygmyfoto.sqlite ];
 	then
-	sqlite3 pygmyfoto.sqlite "CREATE TABLE photos (id INTEGER PRIMARY KEY UNIQUE NOT NULL, title VARCHAR(512), description VARCHAR(1024), tags VARCHAR(256), exif VARCHAR(1024), osm VARCHAR(1024), dt DATE, published VARCHAR(1), count INTEGER DEFAULT 0);"
+	sqlite3 pygmyfoto.sqlite "CREATE TABLE photos (id INTEGER PRIMARY KEY UNIQUE NOT NULL, title VARCHAR, description VARCHAR, tags VARCHAR, exif VARCHAR, osm VARCHAR, dt DATE, original VARCHAR, published VARCHAR(1), count INTEGER DEFAULT 0);"
 fi
 
 echo "File path (e.g., photos/foo.jpeg):"
-read FNAME
+read FPATH
 
-if [ ! -f $FNAME ];
+if [ ! -f $FPATH ];
 	then
 	echo "File doesn't exist!"
 	exit 1
 fi
+
+FNAME=$(basename $FPATH)
+FDIR=$(dirname $FPATH)
+ORIGDIR=$FDIR/originals/$FNAME
+
+echo $ORIGDIR
+
+if [ ! -d $FDIR/originals ];
+      then
+      mkdir $FDIR/originals
+fi
+
+cp $FPATH $ORIGDIR
 
 echo "Title:"
 read TITLE
@@ -21,23 +34,23 @@ read DESCRIPTION
 echo "Tags:"
 read TAGS
 
-APERTURE=$(exiftool -S -t -fnumber $FNAME)
-ISO=$(exiftool -S -t -iso $FNAME)
-SHUTTERSPEED=$(exiftool -S -t -shutterspeed $FNAME)
+APERTURE=$(exiftool -S -t -fnumber $FPATH)
+ISO=$(exiftool -S -t -iso $FPATH)
+SHUTTERSPEED=$(exiftool -S -t -shutterspeed $FPATH)
 DATE=$(date "+%F")
 
-GPSLAT=$(exiftool -S -t -n -gpslatitude $FNAME)
-GPSLON=$(exiftool -S -t -n -gpslongitude $FNAME)
+GPSLAT=$(exiftool -S -t -n -gpslatitude $FPATH)
+GPSLON=$(exiftool -S -t -n -gpslongitude $FPATH)
 
 EXIF="Shutter speed: $SHUTTERSPEED sec. Aperture: f/$APERTURE ISO: $ISO Date: $DATE"
 
-PHOTOURL="<a rel=''lightbox'' href=''$FNAME''><img class=''dropshadow'' src=''$FNAME""_''></a>"
+PHOTOURL="<a rel=''lightbox'' href=''$FPATH''><img class=''dropshadow'' src=''$FPATH""_''></a>"
 DESCRIPTION="<p>$DESCRIPTION</p> $PHOTOURL"
 OSM="http://www.openstreetmap.org/index.html?mlat=$GPSLAT&mlon=$GPSLON&zoom=18"
 
-sqlite3 pygmyfoto.sqlite "INSERT INTO photos (title, description, tags, exif, osm, dt, published) VALUES ('$TITLE', '$DESCRIPTION', '$TAGS', '$EXIF', '$OSM', '$DATE', '1');"
+sqlite3 pygmyfoto.sqlite "INSERT INTO photos (title, description, tags, exif, osm, dt, original, published) VALUES ('$TITLE', '$DESCRIPTION', '$TAGS', '$EXIF', '$OSM', '$DATE', '$ORIGDIR', '1');"
 
-convert $FNAME -resize "500x500>" $FNAME"_"
-convert $FNAME -resize "1024x1024>" $FNAME
+convert $FPATH -resize "500x500>" $FPATH"_"
+convert $FPATH -resize "1024x1024>" $FPATH
 
 echo "All done!"
