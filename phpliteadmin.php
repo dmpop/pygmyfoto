@@ -2,17 +2,17 @@
 
 //
 //  Project: phpLiteAdmin (http://phpliteadmin.googlecode.com)
-//  Version: 1.9.2
+//  Version: 1.9.3.3
 //  Summary: PHP-based admin tool to manage SQLite2 and SQLite3 databases on the web
-//  Last updated: 5/30/12
+//  Last updated: 2013-01-14
 //  Developers:
 //     Dane Iracleous (daneiracleous@gmail.com)
 //     Ian Aldrighetti (ian.aldrighetti@gmail.com)
 //     George Flanagin & Digital Gaslight, Inc (george@digitalgaslight.com)
-//		 Christopher Kramer (crazy4chrissi@gmail.com)
+//     Christopher Kramer (crazy4chrissi@gmail.com)
 //
 //
-//  Copyright (C) 2011  phpLiteAdmin
+//  Copyright (C) 2013  phpLiteAdmin
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -88,6 +88,9 @@ $cookie_name = 'pla3412';
 //whether or not to put the app in debug mode where errors are outputted
 $debug = false;
 
+// the user is allowed to create databases with only these extensions 
+$allowed_extensions = array('db','db3','sqlite','sqlite3');
+
 ////////////////////////////
 //END USER-DEFINED VARIABLES
 
@@ -119,26 +122,19 @@ else if(!isset($_SESSION[$cookie_name.'_salt']) && isset($_COOKIE[$cookie_name.'
 	$_SESSION[$cookie_name.'_salt'] = $_COOKIE[$cookie_name.'_salt'];
 }
 
-//build the basename of this file for later reference
-$info = pathinfo($_SERVER['PHP_SELF']);
-$thisName = $info['basename'];
-
 //constants
 define("PROJECT", "phpLiteAdmin");
-define("VERSION", "1.9.2");
-define("PAGE", $thisName);
+define("VERSION", "1.9.3.3");
+define("PAGE", basename(__FILE__));
 define("COOKIENAME", $cookie_name);
 define("SYSTEMPASSWORD", $password); // Makes things easier.
 define("SYSTEMPASSWORDENCRYPTED", md5($password."_".$_SESSION[$cookie_name.'_salt'])); //extra security - salted and encrypted password used for checking
 define("FORCETYPE", false); //force the extension that will be used (set to false in almost all circumstances except debugging)
 
+
 //data types array
 $types = array("INTEGER", "REAL", "TEXT", "BLOB");
 define("DATATYPES", serialize($types));
-
-//accepted db extensions
-$exts = array("sqlite", "sqlite3", "db", "db3");
-define("EXTENSIONS", serialize($exts));
 
 //available SQLite functions array (don't add anything here or there will be problems)
 $functions = array("abs", "hex", "length", "lower", "ltrim", "random", "round", "rtrim", "trim", "typeof", "upper");
@@ -215,14 +211,14 @@ function dir_tree($dir)
 			{
 				if($dircont[$i] !== '.' && $dircont[$i] !== '..')
 				{
-					$current_file = "{$thisdir}/{$dircont[$i]}";
+					$current_file = $thisdir.DIRECTORY_SEPARATOR.$dircont[$i];
 					if(is_file($current_file))
 					{
-						$path[] = "{$thisdir}/{$dircont[$i]}";
+						$path[] = $thisdir.DIRECTORY_SEPARATOR.$dircont[$i];
 					}
 					elseif (is_dir($current_file))
 					{
-						$path[] = "{$thisdir}/{$dircont[$i]}";
+						$path[] = $thisdir.DIRECTORY_SEPARATOR.$dircont[$i];
 						$stack[] = $current_file;
 					}
 				}
@@ -236,132 +232,13 @@ function dir_tree($dir)
 //the function echo the help [?] links to the documentation
 function helpLink($name)
 {
-	return "<a href='javascript:openHelp(\"".$name."\");' class='helpq' title='Help: ".$name."'>[?]</a>";	
+	return "<a href='javascript:void' onclick='openHelp(\"".$name."\");' class='helpq' title='Help: ".$name."'>[?]</a>";	
 }
 
-//user is deleting a database
-if(isset($_GET['database_delete']))
+// function to encode value into HTML just like htmlentities, but with adjusted default settings
+function htmlencode($value, $flags=ENT_QUOTES, $encoding ="UTF-8")
 {
-	$dbpath = $_POST['database_delete'];
-	unlink($dbpath);
-	$_SESSION[COOKIENAME.'currentDB'] = 0;
-}
-
-//user is renaming a database
-if(isset($_GET['database_rename']))
-{
-	$oldpath = $_POST['oldname'];
-	$newpath = $_POST['newname'];
-	if(!file_exists($newpath))
-	{
-		copy($oldpath, $newpath);
-		unlink($oldpath);
-		$justrenamed = true;
-	}
-	else
-	{
-		$dbexists = true;	
-	}
-}
-
-//user is creating a new Database
-if(isset($_POST['new_dbname']))
-{
-	$str = preg_replace('@[^\w-.]@','', $_POST['new_dbname']);
-	$dbname = $str;
-	$dbpath = $str;
-	$info = pathinfo($dbpath);
-	if(!isset($info['extension']))
-		$dbpath = $dbpath.".".$exts[0];
-	else
-	{
-		if(!in_array(strtolower($info['extension']), $exts))
-		{
-			$dbpath = $dbpath.".".$exts[0];
-		}
-	}
-	$tdata = array();	
-	$tdata['name'] = $dbname;
-	$tdata['path'] = $directory."/".$dbpath;
-	$td = new Database($tdata);
-}
-
-//if the user wants to scan a directory for databases, do so
-if($directory!==false)
-{
-	if($directory[strlen($directory)-1]=="/") //if user has a trailing slash in the directory, remove it
-		$directory = substr($directory, 0, strlen($directory)-1);
-		
-	if(is_dir($directory)) //make sure the directory is valid
-	{
-		if($subdirectories===true)
-			$arr = dir_tree($directory);
-		else
-			$arr = scandir($directory);
-		$databases = array();
-		$j = 0;
-		for($i=0; $i<sizeof($arr); $i++) //iterate through all the files in the databases
-		{
-			$file = pathinfo($arr[$i]);
-			if(isset($file['extension']))
-			{
-				$ext = strtolower($file['extension']);
-				if(in_array(strtolower($ext), $exts)) //make sure the file is a valid SQLite database by checking its extension
-				{
-					if($subdirectories===true)
-						$databases[$j]['path'] = $arr[$i];
-					else
-						$databases[$j]['path'] = $directory."/".$arr[$i];
-					$databases[$j]['name'] = $arr[$i];
-					// 22 August 2011: gkf fixed bug 49.
-					$perms = 0;
-					$perms += is_readable($databases[$j]['path']) ? 4 : 0;
-					$perms += is_writeable($databases[$j]['path']) ? 2 : 0;
-					switch($perms)
-					{
-						case 6: $perms = "[rw] "; break;
-						case 4: $perms = "[r ] "; break;
-						case 2: $perms = "[ w] "; break; // God forbid, but it might happen.
-						default: $perms = "[  ] "; break;
-					}
-					$databases[$j]['perms'] = $perms;
-					$j++;
-				}
-			}
-		}
-		// 22 August 2011: gkf fixed bug #50.
-		sort($databases);
-		if(isset($tdata))
-		{
-			for($i=0; $i<sizeof($databases); $i++)
-			{
-				if($tdata['path'] == $databases[$i]['path'])
-				{
-					$_SESSION[COOKIENAME.'currentDB'] = $i;
-					break;
-				}
-			}
-		}
-		
-		if(isset($justrenamed))
-		{
-			for($i=0; $i<sizeof($databases); $i++)
-			{
-				if($newpath == $databases[$i]['path'])
-				{
-					$_SESSION[COOKIENAME.'currentDB'] = $i;
-					break;
-				}
-			}	
-		}
-	}
-	else //the directory is not valid - display error and exit
-	{
-		echo "<div class='confirm' style='margin:20px;'>";
-		echo "The directory you specified to scan for databases does not exist or is not a directory.";
-		echo "</div>";
-		exit();
-	}
+	return htmlentities($value, $flags, $encoding);
 }
 
 // 22 August 2011: gkf added this function to support display of
@@ -369,6 +246,40 @@ if($directory!==false)
 function deQuoteSQL($s)
 {
 	return trim(trim($s), "'");
+}
+
+// checks the (new) name of a database file  
+function checkDbName($name)
+{
+	global $allowed_extensions;
+	$info = pathinfo($name);
+	if(isset($info['extension']) && !in_array($info['extension'], $allowed_extensions))
+	{
+		return false;
+	} else
+	{
+		return (!is_file($name) && !is_dir($name));
+	}
+
+}
+
+// check whether a path is a db managed by this tool
+// requires that $databases is already filled!
+// returns the key of the db if managed, false otherwise.
+function isManagedDB($path)
+{
+	global $databases;
+	foreach($databases as $db_key => $database)
+	{
+		if($path == $database['path'])
+		{
+			// a db we manage. Thats okay.
+			// return the key.
+			return $db_key;
+		}
+	}
+	// not a db we manage!
+	return false;
 }
 
 //
@@ -439,8 +350,8 @@ class Database
 			if(!file_exists($this->data["path"]) && !is_writable(dirname($this->data["path"]))) //make sure the containing directory is writable if the database does not exist
 			{
 				echo "<div class='confirm' style='margin:20px;'>";
-				echo "The database, '".$this->data["path"]."', does not exist and cannot be created because the containing directory, '".dirname($this->data["path"])."', is not writable. The application is unusable until you make it writable.";
-				echo "<form action='".PAGE."' method='post'/>";
+				echo "The database, '".htmlencode($this->data["path"])."', does not exist and cannot be created because the containing directory, '".htmlencode(dirname($this->data["path"]))."', is not writable. The application is unusable until you make it writable.";
+				echo "<form action='".PAGE."' method='post'>";
 				echo "<input type='submit' value='Log Out' name='logout' class='btn'/>";
 				echo "</form>";
 				echo "</div><br/>";
@@ -561,7 +472,7 @@ class Database
 			else if(!$classSQLiteDatabase && $this->getVersion()==2)
 				echo "It appears that your database is of SQLite version 2 but your installation of PHP does not contain the necessary extensions to handle this version. To fix the problem, either delete the database and allow ".PROJECT." to create it automatically or recreate it manually as SQLite version 3.";
 			else
-				echo "The problem cannot be diagnosed properly. Please email me at daneiracleous@gmail.com with your database as an attachment and the contents of this error message. It may be that your database is simply not a valid SQLite database, but this is not certain.";
+				echo "The problem cannot be diagnosed properly. Please file an issue report at http://phpliteadmin.googlecode.com.";
 		}
 		echo "</div><br/>";
 	}
@@ -611,7 +522,7 @@ class Database
 	//get the size of the database
 	public function getSize()
 	{
-		return round(filesize($this->data["path"])*0.0009765625, 1)." Kb";
+		return round(filesize($this->data["path"])*0.0009765625, 1)." KB";
 	}
 
 	//get the last modified time of database
@@ -659,18 +570,27 @@ class Database
 	//generic query wrapper
 	public function query($query, $ignoreAlterCase=false)
 	{
+		global $debug;
 		if(strtolower(substr(ltrim($query),0,5))=='alter' && $ignoreAlterCase==false) //this query is an ALTER query - call the necessary function
 		{
-			$queryparts = preg_split("/[\s]+/", $query, 4, PREG_SPLIT_NO_EMPTY);
-			$tablename = $queryparts[2];
-			$alterdefs = $queryparts[3];
-			//echo $query;
+			preg_match("/^\s*ALTER\s+TABLE\s+\"((?:[^\"]|\"\")+)\"\s+(.*)$/i",$query,$matches);
+			if(!isset($matches[1]) || !isset($matches[2]))
+			{
+				if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
+				return false;
+			}
+			$tablename = str_replace('""','"',$matches[1]);
+			$alterdefs = $matches[2];
+			if($debug) echo "ALTER TABLE QUERY=(".htmlencode($query)."), tablename=($tablename), alterdefs=($alterdefs)<hr>";
 			$result = $this->alterTable($tablename, $alterdefs);
 		}
 		else //this query is normal - proceed as normal
+		{
 			$result = $this->db->query($query);
+			if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
+		}
 		if(!$result)
-			return NULL;
+			return false;
 		$this->lastResult = $result;
 		return $result;
 	}
@@ -770,134 +690,291 @@ class Database
 		}
 	}
 
-	//function that is called for an alter table statement in a query
-	//code borrowed with permission from http://code.jenseng.com/db/
+	
+	// SQlite supports multiple ways of surrounding names in quotes:
+	// single-quotes, double-quotes, backticks, square brackets.
+	// As sqlite does not keep this strict, we also need to be flexible here.
+	// This function generates a regex that matches any of the possibilities.
+	private function sqlite_surroundings_preg($name,$preg_quote=true,$notAllowedIfNone="'\"")
+	{
+		if($name=="*" || $name=="+")
+		{
+			$nameSingle   = "(?:[^']|'')".$name;
+			$nameDouble   = "(?:[^\"]|\"\")".$name;
+			$nameBacktick = "(?:[^`]|``)".$name;
+			$nameSquare   = "(?:[^\]]|\]\])".$name;
+			$nameNo = "[^".$notAllowedIfNone."]".$name;
+		}
+		else
+		{
+			if($preg_quote) $name = preg_quote($name,"/");
+			
+			$nameSingle = str_replace("'","''",$name);
+			$nameDouble = str_replace('"','""',$name);
+			$nameBacktick = str_replace('`','``',$name);
+			$nameSquare = str_replace(']',']]',$name);
+			$nameNo = $name;
+		}
+		
+		$preg =	"(?:'".$nameSingle."'|".   // single-quote surrounded or not in quotes (correct SQL for values/new names)
+				$nameNo."|".               // not surrounded (correct SQL if not containing reserved words, spaces or some special chars)
+				"\"".$nameDouble."\"|".    // double-quote surrounded (correct SQL for identifiers)
+				"`".$nameBacktick."`|".    // backtick surrounded (MySQL-Style)
+				"\[".$nameSquare."\])";    // square-bracket surrounded (MS Access/SQL server-Style)
+		return $preg;
+	}
+	
+	// function that is called for an alter table statement in a query
+	// code borrowed with permission from http://code.jenseng.com/db/
+	// this has been completely debugged / rewritten by Christopher Kramer
 	public function alterTable($table, $alterdefs)
 	{
+		global $debug;
+		if($debug) echo "ALTER TABLE: table=($table), alterdefs=($alterdefs)<hr>";
 		if($alterdefs != '')
 		{
-			$tempQuery = "SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '".$table."' ORDER BY type DESC";
+			$recreateQueries = array();
+			$tempQuery = "SELECT sql,name,type FROM sqlite_master WHERE tbl_name = ".$this->quote($table)." ORDER BY type DESC";
 			$result = $this->query($tempQuery);
 			$resultArr = $this->selectArray($tempQuery);
-
-			if(sizeof($resultArr)>0)
-			{
-				$row = $this->select($tempQuery); //table sql
-				$tmpname = 't'.time();
-				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ",preg_replace("/[\(]/", "( ", $row['sql'], 1))));
-				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'".$table."'", $tmpname, $origsql, 1)), 6);
-				$createindexsql = array();
-				$i = 0;
-				$defs = preg_split("/[,]+/",$alterdefs, -1, PREG_SPLIT_NO_EMPTY);
-				$prevword = $table;
-				$oldcols = preg_split("/[,]+/", substr(trim($createtemptableSQL), strpos(trim($createtemptableSQL), '(')+1), -1, PREG_SPLIT_NO_EMPTY);
-				$newcols = array();
-				for($i=0; $i<sizeof($oldcols); $i++)
-				{
-					$colparts = preg_split("/[\s]+/", $oldcols[$i], -1, PREG_SPLIT_NO_EMPTY);
-					$oldcols[$i] = $colparts[0];
-					$newcols[$colparts[0]] = $colparts[0];
-				}
-				$newcolumns = '';
-				$oldcolumns = '';
-				reset($newcols);
-				while(list($key, $val) = each($newcols))
-				{
-					$newcolumns .= ($newcolumns?', ':'').$val;
-					$oldcolumns .= ($oldcolumns?', ':'').$key;
-				}
-				$copytotempsql = 'INSERT INTO '.$tmpname.'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$table;
-				$dropoldsql = 'DROP TABLE '.$table;
-				$createtesttableSQL = $createtemptableSQL;
-				foreach($defs as $def)
-				{
-					$defparts = preg_split("/[\s]+/", $def,-1, PREG_SPLIT_NO_EMPTY);
-					$action = strtolower($defparts[0]);
-					switch($action)
-					{
-						case 'add':
-							if(sizeof($defparts) <= 2)
-								return false;
-							$createtesttableSQL = substr($createtesttableSQL, 0, strlen($createtesttableSQL)-1).',';
-							for($i=1;$i<sizeof($defparts);$i++)
-								$createtesttableSQL.=' '.$defparts[$i];
-							$createtesttableSQL.=')';
-							break;
-						case 'change':
-							if(sizeof($defparts) <= 3)
-							{
-								return false;
-							}
-							if($severpos = strpos($createtesttableSQL,' '.$defparts[1].' '))
-							{
-								if($newcols[$defparts[1]] != $defparts[1])
-									return false;
-								$newcols[$defparts[1]] = $defparts[2];
-								$nextcommapos = strpos($createtesttableSQL,',',$severpos);
-								$insertval = '';
-								for($i=2;$i<sizeof($defparts);$i++)
-									$insertval.=' '.$defparts[$i];
-								if($nextcommapos)
-									$createtesttableSQL = substr($createtesttableSQL,0,$severpos).$insertval.substr($createtesttableSQL,$nextcommapos);
-								else
-									$createtesttableSQL = substr($createtesttableSQL,0,$severpos-(strpos($createtesttableSQL,',')?0:1)).$insertval.')';
-							}
-							else
-								return false;
-							break;
-						case 'drop':
-							if(sizeof($defparts) < 2)
-								return false;
-							if($severpos = strpos($createtesttableSQL,' '.$defparts[1].' '))
-							{
-								$nextcommapos = strpos($createtesttableSQL,',',$severpos);
-								if($nextcommapos)
-									$createtesttableSQL = substr($createtesttableSQL,0,$severpos).substr($createtesttableSQL,$nextcommapos + 1);
-								else
-									$createtesttableSQL = substr($createtesttableSQL,0,$severpos-(strpos($createtesttableSQL,',')?0:1) - 1).')';
-								unset($newcols[$defparts[1]]);
-							}
-							else
-								return false;
-							break;
-						default:
-							return false;
-					}
-					$prevword = $defparts[sizeof($defparts)-1];
-				}
-				//this block of code generates a test table simply to verify that the columns specifed are valid in an sql statement
-				//this ensures that no reserved words are used as columns, for example
-				$tempResult = $this->query($createtesttableSQL);
-				if(!$tempResult)
-					return false;
-				$droptempsql = 'DROP TABLE '.$tmpname;
-				$tempResult = $this->query($droptempsql);
-				//end block
-
-				$createnewtableSQL = 'CREATE '.substr(trim(preg_replace("'".$tmpname."'", $table, $createtesttableSQL, 1)), 17);
-				$newcolumns = '';
-				$oldcolumns = '';
-				reset($newcols);
-				while(list($key,$val) = each($newcols))
-				{
-					$newcolumns .= ($newcolumns?', ':'').$val;
-					$oldcolumns .= ($oldcolumns?', ':'').$key;
-				}
-				$copytonewsql = 'INSERT INTO '.$table.'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$tmpname;
-
-				$this->query($createtemptableSQL); //create temp table
-				$this->query($copytotempsql); //copy to table
-				$this->query($dropoldsql); //drop old table
-
-				$this->query($createnewtableSQL); //recreate original table
-				$this->query($copytonewsql); //copy back to original table
-				$this->query($droptempsql); //drop temp table
-			}
-			else
-			{
+			if($this->type=="PDO")
+				$result->closeCursor();
+			if(sizeof($resultArr)<1)
 				return false;
+			for($i=0; $i<sizeof($resultArr); $i++)
+			{
+				$row = $resultArr[$i];
+				if($row['type'] != 'table')
+				{
+					// store the CREATE statements of triggers and indexes to recreate them later
+					$recreateQueries[] = $row['sql']."; ";
+					if($debug) echo "recreate=(".$row['sql'].";)<hr />";
+				}
+				else
+				{
+					// ALTER the table
+					$tmpname = 't'.time();
+					$origsql = $row['sql'];
+					$createtemptableSQL = "CREATE TEMPORARY TABLE ".$this->quote($tmpname)." ".
+						preg_replace("/^\s*CREATE\s+TABLE\s+".$this->sqlite_surroundings_preg($table)."\s*(\(.*)$/i", '$1', $origsql, 1);
+					if($debug) echo "createtemptableSQL=($createtemptableSQL)<hr>";
+					$createindexsql = array();
+					preg_match_all("/(?:DROP|ADD|CHANGE|RENAME TO)\s+(?:\"(?:[^\"]|\"\")+\"|'(?:[^']|'')+')((?:[^,')]|'[^']*')+)?/i",$alterdefs,$matches);
+					$defs = $matches[0];
+					
+					$get_oldcols_query = "PRAGMA table_info(".$this->quote_id($table).")";
+					$result_oldcols = $this->selectArray($get_oldcols_query);
+					$newcols = array();
+					$coltypes = array();
+					foreach($result_oldcols as $column_info)
+					{
+						$newcols[$column_info['name']] = $column_info['name'];
+						$coltypes[$column_info['name']] = $column_info['type'];
+					}
+					$newcolumns = '';
+					$oldcolumns = '';
+					reset($newcols);
+					while(list($key, $val) = each($newcols))
+					{
+						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
+						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
+					}
+					$copytotempsql = 'INSERT INTO '.$this->quote_id($tmpname).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($table);
+					$dropoldsql = 'DROP TABLE '.$this->quote_id($table);
+					$createtesttableSQL = $createtemptableSQL;
+					if(count($defs)<1)
+					{
+						if($debug) echo "ERROR: defs&lt;1<hr />";
+						return false;
+					}
+					foreach($defs as $def)
+					{
+						if($debug) echo "def=$def<hr />";
+						$parse_def = preg_match("/^(DROP|ADD|CHANGE|RENAME TO)\s+(?:\"((?:[^\"]|\"\")+)\"|'((?:[^']|'')+)')((?:\s+'((?:[^']|'')+)')?\s+(TEXT|INTEGER|BLOB|REAL).*)?\s*$/i",$def,$matches);
+						if($parse_def===false)
+						{
+							if($debug) echo "ERROR: !parse_def<hr />";
+							return false;
+						}
+						if(!isset($matches[1]))
+						{
+							if($debug) echo "ERROR: !isset(matches[1])<hr />";
+							return false;
+						}
+						$action = strtolower($matches[1]);
+						if($action == 'add' || $action == 'rename to')	
+							$column = str_replace("''","'",$matches[3]);		// enclosed in ''
+						else
+							$column = str_replace('""','"',$matches[2]);		// enclosed in ""
+							
+						$column_escaped = str_replace("'","''",$column);
+
+						if($debug) echo "action=($action), column=($column), column_escaped=($column_escaped)<hr />";
+
+						/* we build a regex that devides the CREATE TABLE statement parts:
+						  Part example								Group	Explanation
+						  1. CREATE TABLE t... (					$1
+						  2. 'col1' ..., 'col2' ..., 'colN' ...,	$3		(with col1-colN being columns that are not changed and listed before the col to change)
+						  3. 'colX' ...,							-		(with colX being the column to change/drop)
+						  4. 'colX+1' ..., ..., 'colK')				$5		(with colX+1-colK being columns after the column to change/drop)
+						*/
+						$preg_create_table = "\s*(CREATE\s+TEMPORARY\s+TABLE\s+'?".preg_quote($tmpname,"/")."'?\s*\()";   // This is group $1 (keep unchanged)
+						$preg_column_definiton = "\s*".$this->sqlite_surroundings_preg("+",false," '\"\[`")."(?:\s+".$this->sqlite_surroundings_preg("*",false,"'\",`\[) ").")+";		// catches a complete column definition, even if it is
+														// 'column' TEXT NOT NULL DEFAULT 'we have a comma, here and a double ''quote!'
+						if($debug) echo "preg_column_definition=(".$preg_column_definiton.")<hr />";
+						$preg_columns_before =  // columns before the one changed/dropped (keep)
+							"(?:".
+								"(".			// group $2. Keep this one unchanged!
+									"(?:".
+										"$preg_column_definiton,\s*".		// column definition + comma
+									")*".								// there might be any number of such columns here
+									$preg_column_definiton.				// last column definition 
+								")".			// end of group $2
+								",\s*"			// the last comma of the last column before the column to change. Do not keep it!
+							.")?";    // there might be no columns before
+						if($debug) echo "preg_columns_before=(".$preg_columns_before.")<hr />";
+						$preg_columns_after = "(,\s*([^)]+))?"; // the columns after the column to drop. This is group $3 (drop) or $4(change) (keep!)
+												// we could remove the comma using $6 instead of $5, but then we might have no comma at all.
+												// Keeping it leaves a problem if we drop the first column, so we fix that case in another regex.
+						$table_new = $table;
+	
+						switch($action)
+						{
+							case 'add':
+								if(!isset($matches[4]))
+								{
+									return false;
+								}
+								$new_col_definition = "'$column_escaped' ".$matches[4];
+								$preg_pattern_add = "/^".$preg_create_table."(.*)\\)\s*$/";
+								// append the column definiton in the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_add, '$1$2, ', $createtesttableSQL).$new_col_definition.')';
+								if($debug)
+								{
+									echo $createtesttableSQL."<hr>";
+									echo $newSQL."<hr>";
+									echo $preg_pattern_add."<hr>";
+								}
+								if($newSQL==$createtesttableSQL) // pattern did not match, so column removal did not succed
+									return false;
+								$createtesttableSQL = $newSQL;
+								break;
+							case 'change':
+								if(!isset($matches[5]) || !isset($matches[6]))
+								{
+									return false;
+								}
+								$new_col_name = $matches[5];
+								$new_col_type = $matches[6];
+								$new_col_definition = "'$new_col_name' $new_col_type";
+								$preg_column_to_change = "\s*".$this->sqlite_surroundings_preg($column)."(?:\s+".preg_quote($coltypes[$column]).")?(\s+(?:".$this->sqlite_surroundings_preg("*",false,",'\")`\[").")+)?";
+												// replace this part (we want to change this column)
+												// group $3 contains the column constraints (keep!). the name & data type is replaced.
+								$preg_pattern_change = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_change.$preg_columns_after."\s*\\)\s*$/";
+
+								// replace the column definiton in the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_change, '$1$2,'.strtr($new_col_definition, array('\\' => '\\\\', '$' => '\$')).'$3$4)', $createtesttableSQL);
+								// remove comma at the beginning if the first column is changed
+								// probably somebody is able to put this into the first regex (using lookahead probably).
+								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+'".preg_quote($tmpname,"/")."'\s+\(),\s*/",'$1',$newSQL);
+								if($debug)
+								{
+									echo "preg_column_to_change=(".$preg_column_to_change.")<hr />";
+									echo $createtesttableSQL."<hr />";
+									echo $newSQL."<hr />";
+									echo $preg_pattern_change."<hr />";
+									
+								}
+								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
+									return false;
+								$createtesttableSQL = $newSQL;
+								$newcols[$column] = str_replace("''","'",$new_col_name);
+								break;
+							case 'drop':
+								$preg_column_to_drop = "\s*".$this->sqlite_surroundings_preg($column)."\s+(?:".$this->sqlite_surroundings_preg("*",false,",')\"\[`").")+";      // delete this part (we want to drop this column)
+								$preg_pattern_drop = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_drop.$preg_columns_after."\s*\\)\s*$/";
+
+								// remove the column out of the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_drop, '$1$2$3)', $createtesttableSQL);
+								// remove comma at the beginning if the first column is removed
+								// probably somebody is able to put this into the first regex (using lookahead probably).
+								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+'".preg_quote($tmpname,"/")."'\s+\(),\s*/",'$1',$newSQL);
+								if($debug)
+								{
+									echo $createtesttableSQL."<hr>";
+									echo $newSQL."<hr>";
+									echo $preg_pattern_drop."<hr>";
+								}
+								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
+									return false;
+								$createtesttableSQL = $newSQL;
+								unset($newcols[$column]);
+								break;
+							case 'rename to':
+								// don't change column definition at all
+								$newSQL = $createtesttableSQL;
+								// only change the name of the table
+								$table_new = $column;
+								break;
+							default:
+								if($default) echo 'ERROR: unknown alter operation!<hr />';
+								return false;
+						}
+					}
+					$droptempsql = 'DROP TABLE '.$this->quote_id($tmpname);
+
+					$createnewtableSQL = "CREATE TABLE ".$this->quote($table_new)." ".preg_replace("/^\s*CREATE\s+TEMPORARY\s+TABLE\s+'?".str_replace("'","''",preg_quote($tmpname,"/"))."'?\s+(.*)$/i", '$1', $createtesttableSQL, 1);
+
+					$newcolumns = '';
+					$oldcolumns = '';
+					reset($newcols);
+					while(list($key,$val) = each($newcols))
+					{
+						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
+						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
+					}
+					$copytonewsql = 'INSERT INTO '.$this->quote_id($table_new).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($tmpname);
+				}
 			}
-			return true;
+			$alter_transaction  = 'BEGIN; ';
+			$alter_transaction .= $createtemptableSQL.'; ';  //create temp table
+			$alter_transaction .= $copytotempsql.'; ';       //copy to table
+			$alter_transaction .= $dropoldsql.'; ';          //drop old table
+			$alter_transaction .= $createnewtableSQL.'; ';   //recreate original table
+			$alter_transaction .= $copytonewsql.'; ';        //copy back to original table
+			$alter_transaction .= $droptempsql.'; ';         //drop temp table
+
+			$preg_index="/^\s*(CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*ON\s+)(".$this->sqlite_surroundings_preg($table).")(\s*\((?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*\)\s*;)\s*$/i";				
+			for($i=0; $i<sizeof($recreateQueries); $i++)
+			{
+				// recreate triggers / indexes
+				if($table == $table_new)
+				{
+					// we had no RENAME TO, so we can recreate indexes/triggers just like the original ones
+				    $alter_transaction .= $recreateQueries[$i];
+				} else
+				{
+					// we had a RENAME TO, so we need to exchange the table-name in the CREATE-SQL of triggers & indexes
+					// first let's try if it's an index...
+					$recreate_queryIndex = preg_replace($preg_index, '$1'.$this->quote_id(strtr($table_new, array('\\' => '\\\\', '$' => '\$'))).'$3 ', $recreateQueries[$i]);
+					if($recreate_queryIndex!=$recreateQueries[$i] && $recreate_queryIndex != NULL)
+					{
+						// the CREATE INDEX regex did match
+						$alter_transaction .= $recreate_queryIndex;
+					} else
+					{
+						// the CREATE INDEX regex did not match, so we try if it's a CREATE TRIGGER
+						
+					    $recreate_queryTrigger = $recreateQueries[$i];
+						// TODO: IMPLEMENT
+					    
+						$alter_transaction .= $recreate_queryTrigger;
+					}
+				}
+			}
+			$alter_transaction .= 'COMMIT;';
+			if($debug) echo $alter_transaction;
+			return $this->multiQuery($alter_transaction);
 		}
 	}
 
@@ -908,10 +985,12 @@ class Database
 		if($this->type=="PDO")
 		{
 			$success = $this->db->exec($query);
+			if(!$success) $error =  implode(" - ", $this->db->errorInfo());
 		}
 		else if($this->type=="SQLite3")
 		{
-			$success = $this->db->exec($query, $error);
+			$success = $this->db->exec($query);
+			if(!$success) $error = $this->db->lastErrorMsg();
 		}
 		else
 		{
@@ -919,7 +998,7 @@ class Database
 		}
 		if(!$success)
 		{
-			return "Error in query: '".$error."'";
+			return "Error in query: '".htmlencode($error)."'";
 		}
 		else
 		{
@@ -930,7 +1009,7 @@ class Database
 	//get number of rows in table
 	public function numRows($table)
 	{
-		$result = $this->select("SELECT Count(*) FROM ".$table);
+		$result = $this->select("SELECT Count(*) FROM ".$this->quote_id($table));
 		return $result[0];
 	}
 
@@ -952,11 +1031,14 @@ class Database
 		}
 	}
 
-	//correctly format a string value from a table before showing it
-	public function formatString($value)
+ 	//correctly escape an identifier (column / table / trigger / index name) to be injected into an SQL query
+	public function quote_id($value)
 	{
-		return htmlspecialchars(stripslashes($value));
+		// double-quotes need to be escaped by doubling them
+		$value = str_replace('"','""',$value);
+		return '"'.$value.'"';
 	}
+
 
 	//import sql
 	public function import_sql($query)
@@ -983,7 +1065,7 @@ class Database
 				$csv_number_of_rows++;
 				if($fields_in_first_row && $csv_number_of_rows==1) continue; 
 				$csv_col_number = count($csv_data);
-				$csv_insert .= "INSERT INTO $table VALUES (";
+				$csv_insert .= "INSERT INTO ".$this->quote_id($table)." VALUES (";
 				foreach($csv_data as $csv_col => $csv_cell)
 				{
 					if($csv_cell == $null) $csv_insert .= "NULL";
@@ -1017,7 +1099,7 @@ class Database
 	public function export_csv($tables, $field_terminate, $field_enclosed, $field_escaped, $null, $crlf, $fields_in_first_row)
 	{
 		$field_enclosed = stripslashes($field_enclosed);
-		$query = "SELECT * FROM sqlite_master WHERE type='table' ORDER BY type DESC";
+		$query = "SELECT * FROM sqlite_master WHERE type='table' or type='view' ORDER BY type DESC";
 		$result = $this->selectArray($query);
 		for($i=0; $i<sizeof($result); $i++)
 		{
@@ -1029,7 +1111,7 @@ class Database
 			}
 			if($valid)
 			{
-				$query = "PRAGMA table_info('".$result[$i]['tbl_name']."')";
+				$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
 				$temp = $this->selectArray($query);
 				$cols = array();
 				for($z=0; $z<sizeof($temp); $z++)
@@ -1045,7 +1127,7 @@ class Database
 					}
 					echo "\r\n";	
 				}
-				$query = "SELECT * FROM ".$result[$i]['tbl_name'];
+				$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
 				$arr = $this->selectArray($query, "assoc");
 				for($z=0; $z<sizeof($arr); $z++)
 				{
@@ -1089,8 +1171,11 @@ class Database
 			echo "-- Database file: ".$this->getPath()."\r\n";
 			echo "----\r\n";
 		}
-		$query = "SELECT * FROM sqlite_master WHERE type='table' OR type='index' ORDER BY type DESC";
+		$query = "SELECT * FROM sqlite_master WHERE type='table' OR type='index' OR type='view' OR type='trigger' ORDER BY type='trigger', type='index', type='view', type='table'";
 		$result = $this->selectArray($query);
+
+		if($transaction)
+			echo "BEGIN TRANSACTION;\r\n";
 
 		//iterate through each table
 		for($i=0; $i<sizeof($result); $i++)
@@ -1108,33 +1193,27 @@ class Database
 					if($comments)
 					{
 						echo "\r\n----\r\n";
-						if($result[$i]['type']=="table")
-							echo "-- Drop table for ".$result[$i]['tbl_name']."\r\n";
-						else
-							echo "-- Drop index for ".$result[$i]['name']."\r\n";
+						echo "-- Drop ".$result[$i]['type']." for ".$result[$i]['name']."\r\n";
 						echo "----\r\n";
 					}
-					if($result[$i]['type']=="table")
-						echo "DROP TABLE '".$result[$i]['tbl_name']."';\r\n";
-					else
-						echo "DROP INDEX '".$result[$i]['name']."';\r\n";
+					echo "DROP ".strtoupper($result[$i]['type'])." ".$this->quote_id($result[$i]['name']).";\r\n";
 				}
 				if($structure)
 				{
 					if($comments)
 					{
 						echo "\r\n----\r\n";
-						if($result[$i]['type']=="table")
-							echo "-- Table structure for ".$result[$i]['tbl_name']."\r\n";
-						else
-							echo "-- Structure for index ".$result[$i]['name']." on table ".$result[$i]['tbl_name']."\r\n";
+						if($result[$i]['type']=="table" || $result[$i]['type']=="view")
+							echo "-- ".ucfirst($result[$i]['type'])." structure for ".$result[$i]['tbl_name']."\r\n";
+						else // index or trigger
+							echo "-- Structure for ".$result[$i]['type']." ".$result[$i]['name']." on table ".$result[$i]['tbl_name']."\r\n";
 						echo "----\r\n";
 					}
 					echo $result[$i]['sql'].";\r\n";
 				}
 				if($data && $result[$i]['type']=="table")
 				{
-					$query = "SELECT * FROM ".$result[$i]['tbl_name'];
+					$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
 					$arr = $this->selectArray($query, "assoc");
 
 					if($comments)
@@ -1143,30 +1222,35 @@ class Database
 						echo "-- Data dump for ".$result[$i]['tbl_name'].", a total of ".sizeof($arr)." rows\r\n";
 						echo "----\r\n";
 					}
-					$query = "PRAGMA table_info('".$result[$i]['tbl_name']."')";
+					$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
 					$temp = $this->selectArray($query);
 					$cols = array();
+					$cols_quoted = array();
 					$vals = array();
 					for($z=0; $z<sizeof($temp); $z++)
+					{
 						$cols[$z] = $temp[$z][1];
+						$cols_quoted[$z] = $this->quote_id($temp[$z][1]);
+					}
 					for($z=0; $z<sizeof($arr); $z++)
 					{
 						for($y=0; $y<sizeof($cols); $y++)
 						{
 							if(!isset($vals[$z]))
 								$vals[$z] = array();
-							$vals[$z][$cols[$y]] = $this->quote($arr[$z][$cols[$y]]);
+							if($arr[$z][$cols[$y]] === NULL)
+								$vals[$z][$cols[$y]] = 'NULL';
+							else
+								$vals[$z][$cols[$y]] = $this->quote($arr[$z][$cols[$y]]);
 						}
 					}
-					if($transaction)
-						echo "BEGIN TRANSACTION;\r\n";
 					for($j=0; $j<sizeof($vals); $j++)
-						echo "INSERT INTO ".$result[$i]['tbl_name']." (".implode(",", $cols).") VALUES (".implode(",", $vals[$j]).");\r\n";
-					if($transaction)
-						echo "COMMIT;\r\n";
+						echo "INSERT INTO ".$this->quote_id($result[$i]['tbl_name'])." (".implode(",", $cols_quoted).") VALUES (".implode(",", $vals[$j]).");\r\n";
 				}
 			}
 		}
+		if($transaction)
+			echo "COMMIT;\r\n";
 	}
 }
 
@@ -1186,79 +1270,253 @@ else if(isset($_POST['login']) || isset($_POST['proc_login'])) //user has attemp
 	}
 }
 
-//user is downloading the exported database file
-if(isset($_POST['export']))
+if($auth->isAuthorized())
 {
-	if($_POST['export_type']=="sql")
-	{
-		header('Content-Type: text/sql');
-		header('Content-Disposition: attachment; filename="'.$_POST['filename'].'.'.$_POST['export_type'].'";');
-		if(isset($_POST['tables']))
-			$tables = $_POST['tables'];
-		else
-		{
-			$tables = array();
-			$tables[0] = $_POST['single_table'];
-		}
-		$drop = isset($_POST['drop']);
-		$structure = isset($_POST['structure']);
-		$data = isset($_POST['data']);
-		$transaction = isset($_POST['transaction']);
-		$comments = isset($_POST['comments']);
-		$db = new Database($databases[$_SESSION[COOKIENAME.'currentDB']]);
-		echo $db->export_sql($tables, $drop, $structure, $data, $transaction, $comments);
-	}
-	else if($_POST['export_type']=="csv")
-	{
-		header("Content-type: application/csv");
-		header('Content-Disposition: attachment; filename="'.$_POST['filename'].'.'.$_POST['export_type'].'";');
-		header("Pragma: no-cache");
-		header("Expires: 0");
-		if(isset($_POST['tables']))
-			$tables = $_POST['tables'];
-		else
-		{
-			$tables = array();
-			$tables[0] = $_POST['single_table'];
-		}
-		$field_terminate = $_POST['export_csv_fieldsterminated'];
-		$field_enclosed = $_POST['export_csv_fieldsenclosed'];
-		$field_escaped = $_POST['export_csv_fieldsescaped'];
-		$null = $_POST['export_csv_replacenull'];
-		$crlf = isset($_POST['export_csv_crlf']);
-		$fields_in_first_row = isset($_POST['export_csv_fieldnames']);
-		$db = new Database($databases[$_SESSION[COOKIENAME.'currentDB']]);
-		echo $db->export_csv($tables, $field_terminate, $field_enclosed, $field_escaped, $null, $crlf, $fields_in_first_row);
-	}
-	exit();
-}
 
-//user is importing a file
-if(isset($_POST['import']))
-{
-	$db = new Database($databases[$_SESSION[COOKIENAME.'currentDB']]);
-	if($_POST['import_type']=="sql")
+	//user is creating a new Database
+	if(isset($_POST['new_dbname']) && $auth->isAuthorized())
 	{
-		$data = file_get_contents($_FILES["file"]["tmp_name"]);
-		$importSuccess = $db->import_sql($data);
+		$str = preg_replace('@[^\w-.]@','', $_POST['new_dbname']);
+		$dbname = $str;
+		$dbpath = $str;
+		if(checkDbName($dbname))
+		{
+			$tdata = array();	
+			$tdata['name'] = $dbname;
+			$tdata['path'] = $directory.DIRECTORY_SEPARATOR.$dbpath;
+			$td = new Database($tdata);
+			$td->query("VACUUM");
+		} else
+		{
+			if(is_file($dbname) || is_dir($dbname)) $dbexists = true;
+			else $extension_not_allowed=true;
+		}
+	}
+	
+
+	//if the user wants to scan a directory for databases, do so
+	if($directory!==false)
+	{
+		if($directory[strlen($directory)-1]==DIRECTORY_SEPARATOR) //if user has a trailing slash in the directory, remove it
+			$directory = substr($directory, 0, strlen($directory)-1);
+			
+		if(is_dir($directory)) //make sure the directory is valid
+		{
+			if($subdirectories===true)
+				$arr = dir_tree($directory);
+			else
+				$arr = scandir($directory);
+			$databases = array();
+			$j = 0;
+			for($i=0; $i<sizeof($arr); $i++) //iterate through all the files in the databases
+			{
+				if($subdirectories===false)
+					$arr[$i] = $directory.DIRECTORY_SEPARATOR.$arr[$i];
+				
+				if(!is_file($arr[$i])) continue;
+				$con = file_get_contents($arr[$i], NULL, NULL, 0, 60);
+				if(strpos($con, "** This file contains an SQLite 2.1 database **", 0)!==false || strpos($con, "SQLite format 3", 0)!==false)
+				{
+					$databases[$j]['path'] = $arr[$i];
+					if($subdirectories===false)
+						$databases[$j]['name'] = basename($arr[$i]);
+					else
+						$databases[$j]['name'] = $arr[$i];
+					// 22 August 2011: gkf fixed bug 49.
+					$perms = 0;
+					$perms += is_readable($databases[$j]['path']) ? 4 : 0;
+					$perms += is_writeable($databases[$j]['path']) ? 2 : 0;
+					switch($perms)
+					{
+						case 6: $perms = "[rw] "; break;
+						case 4: $perms = "[r ] "; break;
+						case 2: $perms = "[ w] "; break; // God forbid, but it might happen.
+						default: $perms = "[  ] "; break;
+					}
+					$databases[$j]['perms'] = $perms;
+					$j++;
+				}
+			}
+			// 22 August 2011: gkf fixed bug #50.
+			sort($databases);
+			if(isset($tdata))
+			{
+				foreach($databases as $db_id => $database)
+				{
+					if($database['path'] == $tdata['path'])
+					{
+						$_SESSION[COOKIENAME.'currentDB'] = $database;
+						break;
+					}
+				}
+			}
+		}
+		else //the directory is not valid - display error and exit
+		{
+			echo "<div class='confirm' style='margin:20px;'>";
+			echo "The directory you specified to scan for databases does not exist or is not a directory.";
+			echo "</div>";
+			exit();
+		}
 	}
 	else
 	{
-		$field_terminate = $_POST['import_csv_fieldsterminated'];
-		$field_enclosed = $_POST['import_csv_fieldsenclosed'];
-		$field_escaped = $_POST['import_csv_fieldsescaped'];
-		$null = $_POST['import_csv_replacenull'];
-		$fields_in_first_row = isset($_POST['import_csv_fieldnames']);
-		$importSuccess = $db->import_csv($_FILES["file"]["tmp_name"], $_POST['single_table'], $field_terminate, $field_enclosed, $field_escaped, $null, $fields_in_first_row);
+		for($i=0; $i<sizeof($databases); $i++)
+		{
+			if(!file_exists($databases[$i]['path']))
+				continue; //skip if file not found ! - probably a warning can be displayed - later
+			$perms = 0;
+			$perms += is_readable($databases[$i]['path']) ? 4 : 0;
+			$perms += is_writeable($databases[$i]['path']) ? 2 : 0;
+			switch($perms)
+			{
+				case 6: $perms = "[rw] "; break;
+				case 4: $perms = "[r ] "; break;
+				case 2: $perms = "[ w] "; break; // God forbid, but it might happen.
+				default: $perms = "[  ] "; break;
+			}
+			$databases[$i]['perms'] = $perms;
+		}
+		sort($databases);
+	}
+	
+	//user is deleting a database
+	if(isset($_GET['database_delete']))
+	{
+		$dbpath = $_POST['database_delete'];
+		// check whether $dbpath really is a db we manage
+		$checkDB = isManagedDB($dbpath);
+		if($checkDB !== false)
+		{
+			unlink($dbpath);
+			unset($_SESSION[COOKIENAME.'currentDB']);
+			unset($databases[$checkDB]);
+		} else die('You can only delete databases managed by this tool!');
+	}
+	
+	//user is renaming a database
+	if(isset($_GET['database_rename']))
+	{
+		$oldpath = $_POST['oldname'];
+		$newpath = $_POST['newname'];
+		$oldpath_parts = pathinfo($oldpath);
+		$newpath_parts = pathinfo($newpath);
+		// only rename?
+		$newpath = $oldpath_parts['dirname'].DIRECTORY_SEPARATOR.basename($_POST['newname']);
+		if($newpath != $_POST['newname'] && $subdirectories)
+		{
+			// it seems that the file should not only be renamed but additionally moved.
+			// we need to make sure it stays within $directory...
+			$new_realpath = realpath($newpath_parts['dirname']).DIRECTORY_SEPARATOR;
+			$directory_realpath = realpath($directory).DIRECTORY_SEPARATOR;
+			echo $_POST['newname']."=>".$new_realpath."<br>";
+			echo $directory_realpath."<br>";
+			if(strpos($new_realpath, $directory_realpath)===0)
+			{
+				// its okay, the new directory is within $directory
+				$newpath =  $_POST['newname'];
+			}
+			else die('You either tried to move the database into a directory where it cannot be managed anylonger, or the check if you did this failed because of missing rights.');
+		}
+		
+		if(checkDbName($newpath))
+		{
+			$checkDB = isManagedDB($oldpath);
+			if($checkDB !==false )
+			{
+				copy($oldpath, $newpath);
+				unlink($oldpath);
+				$databases[$checkDB]['path'] = $newpath;
+				$databases[$checkDB]['name'] = basename($newpath);
+				$_SESSION[COOKIENAME.'currentDB'] = $databases[$checkDB]; 
+				$justrenamed = true;
+			}
+			else die('You can only rename databases managed by this tool!');
+		}
+		else
+		{
+			if(is_file($newpath) || is_dir($newpath)) $dbexists = true;
+			else $extension_not_allowed = true;	
+		}
+	}
+	
+
+	//user is downloading the exported database file
+	if(isset($_POST['export']))
+	{
+		if($_POST['export_type']=="sql")
+		{
+			header('Content-Type: text/sql');
+			header('Content-Disposition: attachment; filename="'.$_POST['filename'].'.'.$_POST['export_type'].'";');
+			if(isset($_POST['tables']))
+				$tables = $_POST['tables'];
+			else
+			{
+				$tables = array();
+				$tables[0] = $_POST['single_table'];
+			}
+			$drop = isset($_POST['drop']);
+			$structure = isset($_POST['structure']);
+			$data = isset($_POST['data']);
+			$transaction = isset($_POST['transaction']);
+			$comments = isset($_POST['comments']);
+			$db = new Database($_SESSION[COOKIENAME.'currentDB']);
+			echo $db->export_sql($tables, $drop, $structure, $data, $transaction, $comments);
+		}
+		else if($_POST['export_type']=="csv")
+		{
+			header("Content-type: application/csv");
+			header('Content-Disposition: attachment; filename="'.$_POST['filename'].'.'.$_POST['export_type'].'";');
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			if(isset($_POST['tables']))
+				$tables = $_POST['tables'];
+			else
+			{
+				$tables = array();
+				$tables[0] = $_POST['single_table'];
+			}
+			$field_terminate = $_POST['export_csv_fieldsterminated'];
+			$field_enclosed = $_POST['export_csv_fieldsenclosed'];
+			$field_escaped = $_POST['export_csv_fieldsescaped'];
+			$null = $_POST['export_csv_replacenull'];
+			$crlf = isset($_POST['export_csv_crlf']);
+			$fields_in_first_row = isset($_POST['export_csv_fieldnames']);
+			$db = new Database($_SESSION[COOKIENAME.'currentDB']);
+			echo $db->export_csv($tables, $field_terminate, $field_enclosed, $field_escaped, $null, $crlf, $fields_in_first_row);
+		}
+		exit();
+	}
+	
+	//user is importing a file
+	if(isset($_POST['import']))
+	{
+		$db = new Database($_SESSION[COOKIENAME.'currentDB']);
+		if($_POST['import_type']=="sql")
+		{
+			$data = file_get_contents($_FILES["file"]["tmp_name"]);
+			$importSuccess = $db->import_sql($data);
+		}
+		else
+		{
+			$field_terminate = $_POST['import_csv_fieldsterminated'];
+			$field_enclosed = $_POST['import_csv_fieldsenclosed'];
+			$field_escaped = $_POST['import_csv_fieldsescaped'];
+			$null = $_POST['import_csv_replacenull'];
+			$fields_in_first_row = isset($_POST['import_csv_fieldnames']);
+			$importSuccess = $db->import_csv($_FILES["file"]["tmp_name"], $_POST['single_table'], $field_terminate, $field_enclosed, $field_escaped, $null, $fields_in_first_row);
+		}
 	}
 }
 
+header('Content-Type: text/html; charset=utf-8');
+
 // here begins the HTML.
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<!-- Copyright 2011 phpLiteAdmin (http://phpliteadmin.googlecode.com) -->
+<!-- Copyright <?php echo date("Y"); ?> phpLiteAdmin (http://phpliteadmin.googlecode.com) -->
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 <title><?php echo PROJECT ?></title>
 
@@ -1285,6 +1543,10 @@ a
 	text-decoration: none;
 	cursor :pointer;
 }
+a:hover
+{
+	color: #06F;
+}
 hr
 {
 	height: 1px;
@@ -1292,10 +1554,6 @@ hr
 	color: #bbb;
 	background-color: #bbb;
 	width: 100%;	
-}
-a:hover
-{
-	color: #06F;
 }
 /* logo text containing name of project */
 h1
@@ -1636,12 +1894,24 @@ if(isset($_GET['help'])) //this page is used as the popup help section
 ?>
 <!-- JavaScript Support -->
 <script type="text/javascript">
+/* <![CDATA[ */
+//initiated autoincrement checkboxes
+function initAutoincrement()
+{
+	var i=0;
+	while(document.getElementById('i'+i+'_autoincrement')!=undefined)
+	{
+		document.getElementById('i'+i+'_autoincrement').disabled = true;
+		i++;
+	}
+}
 //makes sure autoincrement can only be selected when integer type is selected
 function toggleAutoincrement(i)
 {
-	var type = document.getElementById(i+'_type');
-	var autoincrement = document.getElementById(i+'_autoincrement');
-	if(type.value=="INTEGER")
+	var type = document.getElementById('i'+i+'_type');
+	var primarykey = document.getElementById('i'+i+'_primarykey');
+	var autoincrement = document.getElementById('i'+i+'_autoincrement');
+	if(type.value=='INTEGER' && primarykey.checked)
 		autoincrement.disabled = false;
 	else
 	{
@@ -1651,8 +1921,8 @@ function toggleAutoincrement(i)
 }
 function toggleNull(i)
 {
-	var pk = document.getElementById(i+'_primarykey');
-	var notnull = document.getElementById(i+'_notnull');
+	var pk = document.getElementById('i'+i+'_primarykey');
+	var notnull = document.getElementById('i'+i+'_notnull');
 	if(pk.checked)
 	{
 		notnull.disabled = true;
@@ -1703,7 +1973,7 @@ function moveFields()
 		if(fields.options[i].selected)
 			selected.push(fields.options[i].value);
 	for(var i=0; i<selected.length; i++)
-		insertAtCaret("queryval", selected[i]);
+		insertAtCaret("queryval", '"'+selected[i].replace(/"/g,'""')+'"');
 }
 //helper function for moveFields
 function insertAtCaret(areaId,text)
@@ -1753,6 +2023,7 @@ function disableText(checker, textie)
 {
 	if(checker.checked)
 	{
+		document.getElementById(textie).value = "";
 		document.getElementById(textie).disabled = true;	
 	}
 	else
@@ -1786,16 +2057,17 @@ function PopupCenter(pageURL, title)
 {
 	helpsec = window.open(pageURL, title, "toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300");
 } 
-
+/* ]]> */ 
 </script>
 </head>
 <body>
 <?php
-if(ini_get("register_globals")) //check whether register_globals is turned on - if it is, we need to not continue
+if(ini_get("register_globals") == "on" || ini_get("register_globals")=="1") //check whether register_globals is turned on - if it is, we need to not continue
 {
 	echo "<div class='confirm' style='margin:20px;'>";
 	echo "It appears that the PHP directive, 'register_globals' is enabled. This is bad. You need to disable it before continuing.";
 	echo "</div>";
+	echo "</body></html>";
 	exit();
 }
 
@@ -1823,11 +2095,16 @@ if(!$auth->isAuthorized()) //user is not authorized - display the login screen
 }
 else //user is authorized - display the main application
 {
-	if(!isset($_SESSION[COOKIENAME.'currentDB']))
-		$_SESSION[COOKIENAME.'currentDB'] = 0;
-	//set the current database to the first in the array (default)
+	if(!isset($_SESSION[COOKIENAME.'currentDB']) && count($databases)>0)
+	{
+		//set the current database to the first existing one in the array (default)
+		$i=0;
+		// this might not be $databases[0], as this might have just been dropped
+		while(!isset($databases[$i]) && $i<(count($databases)+1)) $i++;
+		$_SESSION[COOKIENAME.'currentDB'] = $databases[$i];
+	}
 	if(sizeof($databases)>0)
-		$currentDB = $databases[0];
+		$currentDB = $_SESSION[COOKIENAME.'currentDB'];
 	else //the database array is empty - show error and halt execution
 	{
 		if($directory!==false && is_writable($directory))
@@ -1835,8 +2112,19 @@ else //user is authorized - display the main application
 			echo "<div class='confirm' style='margin:20px;'>";
 			echo "Welcome to phpLiteAdmin. It appears that you have selected to scan a directory for databases to manage. However, phpLiteAdmin could not find any valid SQLite databases. You may use the form below to create your first database.";
 			echo "</div>";	
+
+			if(isset($extension_not_allowed))
+			{
+				echo "<div class='confirm' style='margin:10px 20px;'>";
+				echo "The extension you provided for the new database is not within the list of allowed extensions. Please use one of the following extensions: ";
+				foreach($allowed_extensions as $ext_i => $extension)
+					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo '<br />You can add extensions to this list by opening phpliteadmin.php and adding your extension to $allowed_extensions in the configuration.';
+				echo "</div><br/>";
+			}
+
 			echo "<fieldset style='margin:15px;'><legend><b>Create New Database</b></legend>";
-			echo "<form name='create_database' method='post' action='".$_SERVER['PHP_SELF']."'>";
+			echo "<form name='create_database' method='post' action='".PAGE."'>";
 			echo "<input type='text' name='new_dbname' style='width:150px;'/> <input type='submit' value='Create' class='btn'/>";
 			echo "</form>";
 			echo "</fieldset>";
@@ -1852,16 +2140,30 @@ else //user is authorized - display the main application
 
 	if(isset($_POST['database_switch'])) //user is switching database with drop-down menu
 	{
-		$_SESSION[COOKIENAME."currentDB"] = $_POST['database_switch'];
-		$currentDB = $databases[$_SESSION[COOKIENAME.'currentDB']];
+		foreach($databases as $db_id => $database)
+		{
+			if($database['path'] == $_POST['database_switch'])
+			{
+				$_SESSION[COOKIENAME."currentDB"] = $database;
+				break;
+			}
+		}
+		$currentDB = $_SESSION[COOKIENAME.'currentDB'];
 	}
 	else if(isset($_GET['switchdb']))
 	{
-		$_SESSION[COOKIENAME."currentDB"] = $_GET['switchdb'];
-		$currentDB = $databases[$_SESSION[COOKIENAME.'currentDB']];
+		foreach($databases as $db_id => $database)
+		{
+			if($database['path'] == $_GET['switchdb'])
+			{
+				$_SESSION[COOKIENAME."currentDB"] = $database;
+				break;
+			}
+		}
+		$currentDB = $_SESSION[COOKIENAME.'currentDB'];
 	}
 	if(isset($_SESSION[COOKIENAME.'currentDB']))
-		$currentDB = $databases[$_SESSION[COOKIENAME.'currentDB']];
+		$currentDB = $_SESSION[COOKIENAME.'currentDB'];
 
 	//create the objects
 	$db = new Database($currentDB); //create the Database object
@@ -1876,38 +2178,63 @@ else //user is authorized - display the main application
 			case "table_create":
 				$num = intval($_POST['rows']);
 				$name = $_POST['tablename'];
-				$query = "CREATE TABLE ".$name."(";
+				$primary_keys = array();
+				for($i=0; $i<$num; $i++)
+				{
+					if($_POST[$i.'_field']!="" && isset($_POST[$i.'_primarykey']))
+					{
+						$primary_keys[] = $_POST[$i.'_field'];
+					}
+				}
+				$query = "CREATE TABLE ".$db->quote($name)." (";
 				for($i=0; $i<$num; $i++)
 				{
 					if($_POST[$i.'_field']!="")
 					{
-						$query .= $_POST[$i.'_field']." ";
+						$query .= $db->quote($_POST[$i.'_field'])." ";
 						$query .= $_POST[$i.'_type']." ";
 						if(isset($_POST[$i.'_primarykey']))
-							$query .= "PRIMARY KEY NOT NULL ";
+						{
+							if(count($primary_keys)==1)
+							{
+								$query .= "PRIMARY KEY "; 
+								if(isset($_POST[$i.'_autoincrement']))
+									$query .=  "AUTOINCREMENT ";
+							}
+							$query .= "NOT NULL ";
+						}
 						if(!isset($_POST[$i.'_primarykey']) && isset($_POST[$i.'_notnull']))
 							$query .= "NOT NULL ";
 						if($_POST[$i.'_defaultvalue']!="")
 						{
-							if($_POST[$i.'_type']=="INTEGER")
+							if($_POST[$i.'_type']=="INTEGER" && is_numeric($_POST[$i.'_defaultvalue']))
 								$query .= "default ".$_POST[$i.'_defaultvalue']."  ";
 							else
-								$query .= "default '".$_POST[$i.'_defaultvalue']."' ";
+								$query .= "default ".$db->quote($_POST[$i.'_defaultvalue'])." ";
 						}
 						$query = substr($query, 0, sizeof($query)-2);
 						$query .= ", ";
 					}
+				}
+				if (count($primary_keys)>1)
+				{
+					$compound_key = "";
+					foreach ($primary_keys as $primary_key)
+					{
+						$compound_key .= ($compound_key=="" ? "" : ", ") . $db->quote($primary_key);
+					}
+					$query .= "PRIMARY KEY (".$compound_key."), ";
 				}
 				$query = substr($query, 0, sizeof($query)-3);
 				$query .= ")";
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Table '".$_POST['tablename']."' has been created.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Table '".htmlencode($_POST['tablename'])."' has been created.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// empty table
 			case "table_empty":
-				$query = "DELETE FROM ".$_POST['tablename'];
+				$query = "DELETE FROM ".$db->quote_id($_POST['tablename']);
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
@@ -1915,38 +2242,38 @@ else //user is authorized - display the main application
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Table '".$_POST['tablename']."' has been emptied.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Table '".htmlencode($_POST['tablename'])."' has been emptied.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// create view
 			case "view_create":
-				$query = "CREATE VIEW ".$_POST['viewname']." AS ".stripslashes($_POST['select']);
+				$query = "CREATE VIEW ".$db->quote($_POST['viewname'])." AS ".stripslashes($_POST['select']);
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "View '".$_POST['viewname']."' has been created.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "View '".htmlencode($_POST['viewname'])."' has been created.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// drop table
 			case "table_drop":
-				$query = "DROP TABLE ".$_POST['tablename'];
+				$query = "DROP TABLE ".$db->quote_id($_POST['tablename']);
 				$db->query($query);
-				$completed = "Table '".$_POST['tablename']."' has been dropped.";
+				$completed = "Table '".htmlencode($_POST['tablename'])."' has been dropped.";
 				break;
 			/////////////////////////////////////////////// drop view
 			case "view_drop":
-				$query = "DROP VIEW ".$_POST['viewname'];
+				$query = "DROP VIEW ".$db->quote_id($_POST['viewname']);
 				$db->query($query);
-				$completed = "View '".$_POST['viewname']."' has been dropped.";
+				$completed = "View '".htmlencode($_POST['viewname'])."' has been dropped.";
 				break;
 			/////////////////////////////////////////////// rename table
 			case "table_rename":
-				$query = "ALTER TABLE ".$_POST['oldname']." RENAME TO ".$_POST['newname'];
+				$query = "ALTER TABLE ".$db->quote_id($_POST['oldname'])." RENAME TO ".$db->quote($_POST['newname']);
 				if($db->getVersion()==3)
 					$result = $db->query($query, true);
 				else
 					$result = $db->query($query, false);
 				if(!$result)
 					$error = true;
-				$completed = "Table '".$_POST['oldname']."' has been renamed to '".$_POST['newname']."'.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Table '".htmlencode($_POST['oldname'])."' has been renamed to '".htmlencode($_POST['newname'])."'.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			//row actions
 			/////////////////////////////////////////////// create row
@@ -1956,24 +2283,38 @@ else //user is authorized - display the main application
 				$fields = explode(":", $_POST['fields']);
 				$z = 0;
 				
-				$query = "PRAGMA table_info('".$_GET['table']."')";
+				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
 				
 				for($i=0; $i<$num; $i++)
 				{
 					if(!isset($_POST[$i.":ignore"]))
 					{
-						$query = "INSERT INTO ".$_GET['table']." (";
+						$query = "INSERT INTO ".$db->quote_id($_GET['table'])." (";
 						for($j=0; $j<sizeof($fields); $j++)
 						{
-							$query .= $fields[$j].",";
+							$query .= "".$db->quote_id($fields[$j]).",";
 						}
 						$query = substr($query, 0, sizeof($query)-2);
 						$query .= ") VALUES (";
 						for($j=0; $j<sizeof($fields); $j++)
 						{
-							$value = $_POST[$i.":".$fields[$j]];
+							// PHP replaces space with underscore
+							$fields[$j] = str_replace(" ","_",$fields[$j]);
+							
 							$null = isset($_POST[$i.":".$fields[$j]."_null"]);
+							if(!$null)
+							{
+								if(!isset($_POST[$i.":".$fields[$j]]) && $debug)
+								{
+									echo "MISSING POST INDEX (".$i.":".$fields[$j].")<br><pre />";
+									var_dump($_POST);
+									echo "</pre><hr />";
+								} 
+								$value = $_POST[$i.":".$fields[$j]];
+							}
+							else
+								$value = "";
 							$type = $result[$j][2];
 							$function = $_POST["function_".$i."_".$fields[$j]];
 							if($function!="")
@@ -1996,7 +2337,7 @@ else //user is authorized - display the main application
 						$result1 = $db->query($query);
 						if(!$result1)
 							$error = true;
-						$completed .= "<span style='font-size:11px;'>".$query."</span><br/>";
+						$completed .= "<span style='font-size:11px;'>".htmlencode($query)."</span><br/>";
 						$z++;
 					}
 				}
@@ -2005,17 +2346,15 @@ else //user is authorized - display the main application
 			/////////////////////////////////////////////// delete row
 			case "row_delete":
 				$pks = explode(":", $_GET['pk']);
-				$str = $pks[0];
-				$query = "DELETE FROM ".$_GET['table']." WHERE ROWID = ".$pks[0];
+				$query = "DELETE FROM ".$db->quote_id($_GET['table'])." WHERE ROWID = ".$pks[0];
 				for($i=1; $i<sizeof($pks); $i++)
 				{
-					$str .= ", ".$pks[$i];
 					$query .= " OR ROWID = ".$pks[$i];
 				}
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = sizeof($pks)." row(s) deleted.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = sizeof($pks)." row(s) deleted.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// edit row
 			case "row_edit":
@@ -2024,7 +2363,7 @@ else //user is authorized - display the main application
 				
 				$z = 0;
 				
-				$query = "PRAGMA table_info('".$_GET['table']."')";
+				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
 				
 				if(isset($_POST['new_row']))
@@ -2036,19 +2375,20 @@ else //user is authorized - display the main application
 				{
 					if(isset($_POST['new_row']))
 					{
-						$query = "INSERT INTO ".$_GET['table']." (";
+						$query = "INSERT INTO ".$db->quote_id($_GET['table'])." (";
 						for($j=0; $j<sizeof($fields); $j++)
 						{
-							$query .= $fields[$j].",";
+							$query .= $db->quote_id($fields[$j]).",";
 						}
 						$query = substr($query, 0, sizeof($query)-2);
 						$query .= ") VALUES (";
 						for($j=0; $j<sizeof($fields); $j++)
 						{
-							$value = $_POST[$pks[$i].":".$fields[$j]];
-							$null = isset($_POST[$pks[$i].":".$fields[$j]."_null"]);
+							$field_index = str_replace(" ","_",$fields[$j]);
+							$value = $_POST[$pks[$i].":".$field_index];
+							$null = isset($_POST[$pks[$i].":".$field_index."_null"]);
 							$type = $result[$j][2];
-							$function = $_POST["function_".$pks[$i]."_".$fields[$j]];
+							$function = $_POST["function_".$pks[$i]."_".$field_index];
 							if($function!="")
 								$query .= $function."(";
 								//di - messed around with this logic for null values
@@ -2073,18 +2413,20 @@ else //user is authorized - display the main application
 					}
 					else
 					{
-						$query = "UPDATE ".$_GET['table']." SET ";
+						$query = "UPDATE ".$db->quote_id($_GET['table'])." SET ";
 						for($j=0; $j<sizeof($fields); $j++)
 						{
-							$function = $_POST["function_".$pks[$i]."_".$fields[$j]];
-							$null = isset($_POST[$pks[$i].":".$fields[$j]."_null"]);
-							$query .= $fields[$j]."=";
+							if(!is_numeric($pks[$i])) continue;
+							$field_index = str_replace(" ","_",$fields[$j]);
+							$function = $_POST["function_".$pks[$i]."_".$field_index];
+							$null = isset($_POST[$pks[$i].":".$field_index."_null"]);
+							$query .= $db->quote_id($fields[$j])."=";
 							if($function!="")
 								$query .= $function."(";
 							if($null)
 								$query .= "NULL";
 							else
-								$query .= $db->quote($_POST[$pks[$i].":".$fields[$j]]);
+								$query .= $db->quote($_POST[$pks[$i].":".$field_index]);
 							if($function!="")
 								$query .= ")";
 							$query .= ", ";
@@ -2097,7 +2439,7 @@ else //user is authorized - display the main application
 							$error = true;
 						}
 					}
-					$completed .= "<span style='font-size:11px;'>".$query."</span><br/>";
+					$completed .= "<span style='font-size:11px;'>".htmlencode($query)."</span><br/>";
 				}
 				if(isset($_POST['new_row']))
 					$completed = $z." row(s) inserted.<br/><br/>".$completed;
@@ -2110,7 +2452,7 @@ else //user is authorized - display the main application
 				{
 					if($_POST[$i.'_field']!="")
 					{
-						$query = "ALTER TABLE ".$_GET['table']." ADD ".$_POST[$i.'_field']." ";
+						$query = "ALTER TABLE ".$db->quote_id($_GET['table'])." ADD ".$db->quote($_POST[$i.'_field'])." ";
 						$query .= $_POST[$i.'_type']." ";
 						if(isset($_POST[$i.'_primarykey']))
 							$query .= "PRIMARY KEY ";
@@ -2118,10 +2460,10 @@ else //user is authorized - display the main application
 							$query .= "NOT NULL ";
 						if($_POST[$i.'_defaultvalue']!="")
 						{
-							if($_POST[$i.'_type']=="INTEGER")
+							if($_POST[$i.'_type']=="INTEGER" && is_numeric($_POST[$i.'_defaultvalue']))
 								$query .= "DEFAULT ".$_POST[$i.'_defaultvalue']."  ";
 							else
-								$query .= "DEFAULT '".$_POST[$i.'_defaultvalue']."' ";
+								$query .= "DEFAULT ".$db->quote($_POST[$i.'_defaultvalue'])." ";
 						}
 						if($db->getVersion()==3)
 							$result = $db->query($query, true);
@@ -2131,53 +2473,51 @@ else //user is authorized - display the main application
 							$error = true;
 					}
 				}
-				$completed = "Table '".$_GET['table']."' has been altered successfully.";
+				$completed = "Table '".htmlencode($_GET['table'])."' has been altered successfully.";
 				break;
 			/////////////////////////////////////////////// delete column
 			case "column_delete":
 				$pks = explode(":", $_GET['pk']);
-				$str = $pks[0];
-				$query = "ALTER TABLE ".$_GET['table']." DROP ".$pks[0];
+				$query = "ALTER TABLE ".$db->quote_id($_GET['table']).' DROP '.$db->quote_id($pks[0]);
 				for($i=1; $i<sizeof($pks); $i++)
 				{
-					$str .= ", ".$pks[$i];
-					$query .= ", DROP ".$pks[$i];
+					$query .= ", DROP ".$db->quote_id($pks[$i]);
 				}
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Table '".$_GET['table']."' has been altered successfully.";
+				$completed = "Table '".htmlencode($_GET['table'])."' has been altered successfully.";
 				break;
 			/////////////////////////////////////////////// edit column
 			case "column_edit":
-				$query = "ALTER TABLE ".$_GET['table']." CHANGE ".$_POST['oldvalue']." ".$_POST['0_field']." ".$_POST['0_type'];
+				$query = "ALTER TABLE ".$db->quote_id($_GET['table']).' CHANGE '.$db->quote_id($_POST['oldvalue'])." ".$db->quote($_POST['0_field'])." ".$_POST['0_type'];
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Table '".$_GET['table']."' has been altered successfully.";
+				$completed = "Table '".htmlencode($_GET['table'])."' has been altered successfully.";
 				break;
 			/////////////////////////////////////////////// delete trigger
 			case "trigger_delete":
-				$query = "DROP TRIGGER ".$_GET['pk'];
+				$query = "DROP TRIGGER ".$db->quote_id($_GET['pk']);
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Trigger '".$_GET['pk']."' deleted.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Trigger '".htmlencode($_GET['pk'])."' deleted.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// delete index
 			case "index_delete":
-				$query = "DROP INDEX ".$_GET['pk'];
+				$query = "DROP INDEX ".$db->quote_id($_GET['pk']);
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Index '".$_GET['pk']."' deleted.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Index '".htmlencode($_GET['pk'])."' deleted.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// create trigger
 			case "trigger_create":
-				$str = "CREATE TRIGGER ".$_POST['trigger_name'];
+				$str = "CREATE TRIGGER ".$db->quote($_POST['trigger_name']);
 				if($_POST['beforeafter']!="")
 					$str .= " ".$_POST['beforeafter'];
-				$str .= " ".$_POST['event']." ON ".$_GET['table'];
+				$str .= " ".$_POST['event']." ON ".$db->quote_id($_GET['table']);
 				if(isset($_POST['foreachrow']))
 					$str .= " FOR EACH ROW";
 				if($_POST['whenexpression']!="")
@@ -2189,7 +2529,7 @@ else //user is authorized - display the main application
 				$result = $db->query($query);
 				if(!$result)
 					$error = true;
-				$completed = "Trigger created.<br/><span style='font-size:11px;'>".$query."</span>";
+				$completed = "Trigger created.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				break;
 			/////////////////////////////////////////////// create index
 			case "index_create":
@@ -2207,8 +2547,8 @@ else //user is authorized - display the main application
 					$str = "CREATE ";
 					if($_POST['duplicate']=="no")
 						$str .= "UNIQUE ";
-					$str .= "INDEX ".$_POST['name']." ON ".$_GET['table']." (";
-					$str .= $_POST['0_field'].$_POST['0_order'];
+					$str .= "INDEX ".$db->quote($_POST['name'])." ON ".$db->quote_id($_GET['table'])." (";
+					$str .= $db->quote_id($_POST['0_field']).$_POST['0_order'];
 					for($i=1; $i<$num; $i++)
 					{
 						if($_POST[$i.'_field']!="")
@@ -2219,7 +2559,7 @@ else //user is authorized - display the main application
 					$result = $db->query($query);
 					if(!$result)
 						$error = true;
-					$completed = "Index created.<br/><span style='font-size:11px;'>".$query."</span>";
+					$completed = "Index created.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				}
 				break;
 		}
@@ -2233,22 +2573,23 @@ else //user is authorized - display the main application
 	echo "</a>";
 	echo "</h1>";
 	echo "<div id='headerlinks'>";
-	echo "<a href='javascript:openHelp(\"top\");'>Documentation</a> | ";
+	echo "<a href='javascript:void' onclick='openHelp(\"top\");'>Documentation</a> | ";
 	echo "<a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>License</a> | ";
 	echo "<a href='http://code.google.com/p/phpliteadmin/' target='_blank'>Project Site</a>";
 	echo "</div>";
 	echo "<fieldset style='margin:15px;'><legend><b>Change Database</b></legend>";
 	if(sizeof($databases)<10) //if there aren't a lot of databases, just show them as a list of links instead of drop down menu
 	{
-		for($i=0; $i<sizeof($databases); $i++)
+		$i=0;
+		foreach($databases as $database)
 		{
-			// 22 August 2011: gkf fixed bug #49
-			echo $databases[$i]['perms'];
-			if($i==$_SESSION[COOKIENAME.'currentDB'])
-				echo "<a href='".PAGE."?switchdb=".$i."' style='text-decoration:underline;'>".$databases[$i]['name']."</a>";
+			$i++;
+			echo $database['perms'];
+			if($database == $_SESSION[COOKIENAME.'currentDB'])
+				echo "<a href='".PAGE."?switchdb=".urlencode($database['path'])."' style='text-decoration:underline;'>".htmlencode($database['name'])."</a>";
 			else
-				echo "<a href='".PAGE."?switchdb=".$i."'>".$databases[$i]['name']."</a>";
-			if($i<sizeof($databases)-1)
+				echo "<a href='".PAGE."?switchdb=".urlencode($database['path'])."'>".htmlencode($database['name'])."</a>";
+			if($i<sizeof($databases))
 				echo "<br/>";
 		}
 	}
@@ -2256,13 +2597,12 @@ else //user is authorized - display the main application
 	{
 		echo "<form action='".PAGE."' method='post'>";
 		echo "<select name='database_switch'>";
-		// 22 August 2011: gkf fixed bug #49
-		for($i=0; $i<sizeof($databases); $i++)
+		foreach($databases as $database)
 		{
-			if($i==$_SESSION[COOKIENAME.'currentDB'])
-				echo "<option value='".$i."' selected='selected'>".$databases[$i]['perms'].$databases[$i]['name']."</option>";
+			if($database == $_SESSION[COOKIENAME.'currentDB'])
+				echo "<option value='".htmlencode($database['path'])."' selected='selected'>".htmlencode($database['perms'].$database['name'])."</option>";
 			else
-				echo "<option value='".$i."'>".$databases[$i]['perms'].$databases[$i]['name']."</option>";
+				echo "<option value='".htmlencode($database['path'])."'>".htmlencode($database['perms'].$database['name'])."</option>";
 		}
 		echo "</select> ";
 		echo "<input type='submit' value='Go' class='btn'>";
@@ -2284,12 +2624,12 @@ else //user is authorized - display the main application
 		if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
 		{
 			if($result[$i]['type']=="table")
-				echo "<span style='font-size:11px;'>[table]</span> <a href='".PAGE."?action=row_view&table=".$result[$i]['name']."'";
+				echo "<span style='font-size:11px;'>[table]</span> <a href='".PAGE."?action=row_view&amp;table=".urlencode($result[$i]['name'])."'";
 			else
-				echo "<span style='font-size:11px;'>[view]</span> <a href='".PAGE."?action=row_view&table=".$result[$i]['name']."&view=1'";
+				echo "<span style='font-size:11px;'>[view]</span> <a href='".PAGE."?action=row_view&amp;table=".urlencode($result[$i]['name'])."&amp;view=1'";
 			if(isset($_GET['table']) && $_GET['table']==$result[$i]['name'])
 				echo " style='text-decoration:underline;'";
-			echo ">".$result[$i]['name']."</a><br/>";
+			echo ">".htmlencode($result[$i]['name'])."</a><br/>";
 			$j++;
 		}
 	}
@@ -2300,14 +2640,14 @@ else //user is authorized - display the main application
 	if($directory!==false && is_writable($directory))
 	{
 		echo "<fieldset style='margin:15px;'><legend><b>Create New Database</b> ".helpLink("Creating a New Database")."</legend>";
-		echo "<form name='create_database' method='post' action='".$_SERVER['PHP_SELF']."'>";
+		echo "<form name='create_database' method='post' action='".PAGE."'>";
 		echo "<input type='text' name='new_dbname' style='width:150px;'/> <input type='submit' value='Create' class='btn'/>";
 		echo "</form>";
 		echo "</fieldset>";
 	}
 	
 	echo "<div style='text-align:center;'>";
-	echo "<form action='".PAGE."' method='post'/>";
+	echo "<form action='".PAGE."' method='post'>";
 	echo "<input type='submit' value='Log Out' name='logout' class='btn'/>";
 	echo "</form>";
 	echo "</div>";
@@ -2317,7 +2657,7 @@ else //user is authorized - display the main application
 	//breadcrumb navigation
 	echo "<a href='".PAGE."'>".$currentDB['name']."</a>";
 	if(isset($_GET['table']))
-		echo " &rarr; <a href='".PAGE."?table=".$_GET['table']."&action=row_view'>".$_GET['table']."</a>";
+		echo " &rarr; <a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".htmlencode($_GET['table'])."</a>";
 	echo "<br/><br/>";
 
 	//user has performed some action so show the resulting message
@@ -2331,9 +2671,9 @@ else //user is authorized - display the main application
 			echo $completed;
 		echo "</div>";
 		if($_GET['action']=="row_delete" || $_GET['action']=="row_create" || $_GET['action']=="row_edit")
-			echo "<br/><br/><a href='".PAGE."?table=".$_GET['table']."&action=row_view'>Return</a>";
+			echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>Return</a>";
 		else if($_GET['action']=="column_create" || $_GET['action']=="column_delete" || $_GET['action']=="column_edit" || $_GET['action']=="index_create" || $_GET['action']=="index_delete" || $_GET['action']=="trigger_delete" || $_GET['action']=="trigger_create")
-			echo "<br/><br/><a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Return</a>";
+			echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Return</a>";
 		else
 			echo "<br/><br/><a href='".PAGE."'>Return</a>";
 		echo "</div>";
@@ -2344,95 +2684,95 @@ else //user is authorized - display the main application
 	{
 		if(!isset($_GET['view']))
 		{
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=row_view' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view' ";
 			if($_GET['action']=="row_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Browse</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view' ";
 			if($_GET['action']=="column_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Structure</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_sql' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql' ";
 			if($_GET['action']=="table_sql")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">SQL</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_search' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search' ";
 			if($_GET['action']=="table_search")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Search</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=row_create' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create' ";
 			if($_GET['action']=="row_create")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Insert</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_export' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_export' ";
 			if($_GET['action']=="table_export")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Export</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_import' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_import' ";
 			if($_GET['action']=="table_import")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Import</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_rename' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_rename' ";
 			if($_GET['action']=="table_rename")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Rename</a>";
-			echo "<a href='".PAGE."?action=table_empty&table=".$_GET['table']."' ";
+			echo "<a href='".PAGE."?action=table_empty&amp;table=".urlencode($_GET['table'])."' ";
 			echo "class='tab' style='color:red;'";
 			echo ">Empty</a>";
-			echo "<a href='".PAGE."?action=table_drop&table=".$_GET['table']."' ";
+			echo "<a href='".PAGE."?action=table_drop&amp;table=".urlencode($_GET['table'])."' ";
 			echo "class='tab' style='color:red;'";
 			echo ">Drop</a>";
 			echo "<div style='clear:both;'></div>";
 		}
 		else
 		{
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=row_view&view=1' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view&amp;view=1' ";
 			if($_GET['action']=="row_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Browse</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view&view=1' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view&amp;view=1' ";
 			if($_GET['action']=="column_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Structure</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_sql&view=1' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' ";
 			if($_GET['action']=="table_sql")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">SQL</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_search&view=1' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1' ";
 			if($_GET['action']=="table_search")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Search</a>";
-			echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_export&view=1' ";
+			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_export&amp;view=1' ";
 			if($_GET['action']=="table_export")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">Export</a>";
-			echo "<a href='".PAGE."?action=view_drop&table=".$_GET['table']."&view=1' ";
+			echo "<a href='".PAGE."?action=view_drop&amp;table=".urlencode($_GET['table'])."&amp;view=1' ";
 			echo "class='tab' style='color:red;'";
 			echo ">Drop</a>";
 			echo "<div style='clear:both;'></div>";
@@ -2448,13 +2788,13 @@ else //user is authorized - display the main application
 			//table actions
 			/////////////////////////////////////////////// create table
 			case "table_create":
-				$query = "SELECT name FROM sqlite_master WHERE type='table' AND name='".$_POST['tablename']."'";
+				$query = "SELECT name FROM sqlite_master WHERE type='table' AND name=".$db->quote($_POST['tablename']);
 				$results = $db->selectArray($query);
 				if(sizeof($results)>0)
 					$exists = true;
 				else
 					$exists = false;
-				echo "<h2>Creating new table: '".$_POST['tablename']."'</h2>";
+				echo "<h2>Creating new table: '".htmlencode($_POST['tablename'])."'</h2>";
 				if($_POST['tablefields']=="" || intval($_POST['tablefields'])<=0)
 					echo "You must specify the number of table fields.";
 				else if($_POST['tablename']=="")
@@ -2465,8 +2805,8 @@ else //user is authorized - display the main application
 				{
 					$num = intval($_POST['tablefields']);
 					$name = $_POST['tablename'];
-					echo "<form action='".PAGE."?action=table_create&confirm=1' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$name."'/>";
+					echo "<form action='".PAGE."?action=table_create&amp;confirm=1' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
 					echo "<input type='hidden' name='rows' value='".$num."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
@@ -2483,20 +2823,20 @@ else //user is authorized - display the main application
 						echo "<input type='text' name='".$i."_field' style='width:200px;'/>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<select name='".$i."_type' id='".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
+						echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
 						$types = unserialize(DATATYPES);
 						for($z=0; $z<sizeof($types); $z++)
-							echo "<option value='".$types[$z]."'>".$types[$z]."</option>";
+							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
 						echo "</select>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='checkbox' name='".$i."_primarykey' id='".$i."_primarykey' onclick='toggleNull(".$i.");'/> Yes";
+						echo "<input type='checkbox' name='".$i."_primarykey' id='i".$i."_primarykey' onclick='toggleNull(".$i."); toggleAutoincrement(".$i.");'/> Yes";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='checkbox' name='".$i."_autoincrement' id='".$i."_autoincrement'/> Yes";
+						echo "<input type='checkbox' name='".$i."_autoincrement' id='i".$i."_autoincrement'/> Yes";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='checkbox' name='".$i."_notnull' id='".$i."_notnull'/> Yes";
+						echo "<input type='checkbox' name='".$i."_notnull' id='i".$i."_notnull'/> Yes";
 						echo "</td>";
 						echo $tdWithClass;
 						echo "<input type='text' name='".$i."_defaultvalue' style='width:100px;'/>";
@@ -2511,6 +2851,7 @@ else //user is authorized - display the main application
 					echo "</tr>";
 					echo "</table>";
 					echo "</form>";
+					echo "<script type='text/javascript'>window.onload=initAutoincrement;</script>";
 				}
 				break;
 			/////////////////////////////////////////////// perform SQL query on table
@@ -2527,7 +2868,8 @@ else //user is authorized - display the main application
 						if(str_replace(" ", "", str_replace("\n", "", str_replace("\r", "", $query[$i])))!="") //make sure this query is not an empty string
 						{
 							$startTime = microtime(true);
-							if(strpos(strtolower($query[$i]), "select ")!==false)
+							if(strpos(strtolower($query[$i]), "select ")!==false
+								|| strpos(strtolower($query[$i]), "pragma ")!==false)   // pragma often returns rows just like select
 							{
 								$isSelect = true;
 								$result = $db->selectArray($query[$i], "assoc");
@@ -2561,7 +2903,7 @@ else //user is authorized - display the main application
 								echo "There is a problem with the syntax of your query ";
 								echo "(Query was not executed)</b><br/>";
 							}
-							echo "<span style='font-size:11px;'>".$query[$i]."</span>";
+							echo "<span style='font-size:11px;'>".htmlencode($query[$i])."</span>";
 							echo "</div><br/>";
 							if($isSelect)
 							{
@@ -2574,7 +2916,7 @@ else //user is authorized - display the main application
 									for($j=0; $j<sizeof($headers); $j++)
 									{
 										echo "<td class='tdheader'>";
-										echo $headers[$j];
+										echo htmlencode($headers[$j]);
 										echo "</td>";
 									}
 									echo "</tr>";
@@ -2585,7 +2927,7 @@ else //user is authorized - display the main application
 										for($z=0; $z<sizeof($headers); $z++)
 										{
 											echo $tdWithClass;
-											echo $result[$j][$headers[$z]];
+											echo htmlencode($result[$j][$headers[$z]]);
 											echo "</td>";
 										}
 										echo "</tr>";
@@ -2599,61 +2941,61 @@ else //user is authorized - display the main application
 				else
 				{
 					$delimiter = ";";
-					$queryStr = "SELECT * FROM ".$_GET['table']." WHERE 1";
+					$queryStr = "SELECT * FROM ".$db->quote_id($_GET['table'])." WHERE 1";
 				}
 
 				echo "<fieldset>";
-				echo "<legend><b>Run SQL query/queries on database '".$db->getName()."'</b></legend>";
+				echo "<legend><b>Run SQL query/queries on database '".htmlencode($db->getName())."'</b></legend>";
 				if(!isset($_GET['view']))
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=table_sql' method='post'>";
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql' method='post'>";
 				else
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=table_sql&view=1' method='post'>";
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' method='post'>";
 				echo "<div style='float:left; width:70%;'>";
-				echo "<textarea style='width:97%; height:300px;' name='queryval' id='queryval'>".$queryStr."</textarea>";
+				echo "<textarea style='width:97%; height:300px;' name='queryval' id='queryval'>".htmlencode($queryStr)."</textarea>";
 				echo "</div>";
 				echo "<div style='float:left; width:28%; padding-left:10px;'>";
 				echo "Fields<br/>";
 				echo "<select multiple='multiple' style='width:100%;' id='fieldcontainer'>";
-				$query = "PRAGMA table_info('".$_GET['table']."')";
+				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
 				for($i=0; $i<sizeof($result); $i++)
 				{
-					echo "<option value='".$result[$i][1]."'>".$result[$i][1]."</option>";
+					echo "<option value='".htmlencode($result[$i][1])."'>".htmlencode($result[$i][1])."</option>";
 				}
 				echo "</select>";
 				echo "<input type='button' value='<<' onclick='moveFields();' class='btn'/>";
 				echo "</div>";
 				echo "<div style='clear:both;'></div>";
-				echo "Delimiter <input type='text' name='delimiter' value='".$delimiter."' style='width:50px;'/> ";
+				echo "Delimiter <input type='text' name='delimiter' value='".htmlencode($delimiter)."' style='width:50px;'/> ";
 				echo "<input type='submit' name='query' value='Go' class='btn'/>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// empty table
 			case "table_empty":
-				echo "<form action='".PAGE."?action=table_empty&confirm=1' method='post'>";
-				echo "<input type='hidden' name='tablename' value='".$_GET['table']."'/>";
+				echo "<form action='".PAGE."?action=table_empty&amp;confirm=1' method='post'>";
+				echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
-				echo "Are you sure you want to empty the table '".$_GET['table']."'?<br/><br/>";
+				echo "Are you sure you want to empty the table '".htmlencode($_GET['table'])."'?<br/><br/>";
 				echo "<input type='submit' value='Confirm' class='btn'/> ";
 				echo "<a href='".PAGE."'>Cancel</a>";
 				echo "</div>";
 				break;
 			/////////////////////////////////////////////// drop table
 			case "table_drop":
-				echo "<form action='".PAGE."?action=table_drop&confirm=1' method='post'>";
-				echo "<input type='hidden' name='tablename' value='".$_GET['table']."'/>";
+				echo "<form action='".PAGE."?action=table_drop&amp;confirm=1' method='post'>";
+				echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
-				echo "Are you sure you want to drop the table '".$_GET['table']."'?<br/><br/>";
+				echo "Are you sure you want to drop the table '".htmlencode($_GET['table'])."'?<br/><br/>";
 				echo "<input type='submit' value='Confirm' class='btn'/> ";
 				echo "<a href='".PAGE."'>Cancel</a>";
 				echo "</div>";
 				break;
 			/////////////////////////////////////////////// drop view
 			case "view_drop":
-				echo "<form action='".PAGE."?action=view_drop&confirm=1' method='post'>";
-				echo "<input type='hidden' name='viewname' value='".$_GET['table']."'/>";
+				echo "<form action='".PAGE."?action=view_drop&amp;confirm=1' method='post'>";
+				echo "<input type='hidden' name='viewname' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
-				echo "Are you sure you want to drop the view '".$_GET['table']."'?<br/><br/>";
+				echo "Are you sure you want to drop the view '".htmlencode($_GET['table'])."'?<br/><br/>";
 				echo "<input type='submit' value='Confirm' class='btn'/> ";
 				echo "<a href='".PAGE."'>Cancel</a>";
 				echo "</div>";
@@ -2662,7 +3004,7 @@ else //user is authorized - display the main application
 			case "table_export":
 				echo "<form method='post' action='".PAGE."'>";
 				echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>Export</b></legend>";
-				echo "<input type='hidden' value='".$_GET['table']."' name='single_table'/>";
+				echo "<input type='hidden' value='".htmlencode($_GET['table'])."' name='single_table'/>";
 				echo "<input type='radio' name='export_type' checked='checked' value='sql' onclick='toggleExports(\"sql\");'/> SQL";
 				echo "<br/><input type='radio' name='export_type' value='csv' onclick='toggleExports(\"csv\");'/> CSV";
 				echo "</fieldset>";
@@ -2695,10 +3037,9 @@ else //user is authorized - display the main application
 				echo "<div style='clear:both;'></div>";
 				echo "<br/><br/>";
 				echo "<fieldset style='float:left;'><legend><b>Save As</b></legend>";
-				echo "<input type='hidden' name='database_num' value='".$_SESSION[COOKIENAME.'currentDB']."'/>";
 				$file = pathinfo($db->getPath());
 				$name = $file['filename'];
-				echo "<input type='text' name='filename' value='".$name.".".$_GET['table'].".".date("n-j-y").".dump' style='width:400px;'/> <input type='submit' name='export' value='Export' class='btn'/>";
+				echo "<input type='text' name='filename' value='".htmlencode($name).".".htmlencode($_GET['table']).".".date("n-j-y").".dump' style='width:400px;'/> <input type='submit' name='export' value='Export' class='btn'/>";
 				echo "</fieldset>";
 				echo "</form>";
 				break;
@@ -2713,8 +3054,8 @@ else //user is authorized - display the main application
 						echo $importSuccess;
 					echo "</div><br/>";
 				}
-				echo "<form method='post' action='".PAGE."?table=".$_GET['table']."&action=table_import' enctype='multipart/form-data'>";
-				echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>Import into ".$_GET['table']."</b></legend>";
+				echo "<form method='post' action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_import' enctype='multipart/form-data'>";
+				echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>Import into ".htmlencode($_GET['table'])."</b></legend>";
 				echo "<input type='radio' name='import_type' checked='checked' value='sql' onclick='toggleImports(\"sql\");'/> SQL";
 				echo "<br/><input type='radio' name='import_type' value='csv' onclick='toggleImports(\"csv\");'/> CSV";
 				echo "</fieldset>";
@@ -2724,7 +3065,7 @@ else //user is authorized - display the main application
 				echo "</fieldset>";
 				
 				echo "<fieldset style='float:left; max-width:350px; display:none;' id='importoptions_csv'><legend><b>Options</b></legend>";
-				echo "<input type='hidden' value='".$_GET['table']."' name='single_table'/>";
+				echo "<input type='hidden' value='".htmlencode($_GET['table'])."' name='single_table'/>";
 				echo "<div style='float:left;'>Fields terminated by</div>";
 				echo "<input type='text' value=';' name='import_csv_fieldsterminated' style='float:right;'/>";
 				echo "<div style='clear:both;'>";
@@ -2749,35 +3090,35 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// rename table
 			case "table_rename":
-				echo "<form action='".PAGE."?action=table_rename&confirm=1' method='post'>";
-				echo "<input type='hidden' name='oldname' value='".$_GET['table']."'/>";
-				echo "Rename table '".$_GET['table']."' to <input type='text' name='newname' style='width:200px;'/> <input type='submit' value='Rename' name='rename' class='btn'/>";
+				echo "<form action='".PAGE."?action=table_rename&amp;confirm=1' method='post'>";
+				echo "<input type='hidden' name='oldname' value='".htmlencode($_GET['table'])."'/>";
+				echo "Rename table '".htmlencode($_GET['table'])."' to <input type='text' name='newname' style='width:200px;'/> <input type='submit' value='Rename' name='rename' class='btn'/>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// search table
 			case "table_search":
 				if(isset($_GET['done']))
 				{
-					$query = "PRAGMA table_info('".$_GET['table']."')";
+					$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 					$result = $db->selectArray($query);
-					$str = "";
 					$j = 0;
 					$arr = array();
 					for($i=0; $i<sizeof($result); $i++)
 					{
 						$field = $result[$i][1];
-						$operator = $_POST[$field.":operator"];
-						$value = $_POST[$field];
+						$field_index = str_replace(" ","_",$field);
+						$operator = $_POST[$field_index.":operator"];
+						$value = $_POST[$field_index];
 						if($value!="" || $operator=="!= ''" || $operator=="= ''")
 						{
 							if($operator=="= ''" || $operator=="!= ''")
-								$arr[$j] .= $field." ".$operator;
+								$arr[$j] = $db->quote_id($field)." ".$operator;
 							else
-								$arr[$j] .= $field." ".$operator." ".$db->quote($value);
+								$arr[$j] = $db->quote_id($field)." ".$operator." ".$db->quote($value);
 							$j++;
 						}
 					}
-					$query = "SELECT * FROM ".$_GET['table'];
+					$query = "SELECT * FROM ".$db->quote_id($_GET['table']);
 					if(sizeof($arr)>0)
 					{
 						$query .= " WHERE ".$arr[0];
@@ -2804,7 +3145,7 @@ else //user is authorized - display the main application
 						echo "There is a problem with the syntax of your query ";
 						echo "(Query was not executed)</b><br/>";
 					}
-					echo "<span style='font-size:11px;'>".$query."</span>";
+					echo "<span style='font-size:11px;'>".htmlencode($query)."</span>";
 					echo "</div><br/>";
 
 					if(sizeof($result)>0)
@@ -2816,7 +3157,7 @@ else //user is authorized - display the main application
 						for($j=0; $j<sizeof($headers); $j++)
 						{
 							echo "<td class='tdheader'>";
-							echo $headers[$j];
+							echo htmlencode($headers[$j]);
 							echo "</td>";
 						}
 						echo "</tr>";
@@ -2827,7 +3168,7 @@ else //user is authorized - display the main application
 							for($z=0; $z<sizeof($headers); $z++)
 							{
 								echo $tdWithClass;
-								echo $result[$j][$headers[$z]];
+								echo htmlencode($result[$j][$headers[$z]]);
 								echo "</td>";
 							}
 							echo "</tr>";
@@ -2836,19 +3177,19 @@ else //user is authorized - display the main application
 					}
 					
 					if(!isset($_GET['view']))
-						echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_search'>Do Another Search</a>";
+						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search'>Do Another Search</a>";
 					else
-						echo "<a href='".PAGE."?table=".$_GET['table']."&action=table_search&view=1'>Do Another Search</a>";
+						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1'>Do Another Search</a>";
 				}
 				else
 				{
-					$query = "PRAGMA table_info('".$_GET['table']."')";
+					$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 					$result = $db->selectArray($query);
 					
 					if(!isset($_GET['view']))
-						echo "<form action='".PAGE."?table=".$_GET['table']."&action=table_search&done=1' method='post'>";
+						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;done=1' method='post'>";
 					else
-						echo "<form action='".PAGE."?table=".$_GET['table']."&action=table_search&view=1&done=1' method='post'>";
+						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1&amp;done=1' method='post'>";
 						
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
@@ -2872,7 +3213,7 @@ else //user is authorized - display the main application
 					  echo $type;
 					  echo "</td>";
 					  echo $tdWithClassLeft;
-					  echo "<select name='".$field.":operator'>";
+					  echo "<select name='".htmlencode($field).":operator'>";
 					  echo "<option value='='>=</option>";
 					  if($type=="INTEGER" || $type=="REAL")
 					  {
@@ -2896,9 +3237,9 @@ else //user is authorized - display the main application
 					  echo "</td>";
 					  echo $tdWithClassLeft;
 					  if($type=="INTEGER" || $type=="REAL" || $type=="NULL")
-						  echo "<input type='text' name='".$field."'/>";
+						  echo "<input type='text' name='".htmlencode($field)."'/>";
 					  else
-						  echo "<textarea name='".$field."' wrap='hard' rows='1' cols='60'></textarea>";
+						  echo "<textarea name='".htmlencode($field)."' wrap='hard' rows='1' cols='60'></textarea>";
 					  echo "</td>";
 					  echo "</tr>";
 					}
@@ -2933,7 +3274,7 @@ else //user is authorized - display the main application
 					$_SESSION[COOKIENAME.'viewtype'] = $_POST['viewtype'];	
 				}
 				
-				$query = "SELECT Count(*) FROM ".$_GET['table'];
+				$query = "SELECT Count(*) FROM ".$db->quote_id($_GET['table']);
 				$rowCount = $db->select($query);
 				$rowCount = intval($rowCount[0]);
 				$lastPage = intval($rowCount / $_SESSION[COOKIENAME.'numRows']);
@@ -2946,14 +3287,14 @@ else //user is authorized - display the main application
 				if($_POST['startRow']>0)
 				{
 					echo "<div style='float:left; overflow:hidden;'>";
-					echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='0'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&larr;&larr;' name='previous' class='btn'/> ";
 					echo "</form>";
 					echo "</div>";
 					echo "<div style='float:left; overflow:hidden; margin-right:20px;'>";
-					echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($_POST['startRow']-$_SESSION[COOKIENAME.'numRows'])."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&larr;' name='previous_full' class='btn'/> ";
@@ -2963,7 +3304,7 @@ else //user is authorized - display the main application
 				
 				//show certain number buttons
 				echo "<div style='float:left; overflow:hidden;'>";
-				echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+				echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 				echo "<input type='submit' value='Show : ' name='show' class='btn'/> ";
 				echo "<input type='text' name='numRows' style='width:50px;' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 				echo "row(s) starting from record # ";
@@ -2991,14 +3332,14 @@ else //user is authorized - display the main application
 				if(intval($_POST['startRow']+$_SESSION[COOKIENAME.'numRows'])<$rowCount)
 				{
 					echo "<div style='float:left; overflow:hidden; margin-left:20px; '>";
-					echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($_POST['startRow']+$_SESSION[COOKIENAME.'numRows'])."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&rarr;' name='next' class='btn'/> ";
 					echo "</form>";
 					echo "</div>";
 					echo "<div style='float:left; overflow:hidden;'>";
-					echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($rowCount-$remainder)."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&rarr;&rarr;' name='next_full' class='btn'/> ";
@@ -3027,8 +3368,8 @@ else //user is authorized - display the main application
 					$_SESSION[COOKIENAME.'currentTable'] = $_GET['table'];
 				}
 				$_SESSION[COOKIENAME.'numRows'] = $numRows;
-				$query = "SELECT *, ROWID FROM ".$table;
-				$queryDisp = "SELECT * FROM ".$table;
+				$query = "SELECT *, ROWID FROM ".$db->quote_id($table);
+				$queryDisp = "SELECT * FROM ".$db->quote_id($table);
 				$queryAdd = "";
 				if(isset($_SESSION[COOKIENAME.'sort']))
 					$queryAdd .= " ORDER BY ".$_SESSION[COOKIENAME.'sort'];
@@ -3047,22 +3388,22 @@ else //user is authorized - display the main application
 				{
 					echo "<br/><div class='confirm'>";
 					echo "<b>Showing rows ".$startRow." - ".($startRow + sizeof($arr)-1)." (".$total." total, Query took ".$time." sec)</b><br/>";
-					echo "<span style='font-size:11px;'>".$queryDisp."</span>";
+					echo "<span style='font-size:11px;'>".htmlencode($queryDisp)."</span>";
 					echo "</div><br/>";
 					
 					if(isset($_GET['view']))
 					{
-						echo "'".$_GET['table']."' is a view, which means it is a SELECT statement treated as a read-only table. You may not edit or insert records. <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>"; 
+						echo "'".htmlencode($_GET['table'])."' is a view, which means it is a SELECT statement treated as a read-only table. You may not edit or insert records. <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>"; 
 						echo "<br/><br/>";	
 					}
 					
-					$query = "PRAGMA table_info('".$table."')";
+					$query = "PRAGMA table_info(".$db->quote_id($table).")";
 					$result = $db->selectArray($query);
 					$rowidColumn = sizeof($result);
 					
 					if(!isset($_SESSION[COOKIENAME.'viewtype']) || $_SESSION[COOKIENAME.'viewtype']=="table")
 					{
-						echo "<form action='".PAGE."?action=row_editordelete&table=".$table."' method='post' name='checkForm'>";
+						echo "<form action='".PAGE."?action=row_editordelete&amp;table=".urlencode($table)."' method='post' name='checkForm'>";
 						echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 						echo "<tr>";
 						if(!isset($_GET['view']))
@@ -3072,14 +3413,14 @@ else //user is authorized - display the main application
 						{
 							echo "<td class='tdheader'>";
 							if(!isset($_GET['view']))
-								echo "<a href='".PAGE."?action=row_view&table=".$table."&sort=".$result[$i][1];
+								echo "<a href='".PAGE."?action=row_view&amp;table=".urlencode($table)."&amp;sort=".urlencode($result[$i][1]);
 							else
-								echo "<a href='".PAGE."?action=row_view&table=".$table."&view=1&sort=".$result[$i][1];
+								echo "<a href='".PAGE."?action=row_view&amp;table=".urlencode($table)."&amp;view=1&amp;sort=".urlencode($result[$i][1]);
 							if(isset($_SESSION[COOKIENAME.'sort']))
 								$orderTag = ($_SESSION[COOKIENAME.'sort']==$result[$i][1] && $_SESSION[COOKIENAME.'order']=="ASC") ? "DESC" : "ASC";
 							else
 								$orderTag = "ASC";
-							echo "&order=".$orderTag;
+							echo "&amp;order=".$orderTag;
 							echo "'>".$result[$i][1]."</a>";
 							if(isset($_SESSION[COOKIENAME.'sort']) && $_SESSION[COOKIENAME.'sort']==$result[$i][1])
 								echo (($_SESSION[COOKIENAME.'order']=="ASC") ? " <b>&uarr;</b>" : " <b>&darr;</b>");
@@ -3097,14 +3438,14 @@ else //user is authorized - display the main application
 							if(!isset($_GET['view']))
 							{
 								echo $tdWithClass;
-								echo "<input type='checkbox' name='check[]' value='".$pk."' id='check_".$i."'/>";
+								echo "<input type='checkbox' name='check[]' value='".htmlencode($pk)."' id='check_".htmlencode($i)."'/>";
 								echo "</td>";
 								echo $tdWithClass;
 								// -g-> Here, we need to put the ROWID in as the link for both the edit and delete.
-								echo "<a href='".PAGE."?table=".$table."&action=row_editordelete&pk=".$pk."&type=edit'>edit</a>";
+								echo "<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=edit'>edit</a>";
 								echo "</td>";
 								echo $tdWithClass;
-								echo "<a href='".PAGE."?table=".$table."&action=row_editordelete&pk=".$pk."&type=delete' style='color:red;'>delete</a>";
+								echo "<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=delete' style='color:red;'>delete</a>";
 								echo "</td>";
 							}
 							for($j=0; $j<sizeof($result); $j++)
@@ -3115,10 +3456,10 @@ else //user is authorized - display the main application
 									echo $tdWithClassLeft;
 								// -g-> although the inputs do not interpret HTML on the way "in", when we print the contents of the database the interpretation cannot be avoided.
 								// di - i don't understand how SQLite returns null values. I played around with the conditional here and couldn't get empty strings to differeniate from actual null values...
-								if($arr[$i][$j]==NULL)
+								if($arr[$i][$j]===NULL)
 									echo "<i>NULL</i>";
 								else
-									echo $db->formatString($arr[$i][$j]);
+									echo htmlencode($arr[$i][$j]);
 								echo "</td>";
 							}
 							echo "</tr>";
@@ -3181,8 +3522,8 @@ else //user is authorized - display the main application
 							<?php
 							for($i=0; $i<sizeof($arr); $i++)
 							{
-								$label = str_replace("'", "", $db->formatString($arr[$i][$_SESSION[COOKIENAME.$_GET['table'].'chartlabels']]));
-								$value = $db->formatString($arr[$i][$_SESSION[COOKIENAME.$_GET['table'].'chartvalues']]);
+								$label = str_replace("'", "", htmlencode($arr[$i][$_SESSION[COOKIENAME.$_GET['table'].'chartlabels']]));
+								$value = htmlencode($arr[$i][$_SESSION[COOKIENAME.$_GET['table'].'chartvalues']]);
 								
 								if($value==NULL || $value=="")
 									$value = 0;
@@ -3224,7 +3565,7 @@ else //user is authorized - display the main application
 						<div id="chart_div" style="float:left;">If you can read this, it means the chart could not be generated. The data you are trying to view may not be appropriate for a chart.</div>
 						<?php
 						echo "<fieldset style='float:right; text-align:center;' id='chartsettingsbox'><legend><b>Chart Settings</b></legend>";
-						echo "<form action='".PAGE."?action=row_view&table=".$_GET['table']."' method='post'>";
+						echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table'])."' method='post'>";
 						echo "Chart Type: <select name='charttype'>";
 						echo "<option value='bar'";
 						if($_SESSION[COOKIENAME.'charttype']=="bar")
@@ -3244,9 +3585,9 @@ else //user is authorized - display the main application
 						for($i=0; $i<sizeof($result); $i++)
 						{
 							if(isset($_SESSION[COOKIENAME.$_GET['table'].'chartlabels']) && $_SESSION[COOKIENAME.$_GET['table'].'chartlabels']==$i)
-								echo "<option value='".$i."' selected='selected'>".$result[$i][1]."</option>";
+								echo "<option value='".$i."' selected='selected'>".htmlencode($result[$i][1])."</option>";
 							else
-								echo "<option value='".$i."'>".$result[$i][1]."</option>";
+								echo "<option value='".$i."'>".htmlencode($result[$i][1])."</option>";
 						}
 						echo "</select>";
 						echo "<br/><br/>";
@@ -3256,9 +3597,9 @@ else //user is authorized - display the main application
 							if(strtolower($result[$i][2])=="integer" || strtolower($result[$i][2])=="float" || strtolower($result[$i][2])=="real")
 							{
 								if(isset($_SESSION[COOKIENAME.$_GET['table'].'chartvalues']) && $_SESSION[COOKIENAME.$_GET['table'].'chartvalues']==$i)
-									echo "<option value='".$i."' selected='selected'>".$result[$i][1]."</option>";
+									echo "<option value='".$i."' selected='selected'>".htmlencode($result[$i][1])."</option>";
 								else
-									echo "<option value='".$i."'>".$result[$i][1]."</option>";
+									echo "<option value='".$i."'>".htmlencode($result[$i][1])."</option>";
 							}
 						}
 						echo "</select>";
@@ -3276,14 +3617,14 @@ else //user is authorized - display the main application
 				}
 				else
 				{
-					echo "<br/><br/>This table is empty. <a href='".PAGE."?table=".$_GET['table']."&action=row_create'>Click here</a> to insert rows.";
+					echo "<br/><br/>This table is empty. <a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create'>Click here</a> to insert rows.";
 				}
 
 				break;
 			/////////////////////////////////////////////// create row
 			case "row_create":
 				$fieldStr = "";
-				echo "<form action='".PAGE."?table=".$_GET['table']."&action=row_create' method='post'>";
+				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create' method='post'>";
 				echo "Restart insertion with ";
 				echo "<select name='num'>";
 				for($i=1; $i<=40; $i++)
@@ -3298,9 +3639,9 @@ else //user is authorized - display the main application
 				echo "<input type='submit' value='Go' class='btn'/>";
 				echo "</form>";
 				echo "<br/>";
-				$query = "PRAGMA table_info('".$_GET['table']."')";
+				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
-				echo "<form action='".PAGE."?table=".$_GET['table']."&action=row_create&confirm=1' method='post'>";
+				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create&amp;confirm=1' method='post'>";
 				if(isset($_POST['num']))
 					$num = $_POST['num'];
 				else
@@ -3309,7 +3650,7 @@ else //user is authorized - display the main application
 				for($j=0; $j<$num; $j++)
 				{
 					if($j>0)
-						echo "<input type='checkbox' value='ignore' name='".$j.":ignore' id='".$j."_ignore' checked='checked'/> Ignore<br/>";
+						echo "<input type='checkbox' value='ignore' name='".$j.":ignore' id='row_".$j."_ignore' checked='checked'/> Ignore<br/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
 					echo "<td class='tdheader'>Field</td>";
@@ -3322,6 +3663,7 @@ else //user is authorized - display the main application
 					for($i=0; $i<sizeof($result); $i++)
 					{
 						$field = $result[$i][1];
+						$field_html = htmlencode($field);
 						if($j==0)
 							$fieldStr .= ":".$field;
 						$type = strtolower($result[$i][2]);
@@ -3330,18 +3672,18 @@ else //user is authorized - display the main application
 						$tdWithClassLeft = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;'>";
 						echo "<tr>";
 						echo $tdWithClassLeft;
-						echo $field;
+						echo $field_html;
 						echo "</td>";
 						echo $tdWithClassLeft;
 						echo $type;
 						echo "</td>";
 						echo $tdWithClassLeft;
-						echo "<select name='function_".$j."_".$field."' onchange='notNull(\"".$j.":".$field."_null\");'>";
-						echo "<option value=''></option>";
+						echo "<select name='function_".$j."_".$field_html."' onchange='notNull(\"row_".$j."_field_".$i."_null\");'>";
+						echo "<option value=''>&nbsp;</option>";
 						$functions = array_merge(unserialize(FUNCTIONS), $db->getUserFunctions());
 						for($z=0; $z<sizeof($functions); $z++)
 						{
-							echo "<option value='".$functions[$z]."'>".$functions[$z]."</option>";
+							echo "<option value='".htmlencode($functions[$z])."'>".htmlencode($functions[$z])."</option>";
 						}
 						echo "</select>";
 						echo "</td>";
@@ -3349,10 +3691,10 @@ else //user is authorized - display the main application
 						echo $tdWithClassLeft;
 						if($result[$i][3]==0)
 						{
-							if($result[$i][4]==NULL)
-								echo "<input type='checkbox' name='".$j.":".$field."_null' id='".$j.":".$field."_null' checked='checked' onclick='disableText(this, \"".$j.":".$field."\");'/>";
+							if($result[$i][4]===NULL)
+								echo "<input type='checkbox' name='".$j.":".$field_html."_null' id='row_".$j."_field_".$i."_null' checked='checked' onclick='disableText(this, \"row_".$j."_field_".$i."_value\");'/>";
 							else
-								echo "<input type='checkbox' name='".$j.":".$field."_null' id='".$j.":".$field."_null' onclick='disableText(this, \"".$j.":".$field."\");'/>";
+								echo "<input type='checkbox' name='".$j.":".$field_html."_null' id='row_".$j."_field_".$i."_null' onclick='disableText(this, \"row_".$j."_field_".$i."_value\");'/>";
 						}
 						echo "</td>";
 						echo $tdWithClassLeft;
@@ -3362,9 +3704,9 @@ else //user is authorized - display the main application
 						// 19 October 2011: di fixed the bug caused by the previous fix where the null column does not exist anymore
 						$type = strtolower($type);
 						if($scalarField)
-							echo "<input type='text' id='".$j.":".$field."' name='".$j.":".$field."' value='".deQuoteSQL($result[$i][4])."' onblur='changeIgnore(this, \"".$j."_ignore\");' onclick='notNull(\"".$j.":".$field."_null\");'/>";
+							echo "<input type='text' id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' value='".deQuoteSQL($result[$i][4])."' onblur='changeIgnore(this, \"row_".$j."_ignore\");' onclick='notNull(\"row_".$j."_field_".$i."_null\");'/>";
 						else
-							echo "<textarea id='".$j.":".$field."' name='".$j.":".$field."' rows='5' cols='60' onclick='notNull(\"".$j.":".$field."_null\");' onblur='changeIgnore(this, \"".$j."_ignore\");'>".deQuoteSQL($result[$i][4])."</textarea>";
+							echo "<textarea id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' rows='5' cols='60' onclick='notNull(\"row_".$j."_field_".$i."_null\");' onblur='changeIgnore(this, \"row_".$j."_ignore\");'>".deQuoteSQL($result[$i][4])."</textarea>";
             		echo "</td>";
             		echo "</tr>";
 					}
@@ -3376,7 +3718,7 @@ else //user is authorized - display the main application
 					echo "</table><br/>";
 				}
 				$fieldStr = substr($fieldStr, 1);
-				echo "<input type='hidden' name='fields' value='".$fieldStr."'/>";
+				echo "<input type='hidden' name='fields' value='".htmlencode($fieldStr)."'/>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// edit or delete row
@@ -3397,14 +3739,14 @@ else //user is authorized - display the main application
 					echo "<div class='confirm'>";
 					echo "Error: You did not select anything.";
 					echo "</div>";
-					echo "<br/><br/><a href='".PAGE."?table=".$_GET['table']."&action=row_view'>Return</a>";
+					echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>Return</a>";
 				}
 				else
 				{
 					if((isset($_POST['type']) && $_POST['type']=="edit") || (isset($_GET['type']) && $_GET['type']=="edit")) //edit
 					{
-						echo "<form action='".PAGE."?table=".$_GET['table']."&action=row_edit&confirm=1&pk=".$pkVal."' method='post'>";
-						$query = "PRAGMA table_info('".$_GET['table']."')";
+						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_edit&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
+						$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 						$result = $db->selectArray($query);
 
 						//build the POST array of fields
@@ -3412,11 +3754,12 @@ else //user is authorized - display the main application
 						for($j=1; $j<sizeof($result); $j++)
 							$fieldStr .= ":".$result[$j][1];
 
-						echo "<input type='hidden' name='fieldArray' value='".$fieldStr."'/>";
+						echo "<input type='hidden' name='fieldArray' value='".htmlencode($fieldStr)."'/>";
 
 						for($j=0; $j<sizeof($pks); $j++)
 						{
-							$query = "SELECT * FROM ".$_GET['table']." WHERE ROWID = ".$pks[$j];
+							if(!is_numeric($pks[$j])) continue;
+							$query = "SELECT * FROM ".$db->quote_id($_GET['table'])." WHERE ROWID = ".$pks[$j];
 							$result1 = $db->select($query);
 
 							echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
@@ -3443,29 +3786,29 @@ else //user is authorized - display the main application
 								echo $type;
 								echo "</td>";
 								echo $tdWithClassLeft;
-								echo "<select name='function_".$pks[$j]."_".$field."' onchange='notNull(\"".$pks[$j].":".$field."_null\");'>";
+								echo "<select name='function_".htmlencode($pks[$j])."_".htmlencode($field)."' onchange='notNull(\"".htmlencode($pks[$j]).":".htmlencode($field)."_null\");'>";
 								echo "<option value=''></option>";
 								$functions = array_merge(unserialize(FUNCTIONS), $db->getUserFunctions());
 								for($z=0; $z<sizeof($functions); $z++)
 								{
-									echo "<option value='".$functions[$z]."'>".$functions[$z]."</option>";
+									echo "<option value='".htmlencode($functions[$z])."'>".htmlencode($functions[$z])."</option>";
 								}
 								echo "</select>";
 								echo "</td>";
 								echo $tdWithClassLeft;
 								if($result[$i][3]==0)
 								{
-									if($value==NULL)
-										echo "<input type='checkbox' name='".$pks[$j].":".$field."_null' id='".$pks[$j].":".$field."_null' checked='checked'/>";
+									if($value===NULL)
+										echo "<input type='checkbox' name='".htmlencode($pks[$j]).":".htmlencode($field)."_null' id='".htmlencode($pks[$j]).":".htmlencode($field)."_null' checked='checked'/>";
 									else
-										echo "<input type='checkbox' name='".$pks[$j].":".$field."_null' id='".$pks[$j].":".$field."_null'/>";
+										echo "<input type='checkbox' name='".htmlencode($pks[$j]).":".htmlencode($field)."_null' id='".htmlencode($pks[$j]).":".htmlencode($field)."_null'/>";
 								}
 								echo "</td>";
 								echo $tdWithClassLeft;
 								if($type=="INTEGER" || $type=="REAL" || $type=="NULL")
-									echo "<input type='text' name='".$pks[$j].":".$field."' value='".$db->formatString($value)."' onblur='changeIgnore(this, \"".$j."\", \"".$pks[$j].":".$field."_null\")' />";
+									echo "<input type='text' name='".htmlencode($pks[$j]).":".htmlencode($field)."' value='".htmlencode($value)."' onblur='changeIgnore(this, \"".$j."\", \"".htmlencode($pks[$j]).":".htmlencode($field)."_null\")' />";
 								else
-									echo "<textarea name='".$pks[$j].":".$field."' wrap='hard' rows='1' cols='60' onblur='changeIgnore(this, \"".$j."\", \"".$pks[$j].":".$field."_null\")'>".$db->formatString($value)."</textarea>";
+									echo "<textarea name='".htmlencode($pks[$j]).":".htmlencode($field)."' wrap='hard' rows='1' cols='60' onblur='changeIgnore(this, \"".$j."\", \"".htmlencode($pks[$j]).":".htmlencode($field)."_null\")'>".htmlencode($value)."</textarea>";
 								echo "</td>";
 								echo "</tr>";
 							}
@@ -3473,7 +3816,7 @@ else //user is authorized - display the main application
 							echo "<td class='tdheader' style='text-align:right;' colspan='5'>";
 							echo "<input type='submit' name='new_row' value='Insert As New Row' class='btn'/> ";
 							echo "<input type='submit' value='Save Changes' class='btn'/> ";
-							echo "<a href='".PAGE."?table=".$_GET['table']."&action=row_view'>Cancel</a>";
+							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>Cancel</a>";
 							echo "</td>";
 							echo "</tr>";
 							echo "</table>";
@@ -3483,11 +3826,11 @@ else //user is authorized - display the main application
 					}
 					else //delete
 					{
-						echo "<form action='".PAGE."?table=".$_GET['table']."&action=row_delete&confirm=1&pk=".$pkVal."' method='post'>";
+						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_delete&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
 						echo "<div class='confirm'>";
-						echo "Are you sure you want to delete row(s) ".$str." from table '".$_GET['table']."'?<br/><br/>";
+						echo "Are you sure you want to delete row(s) ".htmlencode($str)." from table '".htmlencode($_GET['table'])."'?<br/><br/>";
 						echo "<input type='submit' value='Confirm' class='btn'/> ";
-						echo "<a href='".PAGE."?table=".$_GET['table']."&action=row_view'>Cancel</a>";
+						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>Cancel</a>";
 						echo "</div>";
 					}
 				}
@@ -3495,10 +3838,10 @@ else //user is authorized - display the main application
 			//column actions
 			/////////////////////////////////////////////// view column
 			case "column_view":
-				$query = "PRAGMA table_info('".$_GET['table']."')";
+				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
 
-				echo "<form action='".PAGE."?table=".$_GET['table']."&action=column_delete' method='post' name='checkForm'>";
+				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete' method='post' name='checkForm'>";
 				echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 				echo "<tr>";
 				if(!isset($_GET['view']))
@@ -3535,32 +3878,32 @@ else //user is authorized - display the main application
 					if(!isset($_GET['view']))
 					{
 						echo $tdWithClass;
-						echo "<input type='checkbox' name='check[]' value='".$fieldVal."' id='check_".$i."'/>";
+						echo "<input type='checkbox' name='check[]' value='".htmlencode($fieldVal)."' id='check_".$i."'/>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_edit&pk=".$fieldVal."'>edit</a>";
+						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_edit&amp;pk=".urlencode($fieldVal)."'>edit</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_delete&pk=".$fieldVal."' style='color:red;'>delete</a>";
+						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete&amp;pk=".urlencode($fieldVal)."' style='color:red;'>delete</a>";
 						echo "</td>";
 					}
 					echo $tdWithClass;
-					echo $colVal;
+					echo htmlencode($colVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					echo $fieldVal;
+					echo htmlencode($fieldVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					echo $typeVal;
+					echo htmlencode($typeVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					echo $notnullVal;
+					echo htmlencode($notnullVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					echo $defaultVal;
+					echo htmlencode($defaultVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					echo $primarykeyVal;
+					echo htmlencode($primarykeyVal);
 					echo "</td>";
 					echo "</tr>";
 				}
@@ -3580,13 +3923,13 @@ else //user is authorized - display the main application
 				if(!isset($_GET['view']))
 				{
 					echo "<br/>";
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=column_create' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$_GET['table']."'/>";
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_create' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo "Add <input type='text' name='tablefields' style='width:30px;' value='1'/> field(s) at end of table <input type='submit' value='Go' name='addfields' class='btn'/>";
 					echo "</form>";
 				}
 				
-				$query = "SELECT sql FROM sqlite_master WHERE name='".$_GET['table']."'";
+				$query = "SELECT sql FROM sqlite_master WHERE name=".$db->quote($_GET['table']);
 				$master = $db->selectArray($query);
 				
 				echo "<br/>";
@@ -3597,14 +3940,14 @@ else //user is authorized - display the main application
 				echo "<br/>";
 				echo "<div class='confirm'>";
 				echo "<b>Query used to create this ".$typ."</b><br/>";
-				echo "<span style='font-size:11px;'>".$master[0]['sql']."</span>";
+				echo "<span style='font-size:11px;'>".htmlencode($master[0]['sql'])."</span>";
 				echo "</div>";
 				echo "<br/>";
 				if(!isset($_GET['view']))
 				{
 					echo "<br/><hr/><br/>";
 					//$query = "SELECT * FROM sqlite_master WHERE type='index' AND tbl_name='".$_GET['table']."'";
-					$query = "PRAGMA index_list(".$_GET['table'].")";
+					$query = "PRAGMA index_list(".$db->quote_id($_GET['table']).")";
 					$result = $db->selectArray($query);
 					if(sizeof($result)>0)
 					{
@@ -3626,7 +3969,7 @@ else //user is authorized - display the main application
 							else
 								$unique = "yes";
 	
-							$query = "PRAGMA index_info(".$result[$i]['name'].")";
+							$query = "PRAGMA index_info(".$db->quote_id($result[$i]['name']).")";
 							$info = $db->selectArray($query);
 							$span = sizeof($info);
 	
@@ -3636,7 +3979,7 @@ else //user is authorized - display the main application
 							$tdWithClassLeftSpan = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;' rowspan='".$span."'>";
 							echo "<tr>";
 							echo $tdWithClassSpan;
-							echo "<a href='".PAGE."?table=".$_GET['table']."&action=index_delete&pk=".$result[$i]['name']."' style='color:red;'>delete</a>";
+							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($result[$i]['name'])."' style='color:red;'>delete</a>";
 							echo "</td>";
 							echo $tdWithClassLeftSpan;
 							echo $result[$i]['name'];
@@ -3649,13 +3992,13 @@ else //user is authorized - display the main application
 								if($j!=0)
 									echo "<tr>";
 								echo $tdWithClassLeft;
-								echo $info[$j]['seqno'];
+								echo htmlencode($info[$j]['seqno']);
 								echo "</td>";
 								echo $tdWithClassLeft;
-								echo $info[$j]['cid'];
+								echo htmlencode($info[$j]['cid']);
 								echo "</td>";
 								echo $tdWithClassLeft;
-								echo $info[$j]['name'];
+								echo htmlencode($info[$j]['name']);
 								echo "</td>";
 								echo "</tr>";
 							}
@@ -3663,7 +4006,7 @@ else //user is authorized - display the main application
 						echo "</table><br/><br/>";
 					}
 					
-					$query = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name='".$_GET['table']."' ORDER BY name";
+					$query = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name=".$db->quote($_GET['table'])." ORDER BY name";
 					$result = $db->selectArray($query);
 					//print_r($result);
 					if(sizeof($result)>0)
@@ -3681,27 +4024,27 @@ else //user is authorized - display the main application
 							$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 							echo "<tr>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$_GET['table']."&action=trigger_delete&pk=".$result[$i]['name']."' style='color:red;'>delete</a>";
+							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($result[$i]['name'])."' style='color:red;'>delete</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo $result[$i]['name'];
+							echo htmlencode($result[$i]['name']);
 							echo "</td>";
 							echo $tdWithClass;
-							echo $result[$i]['sql'];
+							echo htmlencode($result[$i]['sql']);
 							echo "</td>";
 						}
 						echo "</table><br/><br/>";
 					}
 					
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=index_create' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$_GET['table']."'/>";
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_create' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo "<br/><div class='tdheader'>";
 					echo "Create an index on <input type='text' name='numcolumns' style='width:30px;' value='1'/> columns <input type='submit' value='Go' name='addindex' class='btn'/>";
 					echo "</div>";
 					echo "</form>";
 					
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=trigger_create' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$_GET['table']."'/>";
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_create' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo "<br/><div class='tdheader'>";
 					echo "Create a new trigger <input type='submit' value='Go' name='addindex' class='btn'/>";
 					echo "</div>";
@@ -3710,7 +4053,7 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// create column
 			case "column_create":
-				echo "<h2>Adding new field(s) to table '".$_POST['tablename']."'</h2>";
+				echo "<h2>Adding new field(s) to table '".htmlencode($_POST['tablename'])."'</h2>";
 				if($_POST['tablefields']=="" || intval($_POST['tablefields'])<=0)
 					echo "You must specify the number of table fields.";
 				else if($_POST['tablename']=="")
@@ -3719,8 +4062,8 @@ else //user is authorized - display the main application
 				{
 					$num = intval($_POST['tablefields']);
 					$name = $_POST['tablename'];
-					echo "<form action='".PAGE."?table=".$_POST['tablename']."&action=column_create&confirm=1' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$name."'/>";
+					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_create&amp;confirm=1' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
 					echo "<input type='hidden' name='rows' value='".$num."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
@@ -3737,17 +4080,17 @@ else //user is authorized - display the main application
 						echo "<input type='text' name='".$i."_field' style='width:200px;'/>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<select name='".$i."_type' id='".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
+						echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
 						$types = unserialize(DATATYPES);
 						for($z=0; $z<sizeof($types); $z++)
-							echo "<option value='".$types[$z]."'>".$types[$z]."</option>";
+							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
 						echo "</select>";
 						echo "</td>";
 						echo $tdWithClass;
 						echo "<input type='checkbox' name='".$i."_primarykey'/> Yes";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='checkbox' name='".$i."_autoincrement' id='".$i."_autoincrement'/> Yes";
+						echo "<input type='checkbox' name='".$i."_autoincrement' id='i".$i."_autoincrement'/> Yes";
 						echo "</td>";
 						echo $tdWithClass;
 						echo "<input type='checkbox' name='".$i."_notnull'/> Yes";
@@ -3760,7 +4103,7 @@ else //user is authorized - display the main application
 					echo "<tr>";
 					echo "<td class='tdheader' style='text-align:right;' colspan='6'>";
 					echo "<input type='submit' value='Add Field(s)' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".$_POST['tablename']."&action=column_view'>Cancel</a>";
+					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>Cancel</a>";
 					echo "</td>";
 					echo "</tr>";
 					echo "</table>";
@@ -3771,35 +4114,37 @@ else //user is authorized - display the main application
 			case "column_delete":
 				if(isset($_POST['check']))
 					$pks = $_POST['check'];
-				else if(isset($_GET['pk']))
+				elseif(isset($_GET['pk']))
 					$pks = array($_GET['pk']);
-				$str = $pks[0];
-				$pkVal = $pks[0];
-				for($i=1; $i<sizeof($pks); $i++)
-				{
-					$str .= ", ".$pks[$i];
-					$pkVal .= ":".$pks[$i];
-				}
-				if($str=="") //nothing was selected so show an error
+				else $pks = array();
+				
+				if(sizeof($pks)==0) //nothing was selected so show an error
 				{
 					echo "<div class='confirm'>";
 					echo "Error: You did not select anything.";
 					echo "</div>";
-					echo "<br/><br/><a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Return</a>";
+					echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Return</a>";
 				}
 				else
 				{
-					echo "<form action='".PAGE."?table=".$_GET['table']."&action=column_delete&confirm=1&pk=".$pkVal."' method='post'>";
+					$str = $pks[0];
+					$pkVal = $pks[0];
+					for($i=1; $i<sizeof($pks); $i++)
+					{
+						$str .= ", ".$pks[$i];
+						$pkVal .= ":".$pks[$i];
+					}
+					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
 					echo "<div class='confirm'>";
-					echo "Are you sure you want to delete column(s) ".$str." from table '".$_GET['table']."'?<br/><br/>";
+					echo "Are you sure you want to delete column(s) ".htmlencode($str)." from table '".htmlencode($_GET['table'])."'?<br/><br/>";
 					echo "<input type='submit' value='Confirm' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Cancel</a>";
+					echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Cancel</a>";
 					echo "</div>";
 				}
 				break;
 			/////////////////////////////////////////////// edit column
 			case "column_edit":
-				echo "<h2>Editing column '".$_GET['pk']."' on table '".$_GET['table']."'</h2>";
+				echo "<h2>Editing column '".htmlencode($_GET['pk'])."' on table '".htmlencode($_GET['table'])."'</h2>";
 				echo "Due to the limitations of SQLite, only the field name and data type can be modified.<br/><br/>";
 				if(!isset($_GET['pk']))
 					echo "You must specify a column.";
@@ -3807,7 +4152,7 @@ else //user is authorized - display the main application
 					echo "You must specify a table name.";
 				else
 				{
-					$query = "PRAGMA table_info('".$_GET['table']."')";
+					$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 					$result = $db->selectArray($query);
 
 					for($i=0; $i<sizeof($result); $i++)
@@ -3825,9 +4170,9 @@ else //user is authorized - display the main application
 					}
 					
 					$name = $_GET['table'];
-					echo "<form action='".PAGE."?table=".$name."&action=column_edit&confirm=1' method='post'>";
-					echo "<input type='hidden' name='tablename' value='".$name."'/>";
-					echo "<input type='hidden' name='oldvalue' value='".$_GET['pk']."'/>";
+					echo "<form action='".PAGE."?table=".urlencode($name)."&amp;action=column_edit&amp;confirm=1' method='post'>";
+					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
+					echo "<input type='hidden' name='oldvalue' value='".htmlencode($_GET['pk'])."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
 					//$headings = array("Field", "Type", "Primary Key", "Autoincrement", "Not NULL", "Default Value");
@@ -3840,17 +4185,17 @@ else //user is authorized - display the main application
 					$tdWithClass = "<td class='td" . ($i%2 ? "1" : "2") . "'>";
 					echo "<tr>";
 					echo $tdWithClass;
-					echo "<input type='text' name='".$i."_field' style='width:200px;' value='".$fieldVal."'/>";
+					echo "<input type='text' name='".$i."_field' style='width:200px;' value='".htmlencode($fieldVal)."'/>";
 					echo "</td>";
 					echo $tdWithClass;
-					echo "<select name='".$i."_type' id='".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
+					echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
 					$types = unserialize(DATATYPES);
 					for($z=0; $z<sizeof($types); $z++)
 					{
 						if($types[$z]==$typeVal)
-							echo "<option value='".$types[$z]."' selected='selected'>".$types[$z]."</option>";
+							echo "<option value='".htmlencode($types[$z])."' selected='selected'>".htmlencode($types[$z])."</option>";
 						else
-							echo "<option value='".$types[$z]."'>".$types[$z]."</option>";
+							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
 					}
 					echo "</select>";
 					echo "</td>";
@@ -3882,7 +4227,7 @@ else //user is authorized - display the main application
 					echo "<tr>";
 					echo "<td class='tdheader' style='text-align:right;' colspan='6'>";
 					echo "<input type='submit' value='Save Changes' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Cancel</a>";
+					echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Cancel</a>";
 					echo "</td>";
 					echo "</tr>";
 					echo "</table>";
@@ -3891,32 +4236,32 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// delete index
 			case "index_delete":
-				echo "<form action='".PAGE."?table=".$_GET['table']."&action=index_delete&pk=".$_GET['pk']."&confirm=1' method='post'>";
+				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
 				echo "<div class='confirm'>";
-				echo "Are you sure you want to delete index '".$_GET['pk']."'?<br/><br/>";
+				echo "Are you sure you want to delete index '".htmlencode($_GET['pk'])."'?<br/><br/>";
 				echo "<input type='submit' value='Confirm' class='btn'/> ";
-				echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Cancel</a>";
+				echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Cancel</a>";
 				echo "</div>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// delete trigger
 			case "trigger_delete":
-				echo "<form action='".PAGE."?table=".$_GET['table']."&action=trigger_delete&pk=".$_GET['pk']."&confirm=1' method='post'>";
+				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
 				echo "<div class='confirm'>";
-				echo "Are you sure you want to delete trigger '".$_GET['pk']."'?<br/><br/>";
+				echo "Are you sure you want to delete trigger '".htmlencode($_GET['pk'])."'?<br/><br/>";
 				echo "<input type='submit' value='Confirm' class='btn'/> ";
-				echo "<a href='".PAGE."?table=".$_GET['table']."&action=column_view'>Cancel</a>";
+				echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>Cancel</a>";
 				echo "</div>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// create trigger
 			case "trigger_create":
-				echo "<h2>Creating new trigger on table '".$_POST['tablename']."'</h2>";
+				echo "<h2>Creating new trigger on table '".htmlencode($_POST['tablename'])."'</h2>";
 				if($_POST['tablename']=="")
 					echo "You must specify a table name.";
 				else
 				{
-					echo "<form action='".PAGE."?table=".$_POST['tablename']."&action=trigger_create&confirm=1' method='post'>";
+					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=trigger_create&amp;confirm=1' method='post'>";
 					echo "Trigger name: <input type='text' name='trigger_name'/><br/><br/>";
 					echo "<fieldset><legend>Database Event</legend>";
 					echo "Before/After: ";
@@ -3943,22 +4288,22 @@ else //user is authorized - display the main application
 					echo "<textarea name='triggersteps' style='width:500px; height:100px;'></textarea>";
 					echo "</fieldset><br/><br/>";
 					echo "<input type='submit' value='Create Trigger' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".$_POST['tablename']."&action=column_view'>Cancel</a>";
+					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>Cancel</a>";
 					echo "</form>";
 				}
 				break;
 			/////////////////////////////////////////////// create index
 			case "index_create":
-				echo "<h2>Creating new index on table '".$_POST['tablename']."'</h2>";
+				echo "<h2>Creating new index on table '".htmlencode($_POST['tablename'])."'</h2>";
 				if($_POST['numcolumns']=="" || intval($_POST['numcolumns'])<=0)
 					echo "You must specify the number of table fields.";
 				else if($_POST['tablename']=="")
 					echo "You must specify a table name.";
 				else
 				{
-					echo "<form action='".PAGE."?table=".$_POST['tablename']."&action=index_create&confirm=1' method='post'>";
+					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=index_create&amp;confirm=1' method='post'>";
 					$num = intval($_POST['numcolumns']);
-					$query = "PRAGMA table_info('".$_POST['tablename']."')";
+					$query = "PRAGMA table_info(".$db->quote_id($_POST['tablename']).")";
 					$result = $db->selectArray($query);
 					echo "<fieldset><legend>Define index properties</legend>";
 					echo "Index name: <input type='text' name='name'/><br/>";
@@ -3975,7 +4320,7 @@ else //user is authorized - display the main application
 						echo "<select name='".$i."_field'>";
 						echo "<option value=''>--Ignore--</option>";
 						for($j=0; $j<sizeof($result); $j++)
-							echo "<option value='".$result[$j][1]."'>".$result[$j][1]."</option>";
+							echo "<option value='".htmlencode($result[$j][1])."'>".htmlencode($result[$j][1])."</option>";
 						echo "</select> ";
 						echo "<select name='".$i."_order'>";
 						echo "<option value=''></option>";
@@ -3987,7 +4332,7 @@ else //user is authorized - display the main application
 					echo "<br/><br/>";
 					echo "<input type='hidden' name='num' value='".$num."'/>";
 					echo "<input type='submit' value='Create Index' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".$_POST['tablename']."&action=column_view'>Cancel</a>";
+					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>Cancel</a>";
 					echo "</form>";
 				}
 				break;
@@ -4059,8 +4404,33 @@ else //user is authorized - display the main application
 			$queryVersion = $db->select($query);
 			$realVersion = $queryVersion['sqlite_version'];
 			
-			echo "<b>Database name</b>: ".$db->getName()."<br/>";
-			echo "<b>Path to database</b>: ".$db->getPath()."<br/>";
+			if(isset($dbexists))
+			{
+				echo "<div class='confirm' style='margin:10px 20px;'>";
+				echo "Error: A database, other file or directory of the name '".htmlencode($dbname)."' already exists.";
+				echo "</div><br/>";
+			}
+			
+			if(isset($extension_not_allowed))
+			{
+				echo "<div class='confirm' style='margin:10px 20px;'>";
+				echo "The extension you provided for the new database is not within the list of allowed extensions. Please use one of the following extensions: ";
+				foreach($allowed_extensions as $ext_i => $extension)
+					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo '<br />You can add extensions to this list by opening phpliteadmin.php and adding your extension to $allowed_extensions in the configuration.';
+				echo "</div><br/>";
+			}
+
+			
+			if(SYSTEMPASSWORD=="admin")
+			{
+				echo "<div class='confirm' style='margin:20px;'>";
+				echo "You are using the default password, which can be dangerous. You can change it easily at the top of phpliteadmin.php<br />You have been warned.";
+				echo "</div>";
+			}
+			
+			echo "<b>Database name</b>: ".htmlencode($db->getName())."<br/>";
+			echo "<b>Path to database</b>: ".htmlencode($db->getPath())."<br/>";
 			echo "<b>Size of database</b>: ".$db->getSize()."<br/>";
 			echo "<b>Database last modified</b>: ".$db->getDate()."<br/>";
 			echo "<b>SQLite version</b>: ".$realVersion."<br/>";
@@ -4087,7 +4457,7 @@ else //user is authorized - display the main application
 
 			$j = 0;
 			for($i=0; $i<sizeof($result); $i++)
-				if(substr($result[$i]['name'], 0, 7)!="sqldite_" && $result[$i]['name']!="")
+				if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
 					$j++;
 
 			if($j==0)
@@ -4103,7 +4473,7 @@ else //user is authorized - display the main application
 					$orderTag = ($_SESSION[COOKIENAME.'sort']=="type" && $_SESSION[COOKIENAME.'order']=="ASC") ? "DESC" : "ASC";
 				else
 					$orderTag = "ASC";
-				echo "&order=".$orderTag;
+				echo "&amp;order=".$orderTag;
 				echo "'>Type</a> ".helpLink("Tables vs. Views");
 				if(isset($_SESSION[COOKIENAME.'sort']) && $_SESSION[COOKIENAME.'sort']=="type")
 					echo (($_SESSION[COOKIENAME.'order']=="ASC") ? " <b>&uarr;</b>" : " <b>&darr;</b>");
@@ -4115,7 +4485,7 @@ else //user is authorized - display the main application
 					$orderTag = ($_SESSION[COOKIENAME.'sort']=="name" && $_SESSION[COOKIENAME.'order']=="ASC") ? "DESC" : "ASC";
 				else
 					$orderTag = "ASC";
-				echo "&order=".$orderTag;
+				echo "&amp;order=".$orderTag;
 				echo "'>Name</a>";
 				if(isset($_SESSION[COOKIENAME.'sort']) && $_SESSION[COOKIENAME.'sort']=="name")
 					echo (($_SESSION[COOKIENAME.'order']=="ASC") ? " <b>&uarr;</b>" : " <b>&darr;</b>");
@@ -4128,7 +4498,7 @@ else //user is authorized - display the main application
 				$totalRecords = 0;
 				for($i=0; $i<sizeof($result); $i++)
 				{
-					if(substr($result[$i]['name'], 0, 7)!="sqldite_" && $result[$i]['name']!="")
+					if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
 					{
 						$records = $db->numRows($result[$i]['name']);
 						$totalRecords += $records;
@@ -4142,37 +4512,37 @@ else //user is authorized - display the main application
 							echo "Table";
 							echo "</td>";
 							echo $tdWithClassLeft;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=row_view'>".$result[$i]['name']."</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>".htmlencode($result[$i]['name'])."</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=row_view'>Browse</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>Browse</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=column_view'>Structure</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=column_view'>Structure</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_sql'>SQL</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_sql'>SQL</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_search'>Search</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_search'>Search</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=row_create'>Insert</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_create'>Insert</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_export'>Export</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_export'>Export</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_import'>Import</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_import'>Import</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_rename'>Rename</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_rename'>Rename</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_empty' style='color:red;'>Empty</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_empty' style='color:red;'>Empty</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_drop' style='color:red;'>Drop</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_drop' style='color:red;'>Drop</a>";
 							echo "</td>";
 							echo $tdWithClass;
 							echo $records;
@@ -4186,37 +4556,37 @@ else //user is authorized - display the main application
 							echo "View";
 							echo "</td>";
 							echo $tdWithClassLeft;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=row_view&view=1'>".$result[$i]['name']."</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>".htmlencode($result[$i]['name'])."</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=row_view&view=1'>Browse</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>Browse</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=column_view&view=1'>Structure</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=column_view&amp;view=1'>Structure</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_sql&view=1'>SQL</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_sql&amp;view=1'>SQL</a>";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_search&view=1'>Search</a>";
-							echo "</td>";
-							echo $tdWithClass;
-							echo "";
-							echo "</td>";
-							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=table_export&view=1'>Export</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_search&amp;view=1'>Search</a>";
 							echo "</td>";
 							echo $tdWithClass;
 							echo "";
 							echo "</td>";
 							echo $tdWithClass;
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_export&amp;view=1'>Export</a>";
+							echo "</td>";
+							echo $tdWithClass;
+							echo "";
+							echo "</td>";
+							echo $tdWithClass;
 							echo "";
 							echo "</td>";
 							echo $tdWithClass;
 							echo "";
 							echo "</td>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".$result[$i]['name']."&action=view_drop&view=1' style='color:red;'>Drop</a>";
+							echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=view_drop&amp;view=1' style='color:red;'>Drop</a>";
 							echo "</td>";
 							echo $tdWithClass;
 							echo $records;
@@ -4233,7 +4603,7 @@ else //user is authorized - display the main application
 				echo "<br/>";
 			}
 			echo "<fieldset>";
-			echo "<legend><b>Create new table on database '".$db->getName()."'</b></legend>";
+			echo "<legend><b>Create new table on database '".htmlencode($db->getName())."'</b></legend>";
 			echo "<form action='".PAGE."?action=table_create' method='post'>";
 			echo "Name: <input type='text' name='tablename' style='width:200px;'/> ";
 			echo "Number of Fields: <input type='text' name='tablefields' style='width:90px;'/> ";
@@ -4242,8 +4612,8 @@ else //user is authorized - display the main application
 			echo "</fieldset>";
 			echo "<br/>";
 			echo "<fieldset>";
-			echo "<legend><b>Create new view on database '".$db->getName()."'</b></legend>";
-			echo "<form action='".PAGE."?action=view_create&confirm=1' method='post'>";
+			echo "<legend><b>Create new view on database '".htmlencode($db->getName())."'</b></legend>";
+			echo "<form action='".PAGE."?action=view_create&amp;confirm=1' method='post'>";
 			echo "Name: <input type='text' name='viewname' style='width:200px;'/> ";
 			echo "Select Statement ".helpLink("Writing a Select Statement for a New View").": <input type='text' name='select' style='width:400px;'/> ";
 			echo "<input type='submit' name='createtable' value='Go' class='btn'/>";
@@ -4299,7 +4669,7 @@ else //user is authorized - display the main application
 							echo "There is a problem with the syntax of your query ";
 							echo "(Query was not executed)</b><br/>";
 						}
-						echo "<span style='font-size:11px;'>".$query[$i]."</span>";
+						echo "<span style='font-size:11px;'>".htmlencode($query[$i])."</span>";
 						echo "</div><br/>";
 						if($isSelect)
 						{
@@ -4312,7 +4682,7 @@ else //user is authorized - display the main application
 								for($j=0; $j<sizeof($headers); $j++)
 								{
 									echo "<td class='tdheader'>";
-									echo $headers[$j];
+									echo htmlencode($headers[$j]);
 									echo "</td>";
 								}
 								echo "</tr>";
@@ -4323,7 +4693,7 @@ else //user is authorized - display the main application
 									for($z=0; $z<sizeof($headers); $z++)
 									{
 										echo $tdWithClass;
-										echo $result[$j][$headers[$z]];
+										echo htmlencode($result[$j][$headers[$z]]);
 										echo "</td>";
 									}
 									echo "</tr>";
@@ -4341,12 +4711,13 @@ else //user is authorized - display the main application
 			}
 
 			echo "<fieldset>";
-			echo "<legend><b>Run SQL query/queries on database '".$db->getName()."'</b></legend>";
+			echo "<legend><b>Run SQL query/queries on database '".htmlencode($db->getName())."'</b></legend>";
 			echo "<form action='".PAGE."?view=sql' method='post'>";
-			echo "<textarea style='width:100%; height:300px;' name='queryval'>".$queryStr."</textarea>";
-			echo "Delimiter <input type='text' name='delimiter' value='".$delimiter."' style='width:50px;'/> ";
+			echo "<textarea style='width:100%; height:300px;' name='queryval'>".htmlencode($queryStr)."</textarea>";
+			echo "Delimiter <input type='text' name='delimiter' value='".htmlencode($delimiter)."' style='width:50px;'/> ";
 			echo "<input type='submit' name='query' value='Go' class='btn'/>";
 			echo "</form>";
+			echo "</fieldset>";
 		}
 		else if($view=="vacuum")
 		{
@@ -4355,11 +4726,11 @@ else //user is authorized - display the main application
 				$query = "VACUUM";
 				$db->query($query);
 				echo "<div class='confirm'>";
-				echo "The database, '".$db->getName()."', has been VACUUMed.";
+				echo "The database, '".htmlencode($db->getName())."', has been VACUUMed.";
 				echo "</div><br/>";
 			}
 			echo "<form method='post' action='".PAGE."?view=vacuum'>";
-			echo "Large databases sometimes need to be VACUUMed to reduce their footprint on the server. Click the button below to VACUUM the database, '".$db->getName()."'.";
+			echo "Large databases sometimes need to be VACUUMed to reduce their footprint on the server. Click the button below to VACUUM the database, '".htmlencode($db->getName())."'.";
 			echo "<br/><br/>";
 			echo "<input type='submit' value='VACUUM' name='vacuum' class='btn'/>";
 			echo "</form>";
@@ -4374,7 +4745,7 @@ else //user is authorized - display the main application
 			for($i=0; $i<sizeof($result); $i++)
 			{
 				if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
-					echo "<option value='".$result[$i]['name']."' selected='selected'>".$result[$i]['name']."</option>";
+					echo "<option value='".htmlencode($result[$i]['name'])."' selected='selected'>".htmlencode($result[$i]['name'])."</option>";
 			}
 			echo "</select>";
 			echo "<br/><br/>";
@@ -4410,10 +4781,9 @@ else //user is authorized - display the main application
 			echo "<div style='clear:both;'></div>";
 			echo "<br/><br/>";
 			echo "<fieldset style='float:left;'><legend><b>Save As</b></legend>";
-			echo "<input type='hidden' name='database_num' value='".$_SESSION[COOKIENAME.'currentDB']."'/>";
 			$file = pathinfo($db->getPath());
 			$name = $file['filename'];
-			echo "<input type='text' name='filename' value='".$name.".".date("n-j-y").".dump' style='width:400px;'/> <input type='submit' name='export' value='Export' class='btn'/>";
+			echo "<input type='text' name='filename' value='".htmlencode($name).".".date("n-j-y").".dump' style='width:400px;'/> <input type='submit' name='export' value='Export' class='btn'/>";
 			echo "</fieldset>";
 			echo "</form>";
 		}
@@ -4447,7 +4817,7 @@ else //user is authorized - display the main application
 			for($i=0; $i<sizeof($result); $i++)
 			{
 				if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
-					echo "<option value='".$result[$i]['name']."'>".$result[$i]['name']."</option>";
+					echo "<option value='".htmlencode($result[$i]['name'])."'>".htmlencode($result[$i]['name'])."</option>";
 			}
 			echo "</select>";
 			echo "<div style='clear:both;'>";
@@ -4475,32 +4845,41 @@ else //user is authorized - display the main application
 		}
 		else if($view=="rename")
 		{
+			if(isset($extension_not_allowed))
+			{
+				echo "<div class='confirm'>";
+				echo "The new extension you provided for the database is not within the list of allowed extensions. Please use one of the following extensions: ";
+				foreach($allowed_extensions as $ext_i => $extension)
+					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo '<br />You can add extensions to this list by opening phpliteadmin.php and adding your extension to $allowed_extensions in the configuration.';
+				echo "</div><br/>";
+			}
 			if(isset($dbexists))
 			{
 				echo "<div class='confirm'>";
 				if($oldpath==$newpath)
-					echo "Error: You didn't change the value dumbass.";
+					echo "Error: You didn't change the value dumbass ;-)";
 				else
-					echo "Error: A database of the name '".$newpath."' already exists.";
+					echo "Error: A database, other file or directory of the name '".htmlencode($newpath)."' already exists.";
 				echo "</div><br/>";
 			}
 			if(isset($justrenamed))
 			{
 				echo "<div class='confirm'>";
-				echo "Database '".$oldpath."' has been renamed to '".$newpath."'.";
+				echo "Database '".htmlencode($oldpath)."' has been renamed to '".htmlencode($newpath)."'.";
 				echo "</div><br/>";
 			}
-			echo "<form action='".PAGE."?view=rename&database_rename=1' method='post'>";
-			echo "<input type='hidden' name='oldname' value='".$db->getPath()."'/>";
-			echo "Rename database '".$db->getPath()."' to <input type='text' name='newname' style='width:200px;' value='".$db->getPath()."'/> <input type='submit' value='Rename' name='rename' class='btn'/>";
+			echo "<form action='".PAGE."?view=rename&amp;database_rename=1' method='post'>";
+			echo "<input type='hidden' name='oldname' value='".htmlencode($db->getPath())."'/>";
+			echo "Rename database '".htmlencode($db->getPath())."' to <input type='text' name='newname' style='width:200px;' value='".htmlencode($db->getPath())."'/> <input type='submit' value='Rename' name='rename' class='btn'/>";
 			echo "</form>";	
 		}
 		else if($view=="delete")
 		{
 			echo "<form action='".PAGE."?database_delete=1' method='post'>";
 			echo "<div class='confirm'>";
-			echo "Are you sure you want to delete the database '".$db->getPath()."'?<br/><br/>";
-			echo "<input name='database_delete' value='".$db->getPath()."' type='hidden'/>";
+			echo "Are you sure you want to delete the database '".htmlencode($db->getPath())."'?<br/><br/>";
+			echo "<input name='database_delete' value='".htmlencode($db->getPath())."' type='hidden'/>";
 			echo "<input type='submit' value='Confirm' class='btn'/> ";
 			echo "<a href='".PAGE."'>Cancel</a>";
 			echo "</div>";
