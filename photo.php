@@ -40,7 +40,7 @@ foreach($result as $row)
 {
 	print "<tr><td><h2>".$row['title']."</h2></td></tr>";
 	print "<tr><td><p>".$row['description']."</p></td></tr>";
-	print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags' title='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'title='Permalink'></a> <a href='".$row['original']."'><img src='images/graphic-design.png' alt='Original' title='Original'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap' title='Show on OpenStreetMap'></a></p></td></tr>";
+	print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags' title='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'title='Permalink'></a> <a href='".$row['original']."'><img src='images/graphic-design.png' alt='Original' title='Original'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap' title='Show on OpenStreetMap'></a> <strong>Views:</strong><em> ".$row['count']."</p></td></tr>";
 	print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
