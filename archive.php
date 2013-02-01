@@ -33,12 +33,12 @@ $db = new PDO('sqlite:pygmyfoto.sqlite');
 print "<center><a href='index.php'>Home</a> &#10034; <a href='archive.php'><strong>Archive</strong></a> &#10034; <a href='stats.php'>Stats</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
 
 print "<table border=0>";
-$result = $db->query("SELECT id, title, description, tags, exif, osm FROM photos WHERE published = '0' ORDER BY dt DESC");
+$result = $db->query("SELECT id, title, description, tags, exif, osm, original FROM photos WHERE published = '0' ORDER BY dt DESC");
 foreach($result as $row)
 {
 	print "<tr><td><h2><a class='title' href='photo.php?id=".$row['id']."'>".$row['title']."</h2></a></td></tr>";
 	print "<tr><td><p>".$row['description']."</p></td></tr>";
-	print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap'></a> <a href='publish.php?id=".$row['id']."'><img src='images/folder.png' alt='Publish'></a></p></td></tr>";
+	print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags' title='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'title='Permalink'></a> <a href='".$row['original']."'><img src='images/graphic-design.png' alt='Original' title='Original'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap' title='Show on OpenStreetMap'></a></p></td></tr>";
 	print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 }
 print "</table>";
