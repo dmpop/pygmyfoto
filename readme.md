@@ -10,7 +10,7 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web.
 
 Install the required packages. On Debian and Ubuntu, this can be done by running the following command as root:
 
-	apt-get install apache2 php5 sqlite3 php5-sqlite imagemagick libimage-exiftool-perl
+	apt-get install apache2 php5 sqlite3 php5-sqlite imagemagick libimage-exiftool-perl git
 
 Enable the PDO SQLite driver in Apache. To do this on Ubuntu or Debian-based Linux distributions, open then the *php.ini* file for editing in a text editor:
 
@@ -29,4 +29,4 @@ Grab the latest release of Pygmyfoto, unpack the downloaded archive, and move th
 ##Known issues
 
 * When using the *pygmyfoto.sh* script, single quotes must be escaped manually. For example: *It''s complicated* instead of *It's complicated*.
-* The publish/unpublish functionality is not protected in any way.
+* The *publish.php* and *unpublish.php* scripts have very weak password protection.
