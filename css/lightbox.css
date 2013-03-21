@@ -1,9 +1,10 @@
 /* line 6, ../sass/lightbox.sass */
 #lightboxOverlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 90;
+  width: 100%;
   background-color: black;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
   opacity: 0.85;
