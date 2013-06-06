@@ -12,11 +12,12 @@
 	</head>
 
 	<body>
-	
-	<div id="content">
-	<h1>P * y * g * m * y * f * o * t * o</h1>
 
 <?php
+
+include 'config.php';
+
+print "<div id='content'><h1>$title</h1>";
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 
@@ -32,8 +33,9 @@ print "</table>";
 
 $db = NULL;
 
+print "<div class='footer'>$footer</div>"
+
 ?>
-	<div class="footer">Powered by Pygmyfoto</div>
 	</div>
 	</body>
 

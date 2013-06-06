@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <!-- http://lokeshdhakar.com/projects/lightbox2/ -->
 
@@ -18,9 +18,6 @@
 	</head>
 
 	<body>
-	
-	<div id="content">
-	<h1>P * y * g * m * y * f * o * t * o</h1>
 
 	<script type="text/javascript">
 	$(function() {
@@ -29,6 +26,10 @@
 	</script>
 
 <?php
+
+include 'config.php';
+
+print "<div id='content'><h1>$title</h1>";
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 
@@ -47,10 +48,11 @@ print "</table>";
 
 $db = NULL;
 
-print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>"
+print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
+
+print "<div class='footer'>$footer</div>"
 
 ?>
-	<div class="footer">Powered by Pygmyfoto</div>
 	</div>
 	</body>
 </html>

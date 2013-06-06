@@ -16,9 +16,6 @@
 	</head>
 	
 	<body>
-	
-	<div id="content">
-	<h1>P * y * g * m * y * f * o * t * o</h1>
 
 	<script type="text/javascript">
 	$(function() {
@@ -27,6 +24,10 @@
 	</script>
 
 <?php
+
+include 'config.php';
+
+print "<div id='content'><h1>$title</h1>";
 
 $id = $_GET['id'];
 
@@ -49,10 +50,11 @@ $db->query("UPDATE photos SET count = count + 1 WHERE id='$id'");
 
 $db = NULL;
 
-print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>"
+print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
+
+print "<div class='footer'>$footer</div>"
 
 ?>
-	<div class="footer">Powered by Pygmyfoto</div>
 	</div>
 	</body>
 </html>
