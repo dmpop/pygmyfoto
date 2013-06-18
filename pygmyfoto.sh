@@ -37,18 +37,18 @@ read TAGS
 APERTURE=$(exiftool -S -t -fnumber $FPATH)
 if [ -z $APERTURE ];
       then
-      APERTURE=" - "
+      APERTURE="-"
       else APERTURE="f/"$APERTURE
 fi
 ISO=$(exiftool -S -t -iso $FPATH)
 if [ -z $ISO ];
       then
-      ISO=" - "
+      ISO="-"
 fi
 SHUTTERSPEED=$(exiftool -S -t -shutterspeed $FPATH)
 if [ -z $SHUTTERSPEED ];
       then
-      SHUTTERSPEED=" - "
+      SHUTTERSPEED="-"
       else SHUTTERSPEED=$SHUTTERSPEED" sec."
 fi
 DATE=$(date "+%F")
