@@ -35,14 +35,27 @@ echo "Tags:"
 read TAGS
 
 APERTURE=$(exiftool -S -t -fnumber $FPATH)
+if [ -z $APERTURE ];
+      then
+      APERTURE=" - "
+      else APERTURE="f/"$APERTURE
+fi
 ISO=$(exiftool -S -t -iso $FPATH)
+if [ -z $ISO ];
+      then
+      ISO=" - "
+fi
 SHUTTERSPEED=$(exiftool -S -t -shutterspeed $FPATH)
+if [ -z $SHUTTERSPEED ];
+      then
+      SHUTTERSPEED=" - "
+fi
 DATE=$(date "+%F")
 
 GPSLAT=$(exiftool -S -t -n -gpslatitude $FPATH)
 GPSLON=$(exiftool -S -t -n -gpslongitude $FPATH)
 
-EXIF="Shutter speed: $SHUTTERSPEED sec. Aperture: f/$APERTURE ISO: $ISO Date: $DATE"
+EXIF="Shutter speed: $SHUTTERSPEED sec. Aperture: $APERTURE ISO: $ISO Date: $DATE"
 
 PHOTOURL="<a rel=''lightbox'' href=''$FPATH''><img class=''dropshadow'' src=''$FPATH""_''></a>"
 DESCRIPTION="<p>$DESCRIPTION</p> $PHOTOURL"
