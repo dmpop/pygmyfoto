@@ -31,6 +31,7 @@ echo "Title:"
 read TITLE
 echo "Description:"
 read DESCRIPTION
+DESCRIPTION=$(sed 's/["'"'"']/\\&/g' <<< $DESCRIPTION)
 echo "Tags:"
 read TAGS
 

@@ -18,5 +18,4 @@ Grab the latest release of Pygmyfoto, unpack the downloaded archive, and move th
 
 ##Known issues
 
-* When using the *pygmyfoto.sh* script, single quotes must be escaped manually. For example: *It''s complicated* instead of *It's complicated*.
 * The *publish.php* and *unpublish.php* scripts have very weak password protection.
