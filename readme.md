@@ -8,7 +8,9 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web.
 
 ##Installation and Usage
 
-1. Install the required packages. On Debian and Ubuntu, this can be done by running the following command as root: `apt-get install apache2 php5 sqlite3 php5-sqlite imagemagick libimage-exiftool-perl git`
+1. Install the required packages. On Debian and Ubuntu, this can be done by running the following command as root:
+
+`apt-get install apache2 php5 sqlite3 php5-sqlite imagemagick libimage-exiftool-perl git`
 
 2. Grab the latest release of Pygmyfoto, unpack the downloaded archive, and move the resulting *pygmyfoto* directory to the root of your server.
 3. Open the *phpliteadmin.config.php*  file in a text editor and replace the default password by editing the *$password = "admin";* line.
