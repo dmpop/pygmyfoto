@@ -29,9 +29,10 @@ cp $FPATH $ORIGDIR
 
 echo "Title:"
 read TITLE
+TITLE=$(sed 's/['\'']/'\''&/g' <<< $TITLE)
 echo "Description:"
 read DESCRIPTION
-DESCRIPTION=$(sed 's/["'"'"']/\\&/g' <<< $DESCRIPTION)
+DESCRIPTION=$(sed 's/['\'']/'\''&/g' <<< $DESCRIPTION)
 echo "Tags:"
 read TAGS
 
