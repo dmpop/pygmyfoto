@@ -3,7 +3,9 @@
 $id = $_GET['id'];
 $psw = $_GET['psw'];
 
-if($psw == "password")
+include 'config.php';
+
+if($psw == $password)
 
 {
 
