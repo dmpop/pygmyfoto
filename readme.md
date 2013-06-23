@@ -15,7 +15,7 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web.
 4. Modify the default values in the *config.php* file, if necessary.
 5. Add photos  to the *pygmyfoto/photos* directory, run the `./pygmyfoto.sh` command in the terminal, and provide the required info.
 6. Point the browser to *http://127.0.0.1/pygmyfoto/* (replace *127.0.0.1* with the actual IP address or domain name of your server).
-7. To access and manage the *pygmyfoto.sqlite* database, point the browser to *http://127.0.0.1/pygmyfoto/phpliteadmin.php* .
+7. To access and manage the *pygmyfoto.sqlite* database, point the browser to *http://127.0.0.1/pygmyfoto/phpliteadmin.php*
 
 ##Unpublish and Publish
 
