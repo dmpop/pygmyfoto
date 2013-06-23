@@ -50,6 +50,10 @@ $db->query("UPDATE photos SET count = count + 1 WHERE id='$id'");
 
 $db = NULL;
 
+$rater_id=$row['id'];
+$rater_item_name='this photo';
+include("rater.php");
+
 print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
 
 print "<div class='footer'>$footer</div>"
