@@ -3,7 +3,7 @@
 //http://2008.gr0w.com/articles/code/php_5_star_rating_system_using_hreview/
 
 // User settings
-$rater_ip_voting_restriction = false; // restrict ip address voting (true or false)
+$rater_ip_voting_restriction = true; // restrict ip address voting (true or false)
 $rater_ip_vote_qty=1; // how many times an ip address can vote
 $rater_already_rated_msg="You have already rated this item. You were allowed ".$rater_ip_vote_qty." vote(s).";
 $rater_not_selected_msg="You have not selected a rating value.";
