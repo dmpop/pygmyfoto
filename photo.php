@@ -56,7 +56,14 @@ include("rater.php");
 
 print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
 
-print "<div class='footer'>$footer</div>"
+print "<div class='footer'>$footer</div>";
+
+$ip=$_SERVER['REMOTE_ADDR'];
+$date = $date = date('Y-m-d H:i:s');
+$page = basename($_SERVER['PHP_SELF'])."/?id=".$row['id'];
+$file = fopen("ip.log", "a+");
+fputs($file, " $ip	$page $date \n");   
+fclose($file)
 
 ?>
 	</div>
