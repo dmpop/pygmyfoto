@@ -21,7 +21,7 @@ print "<div id='content'><h1>$title</h1>";
 
 $db = new PDO('sqlite:pygmyfoto.sqlite');
 
-print "<center><a href='index.php'>Home</a> &#10034; <a href='archive.php'>Archive</a> &#10034; <a href='https://github.com/dmpop/pygmyfoto'>Pygmyfoto</a></center>";
+print $navigation;
 
 print "<table border=0>";
 $result = $db->query("SELECT id, title, count FROM photos ORDER BY count DESC");
