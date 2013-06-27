@@ -12,31 +12,40 @@
 	</head>
 
 	<body>
-
-<?php
-
-include 'config.php';
-
-print "<div id='content'><h1>$title</h1>";
-
-$db = new PDO('sqlite:pygmyfoto.sqlite');
-
-print $navigation;
-
-print "<table border=0>";
-$result = $db->query("SELECT id, title, count FROM photos ORDER BY count DESC");
-foreach($result as $row)
-{
+	
+	<?php
+	
+	include 'config.php';
+	
+	print "<div id='content'><h1>$title</h1>";
+	
+	$db = new PDO('sqlite:pygmyfoto.sqlite');
+	
+	print $navigation;
+	
+	print "<table border=0>";
+	
+	$result = $db->query("SELECT id, title, count FROM photos ORDER BY count DESC");
+	
+	foreach($result as $row)
+	{
 	print "<tr><td><p>".$row['title']."</p></td><td><p>".$row['count']."</p></td></tr>";
-}
-print "</table>";
-
-$db = NULL;
-
-print "<div class='footer'>$footer</div>"
-
-?>
+	}
+	
+	print "</table>";
+	
+	$db = NULL;
+	
+	print "<div class='footer'>$footer</div>";
+	
+	$ip=$_SERVER['REMOTE_ADDR'];
+	$date = $date = date('Y-m-d H:i:s');
+	$page = basename($_SERVER['PHP_SELF'])."/?id=".$row['id'];
+	$file = fopen("ip.log", "a+");
+	fputs($file, " $ip	$page $date \n");
+	fclose($file);
+	
+	?>
 	</div>
 	</body>
-
 </html>
