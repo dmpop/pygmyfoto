@@ -40,7 +40,7 @@
 	
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$date = $date = date('Y-m-d H:i:s');
-	$page = basename($_SERVER['PHP_SELF'])."/?id=".$row['id'];
+	$page = basename($_SERVER['PHP_SELF']);
 	$file = fopen("ip.log", "a+");
 	fputs($file, " $ip	$page $date \n");
 	fclose($file);
