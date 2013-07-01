@@ -1,7 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
-<!-- http://lokeshdhakar.com/projects/lightbox2/ -->
-
 <html>
 
 	<head>
@@ -25,8 +23,8 @@
 	$files = glob($dir.'*.jpg', GLOB_BRACE);
 	$fileCount = count(glob($dir.'*.jpg'));
 	
-	for ($i=($fileCount-1); $i>=0; $i--) {  
-    echo '<img src="'.$files[$i].'" alt="" width="500px"><br /><br />';
+	for ($i=($fileCount-1); $i>=0; $i--)  {  
+    echo '<a href="'.$files[$i].'"><img src="'.$files[$i].'" alt="" width="500px"></a><br /><br />';
     }
     
     print "<div class='footer'>$footer</div>";
