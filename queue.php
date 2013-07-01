@@ -24,10 +24,8 @@
 	$dir='photos/queue/';
 	$files = glob($dir.'*.jpg', GLOB_BRACE);
 	$fileCount = count(glob($dir.'*.jpg'));
-
-   // for ($i=($fileCount-1); $i>=0; $i--) 
-   
-   for ($i=($fileCount-1); $i>=($fileCount-11); $i--) {  
+	
+	for ($i=($fileCount-1); $i>=0; $i--) {  
     echo '<img src="'.$files[$i].'" alt="" width="500px"><br /><br />';
     }
     
