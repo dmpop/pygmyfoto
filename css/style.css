@@ -9,8 +9,8 @@ body {
 }
 
 h1 {
-    color: #999999;
-    font: 41px 'Asap', sans-serif;
+    color: #cfcfcf;
+    font: 51px 'Asap', sans-serif;
     font-weight: 700;
     text-align: center;
     margin-bottom: 11px;
@@ -21,6 +21,8 @@ h1 {
     border-left: none;
     border-right: none;
     border-bottom: thick dotted;
+    text-shadow: 1px 1px 1px #101010;
+    letter-spacing: 25px;
 }
 
 a {
@@ -39,6 +41,8 @@ h2 {
     margin-top: 39px;
     margin-bottom: 7px;
     line-height: 100%;
+    text-shadow: 1px 1px 1px #101010;
+    letter-spacing: 7px;
 }
 
 p.box {
@@ -88,6 +92,15 @@ Main Tags
     margin-right: 20px;
     color: inherit;
     float: left;
+}
+
+.center {
+	width: 430px;
+    height: auto;
+    text-align: center;
+    padding: 0px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .footer {

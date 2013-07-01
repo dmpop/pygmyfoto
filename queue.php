@@ -11,7 +11,7 @@
 	<?php
 	
 	include 'config.php';
-	print "<title>$title</title>";
+	echo "<title>$title</title>";
 	
 	?>
 	
@@ -21,8 +21,8 @@
 	<?php
 	
 	include 'config.php';
-	print "<div id='content'><h1>$title</h1>";
-	print "$navigation<br />";
+	echo "<div id='content'><h1>$title</h1>";
+	echo "<div class='center'>$navigation</div><br />";
 	
 	$files = glob($queuedir.'*.jpg', GLOB_BRACE);
 	$fileCount = count(glob($queuedir.'*.jpg'));
@@ -31,7 +31,7 @@
     echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a><br /><br />';
     }
     
-    print "<div class='footer'>$footer</div>";
+    echo "<div class='footer'>$footer</div>";
 	
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$date = $date = date('Y-m-d H:i:s');

@@ -11,7 +11,7 @@
 	<?php
 	
 	include 'config.php';
-	print "<title>$title</title>";
+	echo "<title>$title</title>";
 	
 	?>
 	
@@ -22,26 +22,26 @@
 	
 	include 'config.php';
 	
-	print "<div id='content'><h1>$title</h1>";
+	echo "<div id='content'><h1>$title</h1>";
 	
 	$db = new PDO('sqlite:pygmyfoto.sqlite');
 	
-	print $navigation;
+	echo "<div class='center'>$navigation</div>";
 	
-	print "<table border=0>";
+	echo "<table border=0>";
 	
 	$result = $db->query("SELECT id, title, count FROM photos ORDER BY count DESC");
 	
 	foreach($result as $row)
 	{
-	print "<tr><td><p>".$row['title']."</p></td><td><p>".$row['count']."</p></td></tr>";
+	echo "<tr><td><p>".$row['title']."</p></td><td><p>".$row['count']."</p></td></tr>";
 	}
 	
-	print "</table>";
+	echo "</table>";
 	
 	$db = NULL;
 	
-	print "<div class='footer'>$footer</div>";
+	echo "<div class='footer'>$footer</div>";
 	
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$date = $date = date('Y-m-d H:i:s');

@@ -15,7 +15,7 @@
 	<?php
 	
 	include 'config.php';
-	print "<title>$title</title>";
+	echo "<title>$title</title>";
 	
 	?>
 	
@@ -32,27 +32,27 @@
 	
 	include 'config.php';
 	
-	print "<div id='content'><h1>$title</h1>";
+	echo "<div id='content'><h1>$title</h1>";
 	
 	$id = $_GET['id'];
 	
 	$db = new PDO('sqlite:pygmyfoto.sqlite');
 	
-	print $navigation;
+	echo "<div class='center'>$navigation</div>";
 	
-	print "<table border=0>";
+	echo "<table border=0>";
 	
 	$result = $db->query("SELECT id, title, description, tags, exif, osm, original, count FROM photos WHERE id='$id'");
 	
 	foreach($result as $row)
 {
-	print "<tr><td><h2>".$row['title']."</h2></td></tr>";
-	print "<tr><td><p>".$row['description']."</p></td></tr>";
-	print "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags' title='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'title='Permalink'></a> <a href='".$row['original']."'><img src='images/graphic-design.png' alt='Original' title='Original'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap' title='Show on OpenStreetMap'></a> <strong>Views:</strong><em> ".$row['count']."</p></td></tr>";
-	print "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
+	echo "<tr><td><h2>".$row['title']."</h2></td></tr>";
+	echo "<tr><td><p>".$row['description']."</p></td></tr>";
+	echo "<tr><td valign='top'><p class='box'><img src='images/tag.png' alt='Tags' title='Tags'><em> ".$row['tags']."</em> <a href='photo.php?id=".$row['id']."'><img src='images/photography.png' alt='Permalink'title='Permalink'></a> <a href='".$row['original']."'><img src='images/graphic-design.png' alt='Original' title='Original'></a> <a href='".$row['osm']."'><img src='images/world.png' alt='OpenStreetMap' title='Show on OpenStreetMap'></a> <strong>Views:</strong><em> ".$row['count']."</p></td></tr>";
+	echo "<tr><td><p class='box'>".$row['exif']."</p></td></tr>";
 	}
 	
-	print "</table>";
+	echo "</table>";
 	
 	$db->query("UPDATE photos SET count = count + 1 WHERE id='$id'");
 	
@@ -62,9 +62,9 @@
 	$rater_item_name='this photo';
 	include("rater.php");
 	
-	print "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
+	echo "<p><center><form method='post' action='search.php'><input type='text' name='tag' size='11' value='Search by tag'> <input type='submit' value='&#10148;'></form></center></p>";
 	
-	print "<div class='footer'>$footer</div>";
+	echo "<div class='footer'>$footer</div>";
 	
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$date = $date = date('Y-m-d H:i:s');
