@@ -10,6 +10,6 @@ $footer='Powered by Pygmyfoto. <a href="rss.php">RSS feed</a>';
 
 $baseurl="http://dmpop.dyndns.org/pygmyfoto/"; // Remember the trailing slash
 
-$password="m0nk3y" // For use with the uploader.php, publish.php and unpublish.php scripts
+$password="password" // For use with the publish.php and unpublish.php scripts
 
 ?> 
