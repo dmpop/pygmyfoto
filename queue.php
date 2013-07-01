@@ -8,9 +8,14 @@
 	<link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="favicon.ico" />
 
-	<title>Pygmyfoto</title>
+	<?php
+	
+	include 'config.php';
+	print "<title>$title</title>";
+	
+	?>
+	
 	</head>
-
 	<body>
 	
 	<?php
@@ -36,6 +41,7 @@
 	fclose($file);
 	
 	?>
+	
 	</div>
 	</body>
 </html>

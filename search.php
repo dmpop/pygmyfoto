@@ -13,9 +13,14 @@
 	<script src="js/lightbox.js"></script>
 	<link href="css/lightbox.css" rel="stylesheet" />
 
-	<title>Pygmyfoto</title>
-	</head>
+	<?php
 	
+	include 'config.php';
+	print "<title>$title</title>";
+	
+	?>
+	
+	</head>
 	<body>
 
 	<script type="text/javascript">
@@ -66,6 +71,7 @@
 	fclose($file);
 	
 	?>
+	
 	</div>
 	</body>
 </html>

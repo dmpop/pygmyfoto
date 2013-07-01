@@ -13,10 +13,15 @@
 	<script src="js/jquery-1.7.2.min.js"></script>
 	<script src="js/lightbox.js"></script>
 	<link href="css/lightbox.css" rel="stylesheet" />
-
-	<title>Pygmyfoto</title>
+	
+	<?php
+	
+	include 'config.php';
+	print "<title>$title</title>";
+	
+	?>
+	
 	</head>
-
 	<body>
 
 	<script type="text/javascript">
@@ -60,8 +65,9 @@
 	$file = fopen("ip.log", "a+");
 	fputs($file, " $ip	$page $date \n");
 	fclose($file);
-
-?>
+	
+	?>
+	
 	</div>
 	</body>
 </html>
