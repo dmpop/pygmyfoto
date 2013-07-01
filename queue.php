@@ -24,7 +24,7 @@
 	$fileCount = count(glob($dir.'*.jpg'));
 	
 	for ($i=($fileCount-1); $i>=0; $i--)  {  
-    echo '<a href="'.$files[$i].'"><img src="'.$files[$i].'" alt="" width="500px"></a><br /><br />';
+    echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a><br /><br />';
     }
     
     print "<div class='footer'>$footer</div>";
