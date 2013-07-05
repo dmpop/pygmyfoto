@@ -24,11 +24,17 @@
 	echo "<div id='content'><h1>$title</h1>";
 	echo "<div class='center'>$navigation</div><br />";
 	
-	$files = glob($queuedir.'*.jpg', GLOB_BRACE);
-	$fileCount = count(glob($queuedir.'*.jpg'));
+	$files = glob($streamdir.'*.jpg', GLOB_BRACE);
+	$fileCount = count(glob($streamdir.'*.jpg'));
 	
 	for ($i=($fileCount-1); $i>=0; $i--)  {  
-    echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a><br /><br />';
+	$exif = exif_read_data($files[$i], 0, true);
+	echo "<h2>".substr($exif['FILE']['FileName'], 0, -4)."</h2>";
+	echo "<p>".$exif['COMPUTED']['UserComment']."</p>";
+    echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a>';
+    $Fnumber = explode("/", $exif['EXIF']['FNumber']);
+    $Fnumber = $Fnumber[0] / $Fnumber[1];
+    echo "<p class='box'>Aperture: f/</em>".$Fnumber." Shutter speed: " .$exif['EXIF']['ExposureTime']. " ISO: ".$exif['EXIF']['ISOSpeedRatings']. " Date: ".$exif['EXIF']['DateTimeOriginal']."</p>";
     }
     
     echo "<div class='footer'>$footer</div>";
