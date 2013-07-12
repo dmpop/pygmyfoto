@@ -24,7 +24,7 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web. The applic
 
 ##Unpublish and Publish
 
-To move a photo to the **Archive** section (i.e., unpublish the photo) using the *http://127.0.0.1/pygmyfoto/unpublish.php?id=1&psw=password* URL, where *1* is the actual ID number of the photo and *password* in the *psw* value specified in the *config.php* file.
+To move a photo to the **Archive** section (i.e., unpublish the photo) using the *http://127.0.0.1/pygmyfoto/unpublish.php?id=1&psw=password* URL, where *1* is the actual ID number of the photo and *password* is the *psw* value specified in the *config.php* file.
 
 To move a photo from the **Archive** section back to the main page (i.e., publish the photo), use the *http://127.0.0.1/pygmyfoto/publish.php?id=1&psw=password* URL.
 
