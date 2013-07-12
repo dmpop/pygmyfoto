@@ -21,13 +21,3 @@ Pygmyfoto is a crude solution for publishing a photo roll on the web. The applic
 7. Point the browser to *http://127.0.0.1/pygmyfoto* (replace *127.0.0.1* with the actual IP address or domain name of your server) to access Pygmyfoto.
 
 8. To access and manage the *pygmyfoto.sqlite* database, make it writable using the `sudo chmod 600 pygmyfoto.sqlite` command. Point then the browser to *http://127.0.0.1/pygmyfoto/phpliteadmin.php* and log in using the password specified in the *phpliteadmin.config.php* file.
-
-##Unpublish and Publish
-
-To move a photo to the **Archive** section (i.e., unpublish the photo) using the *http://127.0.0.1/pygmyfoto/unpublish.php?id=1&psw=password* URL, where *1* is the actual ID number of the photo and *password* is the *psw* value specified in the *config.php* file.
-
-To move a photo from the **Archive** section back to the main page (i.e., publish the photo), use the *http://127.0.0.1/pygmyfoto/publish.php?id=1&psw=password* URL.
-
-##Known issues
-
-* The *publish.php* and *unpublish.php* scripts have very weak password protection.
