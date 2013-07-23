@@ -29,7 +29,8 @@
 	
 	for ($i=($fileCount-1); $i>=0; $i--)  {  
 	$exif = exif_read_data($files[$i], 0, true);
-	echo "<h2>".substr($exif['FILE']['FileName'], 0, -4)."</h2>";
+	$filepath = pathinfo($files[$i]);
+	echo "<h2>".$filepath['filename']."</h2>";
 	echo "<p>".$exif['COMPUTED']['UserComment']."</p>";
     echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a>';
     $Fnumber = explode("/", $exif['EXIF']['FNumber']);
