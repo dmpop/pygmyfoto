@@ -24,13 +24,26 @@
 	echo "<div id='content'><h1>$title</h1>";
 	echo "<div class='center'>$navigation</div><br />";
 	
-	$files = glob($streamdir.'*.jpg', GLOB_BRACE);
-	$fileCount = count(glob($streamdir.'*.jpg'));
+	$f = $_GET['f'];
+	if (empty($f))
+		{
+		$dir=$photocrumbs_dir;
+		}
+	else
+		{
+		$dir=$photocrumbs_dir.$f."/";
+		}
+	
+	$files = glob($dir.'*.jpg', GLOB_BRACE);
+	$fileCount = count(glob($dir.'*.jpg'));
 	
 	for ($i=($fileCount-1); $i>=0; $i--)  {  
 	$exif = exif_read_data($files[$i], 0, true);
 	$filepath = pathinfo($files[$i]);
 	echo "<h2>".$filepath['filename']."</h2>";
+	echo "<p>";
+	include $dir.$filepath['filename'].'.php';
+	echo "</p>";
 	echo "<p>".$exif['COMPUTED']['UserComment']."</p>";
     echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a>';
     $Fnumber = explode("/", $exif['EXIF']['FNumber']);
