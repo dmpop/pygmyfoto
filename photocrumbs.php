@@ -44,7 +44,7 @@
 	echo "<p>";
 	include $dir.$filepath['filename'].'.php';
 	echo "</p>";
-	echo "<p>".$exif['COMPUTED']['UserComment']."</p>";
+	// echo "<p>".$exif['COMPUTED']['UserComment']."</p>";
     echo '<a href="'.$files[$i].'"><img class="dropshadow" src="'.$files[$i].'" alt="" width="500px"></a>';
     $Fnumber = explode("/", $exif['EXIF']['FNumber']);
     $Fnumber = $Fnumber[0] / $Fnumber[1];
