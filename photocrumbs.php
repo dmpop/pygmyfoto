@@ -24,6 +24,15 @@
 	echo "<div id='content'><h1>$title</h1>";
 	echo "<div class='center'>$navigation</div><br />";
 	
+	$dirs = array_filter(glob($photocrumbs_dir.'*'), 'is_dir');
+	echo "<div class='center'>";
+	foreach($dirs as $value){
+	$parts = explode('/', $value);
+	$last = end($parts);
+	echo "<a href='photocrumbs.php?f=".$last."'>".$last."</a> ";
+	}
+	echo "</div>";
+	
 	$f = $_GET['f'];
 	if (empty($f))
 		{
