@@ -57,7 +57,7 @@
     <p><div class='center'>
     <form method="post" action="unpublish.php">
     Password: <input type="text" name="passwd" />
-    <input type="submit" name="submit" />
+    <input type="submit" name="submit" value="Submit"/>
     </form></p>
     </div>
     </div>
