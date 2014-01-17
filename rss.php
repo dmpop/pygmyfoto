@@ -12,7 +12,8 @@ echo "<?xml version='1.0' encoding='UTF-8'?>
 <description>Pygmyfoto</description>
 <language>en-us</language>"; 
 
-$result = $db->query("SELECT id, title, tags, published FROM photos WHERE published = '1' ORDER BY dt DESC");
+$result = $db->prepare("SELECT id, title, tags, published FROM photos WHERE published = '1' ORDER BY dt DESC");
+$result->execute();
 
 include 'config.php';
 
@@ -26,6 +27,9 @@ foreach ($result as $row)
 	<description>$tags</description></item>";
 }
 echo "</channel></rss>";
+
+$result->closeCursor();
+$db = NULL;
 
 ?>
 

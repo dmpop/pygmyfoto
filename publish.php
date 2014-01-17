@@ -1,28 +1,28 @@
 <html>
 
-	<head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-	<link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-	<link rel="shortcut icon" href="favicon.ico" />
-	
-	<?php
-	
-	include 'config.php';
-	echo "<title>$title</title>";
-	echo "<div id='content'><h1>$title</h1>";
-	echo "<div class='center'>$navigation</div>";
-	
-	?>
-	
-	</head>
-	<body>
-	
-	<?php
-	
-	session_start();
-	
-	if (isset($_GET['id'])) {
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+  <link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" href="favicon.ico" />
+  
+  <?php
+  
+  include 'config.php';
+  echo "<title>$title</title>";
+  echo "<div id='content'><h1>$title</h1>";
+  echo "<div class='center'>$navigation</div>";
+  
+  ?>
+  
+  </head>
+  <body>
+  
+  <?php
+  
+  session_start();
+  
+  if (isset($_GET['id'])) {
     $_SESSION['rec'] = $_GET['id'];
     }
     
@@ -32,7 +32,11 @@
     if($password == $passwd)
     {
     $db = new PDO('sqlite:pygmyfoto.sqlite');
-    $db->query("UPDATE photos SET published = '1' WHERE id='{$_SESSION['rec']}'");
+    $result=$db->prepare("UPDATE photos SET published = '1' WHERE id=:id");
+    $id = "{$_SESSION['rec']}";
+    $result->bindParam(':id', $id, PDO::PARAM_INT);
+    $result->execute();
+    $result->closeCursor();
     $db = NULL;
     
     $host  = $_SERVER['HTTP_HOST'];
