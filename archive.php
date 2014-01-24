@@ -39,7 +39,7 @@
   echo "<div class='center'>$navigation</div>";
   
   echo "<table border=0>";
-  $result = $db->prepare("SELECT id, title, description, tags, exif, osm, original FROM photos WHERE published = '1' ORDER BY dt DESC");
+  $result = $db->prepare("SELECT id, title, description, tags, exif, osm, original FROM photos WHERE published = '0' ORDER BY dt DESC");
   $result->execute();
   
   foreach($result as $row)
