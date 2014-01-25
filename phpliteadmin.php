@@ -1,64 +1,50 @@
 <?php
+//	
+//	Project: phpLiteAdmin (http://phpliteadmin.googlecode.com)
+//	Version: 1.9.5
+//	Summary: PHP-based admin tool to manage SQLite2 and SQLite3 databases on the web
+//	Last updated: 2014-01-14
+//	Developers:
+//	   Dane Iracleous (daneiracleous@gmail.com)
+//	   Ian Aldrighetti (ian.aldrighetti@gmail.com)
+//	   George Flanagin & Digital Gaslight, Inc (george@digitalgaslight.com)
+//	   Christopher Kramer (crazy4chrissi@gmail.com, http://en.christosoft.de)
+//	   Ayman Teryaki (http://havalite.com)
+//	   Dreadnaut (dreadnaut@gmail.com, http://dreadnaut.altervista.org)
+//	
+//	
+//	Copyright (C) 2014, phpLiteAdmin
+//	
+//	This program is free software: you can redistribute it and/or modify
+//	it under the terms of the GNU General Public License as published by
+//	the Free Software Foundation, either version 3 of the License, or
+//	(at your option) any later version.
+//	
+//	This program is distributed in the hope that it will be useful,
+//	but WITHOUT ANY WARRANTY; without even the implied warranty of
+//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//	GNU General Public License for more details.
+//	
+//	You should have received a copy of the GNU General Public License
+//	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//	
+//	////////////////////////////////////////////////////////////////////////
+//	
+//	Please report any bugs you may encounter to our issue tracker here:
+//		http://code.google.com/p/phpliteadmin/issues/
 
 //
-//  Project: phpLiteAdmin (http://phpliteadmin.googlecode.com)
-//  Version: 1.9.4.1
-//  Summary: PHP-based admin tool to manage SQLite2 and SQLite3 databases on the web
-//  Last updated: 2013-03-18
-//  Developers:
-//     Dane Iracleous (daneiracleous@gmail.com)
-//     Ian Aldrighetti (ian.aldrighetti@gmail.com)
-//     George Flanagin & Digital Gaslight, Inc (george@digitalgaslight.com)
-//     Christopher Kramer (crazy4chrissi@gmail.com, http://en.christosoft.de)
-//     Ayman Teryaki (http://havalite.com)
-//     Dreadnaut (dreadnaut@gmail.com, http://dreadnaut.altervista.org)
+// This is sample configuration file
 //
-//
-//  Copyright (C) 2013  phpLiteAdmin
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-///////////////////////////////////////////////////////////////////////////
-
-//please report any bugs you encounter to http://code.google.com/p/phpliteadmin/issues/list
-
-
-//BEGIN USER-DEFINED VARIABLES
-//////////////////////////////
-
-// These are the default configuration value for phpLiteAdmin and will be overridden
-// by the optional configuration file. Feel free to edit below if you want to use
-// phpLiteAdmin as a single file; otherwise, rename phpliteadmin.config.sample.php to
-// phpliteadmin.config.php and edit it.
+// You can configure phpliteadmin in one of 2 ways:
+// 1. Rename phpliteadmin.config.sample.php to phpliteadmin.config.php and change parameters in there.
+//    You can set only your custom settings in phpliteadmin.config.php. All other settings will be set to defaults.
+// 2. Change parameters directly in main phpliteadmin.php file
 //
 // Please see http://code.google.com/p/phpliteadmin/wiki/Configuration for more details
 
 //password to gain access
 $password = 'admin';
-
-// Theme! If you want to change theme, save the CSS file in same folder of phpliteadmin or in folder 'themes'
-$theme = 'phpliteadmin.css';
-
-// the default language! If you want to change it, save the language file in same folder of phpliteadmin or in folder 'languages'
-// More about localizations (downloads, how to translate etc.): http://code.google.com/p/phpliteadmin/wiki/Localization
-$language = 'en';
-
-// set default number of rows. You need to relog after changing the number
-$rowsNum = 30;
-
-// reduce string characters by a number bigger than 10
-$charsNum = 300;
 
 //directory relative to this file to search for databases (if false, manually list databases in the $databases variable)
 $directory = '.';
@@ -68,11 +54,54 @@ $subdirectories = false;
 
 //if the above $directory variable is set to false, you must specify the databases manually in an array as the next variable
 //if any of the databases do not exist as they are referenced by their path, they will be created automatically
-$databases = array();
+$databases = array(
+	array(
+		'path'=> 'database1.sqlite',
+		'name'=> 'Database 1'
+	),
+	array(
+		'path'=> 'database2.sqlite',
+		'name'=> 'Database 2'
+	),
+);
+
+
+/* ---- Interface settings ---- */
+
+// Theme! If you want to change theme, save the CSS file in same folder of phpliteadmin or in folder "themes"
+$theme = 'phpliteadmin.css';
+
+// the default language! If you want to change it, save the language file in same folder of phpliteadmin or in folder "languages"
+// More about localizations (downloads, how to translate etc.): http://code.google.com/p/phpliteadmin/wiki/Localization
+$language = 'en';
+
+// set default number of rows. You need to relog after changing the number
+$rowsNum = 30;
+
+// reduce string characters by a number bigger than 10
+$charsNum = 300;
+
+
+/* ---- Custom functions ---- */
 
 //a list of custom functions that can be applied to columns in the databases
 //make sure to define every function below if it is not a core PHP function
-$custom_functions = array('md5', 'sha1', 'time', 'strtotime');
+$custom_functions = array(
+	'md5', 'sha1', 'time', 'strtotime',
+	// add the names of your custom functions to this array
+	/* 'leet_text', */
+);
+
+// define your custom functions here
+/*
+function leet_text($value)
+{
+  return strtr($value, 'eaAsSOl', '344zZ01');
+}
+*/
+
+
+/* ---- Advanced options ---- */
 
 //changing the following variable allows multiple phpLiteAdmin installs to work under the same domain.
 $cookie_name = 'pla3412';
@@ -80,20 +109,11 @@ $cookie_name = 'pla3412';
 //whether or not to put the app in debug mode where errors are outputted
 $debug = false;
 
-// the user is allowed to create databases with only these extensions 
+// the user is allowed to create databases with only these extensions
 $allowed_extensions = array('db','db3','sqlite','sqlite3');
 
-////////////////////////////
-//END USER-DEFINED VARIABLES
 
-// load optional configuration file
-$config_filename = './phpliteadmin.config.php';
-if (is_readable($config_filename)) {
-	include_once $config_filename;
-}
-
-
-// Start English language-texts
+// English language-texts.
 // Read our wiki on how to translate: http://code.google.com/p/phpliteadmin/wiki/Localization
 $lang = array(
 	"direction" => "LTR",
@@ -103,6 +123,7 @@ $lang = array(
 	"to" => "to",
 	"go" => "Go",
 	"yes" => "Yes",
+	"no" => "No",
 	"sql" => "SQL",
 	"csv" => "CSV",
 	"csv_tbl" => "Table that CSV pertains to",
@@ -146,6 +167,9 @@ $lang = array(
 	"autoincrement" => "Autoincrement",
 	"not_null" => "Not NULL",
 	"attention" => "Attention",
+	"none" => "None",
+	"as_defined" => "As defined",
+	"expression" => "Expression",
 	
 	"sqlite_ext" => "SQLite extension",
 	"sqlite_ext_support" => "It appears that none of the supported SQLite library extensions are available in your installation of PHP. You may not use %s until you install at least one of them.",
@@ -253,9 +277,10 @@ $lang = array(
 	"ques_drop_view" => "Are you sure you want to drop the view '%s'?",
 	"ques_del_rows" => "Are you sure you want to delete row(s) %s from table '%s'?",
 	"ques_del_db" => "Are you sure you want to delete the database '%s'?",
-	"ques_del_col" => "Are you sure you want to delete column(s) %s from table '%s'?",
+	"ques_column_delete" => "Are you sure you want to delete column(s) %s from table '%s'?",
 	"ques_del_index" => "Are you sure you want to delete index '%s'?",
 	"ques_del_trigger" => "Are you sure you want to delete trigger '%s'?",
+	"ques_primarykey_add" => "Are you sure you want to add a primary key for the column(s) %s in table '%s'?",
 	
 	"export_struct" => "Export with structure",
 	"export_data" => "Export with data",
@@ -324,6 +349,7 @@ $lang = array(
 	"warn0" => "You have been warned.",
 	"warn_passwd" => "You are using the default password, which can be dangerous. You can change it easily at the top of %s.",
 	"warn_dumbass" => "You didn't change the value dumbass ;-)",
+	"counting_skipped" => "Counting of records has been skipped for some tables because your database is comparably big and some tables don't have primary keys assigned to them so counting might be slow. Add a primary key to these tables or %sforce counting%s.",
 	"sel_state" => "Select Statement",
 	"delimit" => "Delimiter",
 	"back_top" => "Back to Top",
@@ -370,17 +396,22 @@ $lang = array(
 	"help8_x" => "During the process for exporting to an SQL file, you may choose to wrap the queries around a TRANSACTION so that if an error occurs at any time during the importation process using the exported file, the database can be reverted to its previous state, preventing partially updated data from populating the database.",
 	"help9" => "Add Comments to Exported SQL File",
 	"help9_x" => "During the process for exporting to an SQL file, you may choose to include comments that explain each step of the process so that a human can better understand what is happening."
-	
-	);
 
+);
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //there is no reason for the average user to edit anything below this comment
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+// load optional configuration file
+$config_filename = './phpliteadmin.config.php';
+if (is_readable($config_filename)) {
+	include_once $config_filename;
+}
+
 //constants 1
 define("PROJECT", "phpLiteAdmin");
-define("VERSION", "1.9.4.1");
+define("VERSION", "1.9.5");
 define("PAGE", basename(__FILE__));
 define("FORCETYPE", false); //force the extension that will be used (set to false in almost all circumstances except debugging)
 define("SYSTEMPASSWORD", $password); // Makes things easier.
@@ -442,13 +473,10 @@ if (get_magic_quotes_gpc()) {
 
 
 //data types array
-$types = array("INTEGER", "REAL", "TEXT", "BLOB");
-define("DATATYPES", serialize($types));
+$sqlite_datatypes = array("INTEGER", "REAL", "TEXT", "BLOB","NUMERIC","BOOLEAN","DATETIME");
 
 //available SQLite functions array (don't add anything here or there will be problems)
-$functions = array("abs", "hex", "length", "lower", "ltrim", "random", "round", "rtrim", "trim", "typeof", "upper");
-define("FUNCTIONS", serialize($functions));
-define("CUSTOM_FUNCTIONS", serialize($custom_functions));
+$sqlite_functions = array("abs", "hex", "length", "lower", "ltrim", "random", "round", "rtrim", "trim", "typeof", "upper");
 
 //function that allows SQL delimiter to be ignored inside comments or strings
 function explode_sql($delimiter, $sql)
@@ -542,7 +570,7 @@ function dir_tree($dir)
 function helpLink($name)
 {
 	global $lang;
-	return "<a href='".PAGE."?help=1' onclick='openHelp(\"".$name."\"); return false;' class='helpq' title='".$lang['help'].": ".$name."' target='_blank'><span>[?]</span></a>";	
+	return "<a href='?help=1' onclick='openHelp(\"".$name."\"); return false;' class='helpq' title='".$lang['help'].": ".$name."' target='_blank'><span>[?]</span></a>";	
 }
 
 // function to encode value into HTML just like htmlentities, but with adjusted default settings
@@ -609,1113 +637,22 @@ function isManagedDB($path)
 	return false;
 }
 
-//
-// Authorization class
-// Maintains user's logged-in state and security of application
-//
-class Authorization
+// from a typename of a colun, get the type of the column's affinty
+// see http://www.sqlite.org/datatype3.html section 2.1 for rules
+function get_type_affinity($type)
 {
-	private $authorized;
-	private $login_failed;
-	private $system_password_encrypted;
-
-	public function __construct()
-	{
-		// the salt and password encrypting is probably unnecessary protection but is done just
-		// for the sake of being very secure
-		if(!isset($_SESSION[COOKIENAME.'_salt']) && !isset($_COOKIE[COOKIENAME.'_salt']))
-		{
-			// create a random salt for this session if a cookie doesn't already exist for it
-			$_SESSION[COOKIENAME.'_salt'] = self::generateSalt(20);
-		}
-		else if(!isset($_SESSION[COOKIENAME.'_salt']) && isset($_COOKIE[COOKIENAME.'_salt']))
-		{
-			// session doesn't exist, but cookie does so grab it
-			$_SESSION[COOKIENAME.'_salt'] = $_COOKIE[COOKIENAME.'_salt'];
-		}
-
-		// salted and encrypted password used for checking
-		$this->system_password_encrypted = md5(SYSTEMPASSWORD."_".$_SESSION[COOKIENAME.'_salt']);
-
-		$this->authorized =
-			// no password
-			SYSTEMPASSWORD == ''
-			// correct password stored in session
-			|| isset($_SESSION[COOKIENAME.'password']) && $_SESSION[COOKIENAME.'password'] == $this->system_password_encrypted 
-			// correct password stored in cookie
-			|| isset($_COOKIE[COOKIENAME]) && isset($_COOKIE[COOKIENAME.'_salt']) && md5(SYSTEMPASSWORD."_".$_COOKIE[COOKIENAME.'_salt']) == $_COOKIE[COOKIENAME];
-	}
-
-	public function attemptGrant($password, $remember)
-	{
-		if ($password == SYSTEMPASSWORD) {
-			if ($remember) {
-				// user wants to be remembered, so set a cookie
-				$expire = time()+60*60*24*30; //set expiration to 1 month from now
-				setcookie(COOKIENAME, $this->system_password_encrypted, $expire, null, null, null, true);
-				setcookie(COOKIENAME."_salt", $_SESSION[COOKIENAME.'_salt'], $expire, null, null, null, true);
-			} else {
-				// user does not want to be remembered, so destroy any potential cookies
-				setcookie(COOKIENAME, "", time()-86400, null, null, null, true);
-				setcookie(COOKIENAME."_salt", "", time()-86400, null, null, null, true);
-				unset($_COOKIE[COOKIENAME]);
-				unset($_COOKIE[COOKIENAME.'_salt']);
-			}
-
-			$_SESSION[COOKIENAME.'password'] = $this->system_password_encrypted;
-			$this->authorized = true;
-			return true;
-		}
-
-		$this->login_failed = true;
-		return false;
-	}
-
-	public function revoke()
-	{
-		//destroy everything - cookies and session vars
-		setcookie(COOKIENAME, "", time()-86400, null, null, null, true);
-		setcookie(COOKIENAME."_salt", "", time()-86400, null, null, null, true);
-		unset($_COOKIE[COOKIENAME]);
-		unset($_COOKIE[COOKIENAME.'_salt']);
-		session_unset();
-		session_destroy();
-		$this->authorized = false;
-	}
-
-	public function isAuthorized()
-	{
-		return $this->authorized;      
-	}
-
-	public function isFailedLogin()
-	{
-		return $this->login_failed;
-	}
-
-	public function isPasswordDefault()
-	{
-		return SYSTEMPASSWORD == 'admin';
-	}
-
-	private static function generateSalt($saltSize)
-	{
-		$set = 'ABCDEFGHiJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		$setLast = strlen($set) - 1;
-		$salt = '';
-		while ($saltSize-- > 0) {
-			$salt .= $set[mt_rand(0, $setLast)];
-		}
-		return $salt;
-	}
-
+	if (preg_match("/INT/i", $type))
+		return "INTEGER";
+	else if (preg_match("/(?:CHAR|CLOB|TEXT)/i", $type))
+		return "TEXT";
+	else if (preg_match("/BLOB/i", $type) || $type=="")
+		return "NONE";
+	else if (preg_match("/(?:REAL|FLOA|DOUB)/i", $type))
+		return "REAL";
+	else
+		return "NUMERIC";
 }
 
-//
-// Database class
-// Generic database abstraction class to manage interaction with database without worrying about SQLite vs. PHP versions
-//
-class Database
-{
-	protected $db; //reference to the DB object
-	protected $type; //the extension for PHP that handles SQLite
-	protected $data;
-	protected $lastResult;
-	protected $fns;
-	protected $alterError;
-
-	public function __construct($data)
-	{
-		global $lang;
-		$this->data = $data;
-		$this->fns = array();
-		try
-		{
-			if(!file_exists($this->data["path"]) && !is_writable(dirname($this->data["path"]))) //make sure the containing directory is writable if the database does not exist
-			{
-				echo "<div class='confirm' style='margin:20px;'>";
-				printf($lang['db_not_writeable'], htmlencode($this->data["path"]), htmlencode(dirname($this->data["path"])));
-				echo "<form action='".PAGE."' method='post'>";
-				echo "<input type='submit' value='Log Out' name='".$lang['logout']."' class='btn'/>";
-				echo "</form>";
-				echo "</div><br/>";
-				exit();
-			}
-
-			$ver = $this->getVersion();
-
-			switch(true)
-			{
-				case (FORCETYPE=="PDO" || ((FORCETYPE==false || $ver!=-1) && class_exists("PDO") && ($ver==-1 || $ver==3))):
-					$this->db = new PDO("sqlite:".$this->data['path']);
-					if($this->db!=NULL)
-					{
-						$this->type = "PDO";
-						$cfns = unserialize(CUSTOM_FUNCTIONS);
-						for($i=0; $i<sizeof($cfns); $i++)
-						{
-							$this->db->sqliteCreateFunction($cfns[$i], $cfns[$i], 1);
-							$this->addUserFunction($cfns[$i]);	
-						}
-						break;
-					}
-				case (FORCETYPE=="SQLite3" || ((FORCETYPE==false || $ver!=-1) && class_exists("SQLite3") && ($ver==-1 || $ver==3))):
-					$this->db = new SQLite3($this->data['path']);
-					if($this->db!=NULL)
-					{
-						$cfns = unserialize(CUSTOM_FUNCTIONS);
-						for($i=0; $i<sizeof($cfns); $i++)
-						{
-							$this->db->createFunction($cfns[$i], $cfns[$i], 1);
-							$this->addUserFunction($cfns[$i]);	
-						}
-						$this->type = "SQLite3";
-						break;
-					}
-				case (FORCETYPE=="SQLiteDatabase" || ((FORCETYPE==false || $ver!=-1) && class_exists("SQLiteDatabase") && ($ver==-1 || $ver==2))):
-					$this->db = new SQLiteDatabase($this->data['path']);
-					if($this->db!=NULL)
-					{
-						$cfns = unserialize(CUSTOM_FUNCTIONS);
-						for($i=0; $i<sizeof($cfns); $i++)
-						{
-							$this->db->createFunction($cfns[$i], $cfns[$i], 1);
-							$this->addUserFunction($cfns[$i]);	
-						}
-						$this->type = "SQLiteDatabase";
-						break;
-					}
-				default:
-					$this->showError();
-					exit();
-			}
-		}
-		catch(Exception $e)
-		{
-			$this->showError();
-			exit();
-		}
-	}
-	
-	public function getUserFunctions()
-	{
-		return $this->fns;	
-	}
-	
-	public function addUserFunction($name)
-	{
-		array_push($this->fns, $name);	
-	}
-	
-	public function getError()
-	{
-		if($this->alterError!='')
-		{
-			$error = $this->alterError;
-			$this->alterError = ""; 
-			return $error;
-		}
-		else if($this->type=="PDO")
-		{
-			$e = $this->db->errorInfo();
-			return $e[2];	
-		}
-		else if($this->type=="SQLite3")
-		{
-			return $this->db->lastErrorMsg();
-		}
-		else
-		{
-			return sqlite_error_string($this->db->lastError());
-		}
-	}
-	
-	public function showError()
-	{
-		global $lang;
-		$classPDO = class_exists("PDO");
-		$classSQLite3 = class_exists("SQLite3");
-		$classSQLiteDatabase = class_exists("SQLiteDatabase");
-		if($classPDO)
-			$strPDO = $lang['installed'];
-		else
-			$strPDO = $lang['not_installed'];
-		if($classSQLite3)
-			$strSQLite3 = $lang['installed'];
-		else
-			$strSQLite3 = $lang['not_installed'];
-		if($classSQLiteDatabase)
-			$strSQLiteDatabase = $lang['installed'];
-		else
-			$strSQLiteDatabase = $lang['not_installed'];
-		echo "<div class='confirm' style='margin:20px;'>";
-		printf($lang['db_setup'], $this->getPath());
-		echo ".<br/><br/><i>".$lang['chk_ext']."...<br/><br/>";
-		echo "<b>PDO</b>: ".$strPDO."<br/>";
-		echo "<b>SQLite3</b>: ".$strSQLite3."<br/>";
-		echo "<b>SQLiteDatabase</b>: ".$strSQLiteDatabase."<br/><br/>...".$lang['done'].".</i><br/><br/>";
-		if(!$classPDO && !$classSQLite3 && !$classSQLiteDatabase)
-			printf($lang['sqlite_ext_support'], PROJECT);
-		else
-		{
-			if(!$classPDO && !$classSQLite3 && $this->getVersion()==3)
-				printf($lang['sqlite_v_error'], 3, PROJECT, 2);
-			else if(!$classSQLiteDatabase && $this->getVersion()==2)
-				printf($lang['sqlite_v_error'], 2, PROJECT, 3);
-			else
-				echo $lang['report_issue'].' '.PROJECT_BUGTRACKER_LINK.'.';
-		}
-		echo "</div><br/>";
-	}
-
-	public function __destruct()
-	{
-		if($this->db)
-			$this->close();
-	}
-
-	//get the exact PHP extension being used for SQLite
-	public function getType()
-	{
-		return $this->type;
-	}
-
-	//get the name of the database
-	public function getName()
-	{
-		return $this->data["name"];
-	}
-
-	//get the filename of the database
-	public function getPath()
-	{
-		return $this->data["path"];
-	}
-
-	//is the db-file writable?
-	public function isWritable()
-	{
-		return $this->data["writable"];
-	}
-
-	//is the db-folder writable?
-	public function isDirWritable()
-	{
-		return $this->data["writable_dir"];
-	}
-
-	//get the version of the database
-	public function getVersion()
-	{
-		if(file_exists($this->data['path'])) //make sure file exists before getting its contents
-		{
-			$content = strtolower(file_get_contents($this->data['path'], NULL, NULL, 0, 40)); //get the first 40 characters of the database file
-			$p = strpos($content, "** this file contains an sqlite 2"); //this text is at the beginning of every SQLite2 database
-			if($p!==false) //the text is found - this is version 2
-				return 2;
-			else
-				return 3;
-		}
-		else //return -1 to indicate that it does not exist and needs to be created
-		{
-			return -1;
-		}
-	}
-
-	//get the size of the database (in KB)
-	public function getSize()
-	{
-		return round(filesize($this->data["path"])*0.0009765625, 1);
-	}
-
-	//get the last modified time of database
-	public function getDate()
-	{
-		global $lang;
-		return date($lang['date_format'], filemtime($this->data['path']));
-	}
-
-	//get number of affected rows from last query
-	public function getAffectedRows()
-	{
-		if($this->type=="PDO")
-			return $this->lastResult->rowCount();
-		else if($this->type=="SQLite3")
-			return $this->db->changes();
-		else if($this->type=="SQLiteDatabase")
-			return $this->db->changes();
-	}
-
-	public function close()
-	{
-		if($this->type=="PDO")
-			$this->db = NULL;
-		else if($this->type=="SQLite3")
-			$this->db->close();
-		else if($this->type=="SQLiteDatabase")
-			$this->db = NULL;
-	}
-
-	public function beginTransaction()
-	{
-		$this->query("BEGIN");
-	}
-
-	public function commitTransaction()
-	{
-		$this->query("COMMIT");
-	}
-
-	public function rollbackTransaction()
-	{
-		$this->query("ROLLBACK");
-	}
-
-	//generic query wrapper
-	public function query($query, $ignoreAlterCase=false)
-	{
-		global $debug;
-		if(strtolower(substr(ltrim($query),0,5))=='alter' && $ignoreAlterCase==false) //this query is an ALTER query - call the necessary function
-		{
-			preg_match("/^\s*ALTER\s+TABLE\s+\"((?:[^\"]|\"\")+)\"\s+(.*)$/i",$query,$matches);
-			if(!isset($matches[1]) || !isset($matches[2]))
-			{
-				if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
-				return false;
-			}
-			$tablename = str_replace('""','"',$matches[1]);
-			$alterdefs = $matches[2];
-			if($debug) echo "ALTER TABLE QUERY=(".htmlencode($query)."), tablename=($tablename), alterdefs=($alterdefs)<hr>";
-			$result = $this->alterTable($tablename, $alterdefs);
-		}
-		else //this query is normal - proceed as normal
-		{
-			$result = $this->db->query($query);
-			if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
-		}
-		if(!$result)
-			return false;
-		$this->lastResult = $result;
-		return $result;
-	}
-
-	//wrapper for an INSERT and returns the ID of the inserted row
-	public function insert($query)
-	{
-		$result = $this->query($query);
-		if($this->type=="PDO")
-			return $this->db->lastInsertId();
-		else if($this->type=="SQLite3")
-			return $this->db->lastInsertRowID();
-		else if($this->type=="SQLiteDatabase")
-			return $this->db->lastInsertRowid();
-	}
-
-	//returns an array for SELECT
-	public function select($query, $mode="both")
-	{
-		$result = $this->query($query);
-		if(!$result) //make sure the result is valid
-			return NULL;
-		if($this->type=="PDO")
-		{
-			if($mode=="assoc")
-				$mode = PDO::FETCH_ASSOC;
-			else if($mode=="num")
-				$mode = PDO::FETCH_NUM;
-			else
-				$mode = PDO::FETCH_BOTH;
-			return $result->fetch($mode);
-		}
-		else if($this->type=="SQLite3")
-		{
-			if($mode=="assoc")
-				$mode = SQLITE3_ASSOC;
-			else if($mode=="num")
-				$mode = SQLITE3_NUM;
-			else
-				$mode = SQLITE3_BOTH;
-			return $result->fetchArray($mode);
-		}
-		else if($this->type=="SQLiteDatabase")
-		{
-			if($mode=="assoc")
-				$mode = SQLITE_ASSOC;
-			else if($mode=="num")
-				$mode = SQLITE_NUM;
-			else
-				$mode = SQLITE_BOTH;
-			return $result->fetch($mode);
-		}
-	}
-
-	//returns an array of arrays after doing a SELECT
-	public function selectArray($query, $mode="both")
-	{
-		$result = $this->query($query);
-		if(!$result) //make sure the result is valid
-			return NULL;
-		if($this->type=="PDO")
-		{
-			if($mode=="assoc")
-				$mode = PDO::FETCH_ASSOC;
-			else if($mode=="num")
-				$mode = PDO::FETCH_NUM;
-			else
-				$mode = PDO::FETCH_BOTH;
-			return $result->fetchAll($mode);
-		}
-		else if($this->type=="SQLite3")
-		{
-			if($mode=="assoc")
-				$mode = SQLITE3_ASSOC;
-			else if($mode=="num")
-				$mode = SQLITE3_NUM;
-			else
-				$mode = SQLITE3_BOTH;
-			$arr = array();
-			$i = 0;
-			while($res = $result->fetchArray($mode))
-			{
-				$arr[$i] = $res;
-				$i++;
-			}
-			return $arr;
-		}
-		else if($this->type=="SQLiteDatabase")
-		{
-			if($mode=="assoc")
-				$mode = SQLITE_ASSOC;
-			else if($mode=="num")
-				$mode = SQLITE_NUM;
-			else
-				$mode = SQLITE_BOTH;
-			return $result->fetchAll($mode);
-		}
-	}
-
-	
-	// SQlite supports multiple ways of surrounding names in quotes:
-	// single-quotes, double-quotes, backticks, square brackets.
-	// As sqlite does not keep this strict, we also need to be flexible here.
-	// This function generates a regex that matches any of the possibilities.
-	private function sqlite_surroundings_preg($name,$preg_quote=true,$notAllowedIfNone="'\"")
-	{
-		if($name=="*" || $name=="+")
-		{
-			// use possesive quantifiers to save memory
-			$nameSingle   = "(?:[^']$name+|'')$name+";
-			$nameDouble   = "(?:[^\"]$name+|\"\")$name+";
-			$nameBacktick = "(?:[^`]$name+|``)$name+";
-			$nameSquare   = "(?:[^\]]$name+|\]\])$name+";
-			$nameNo = "[^".$notAllowedIfNone."]$name";
-		}
-		else
-		{
-			if($preg_quote) $name = preg_quote($name,"/");
-			
-			$nameSingle = str_replace("'","''",$name);
-			$nameDouble = str_replace('"','""',$name);
-			$nameBacktick = str_replace('`','``',$name);
-			$nameSquare = str_replace(']',']]',$name);
-			$nameNo = $name;
-		}
-		
-		$preg =	"(?:'".$nameSingle."'|".   // single-quote surrounded or not in quotes (correct SQL for values/new names)
-				$nameNo."|".               // not surrounded (correct SQL if not containing reserved words, spaces or some special chars)
-				"\"".$nameDouble."\"|".    // double-quote surrounded (correct SQL for identifiers)
-				"`".$nameBacktick."`|".    // backtick surrounded (MySQL-Style)
-				"\[".$nameSquare."\])";    // square-bracket surrounded (MS Access/SQL server-Style)
-		return $preg;
-	}
-	
-	// function that is called for an alter table statement in a query
-	// code borrowed with permission from http://code.jenseng.com/db/
-	// this has been completely debugged / rewritten by Christopher Kramer
-	public function alterTable($table, $alterdefs)
-	{
-		global $debug, $lang;
-		$this->alterError="";
-		$errormsg = sprintf($lang['alter_failed'],htmlencode($table)).' - ';
-		if($debug) echo "ALTER TABLE: table=($table), alterdefs=($alterdefs)<hr>";
-		if($alterdefs != '')
-		{
-			$recreateQueries = array();
-			$tempQuery = "SELECT sql,name,type FROM sqlite_master WHERE tbl_name = ".$this->quote($table);
-			$result = $this->query($tempQuery);
-			$resultArr = $this->selectArray($tempQuery);
-			if($this->type=="PDO")
-				$result->closeCursor();
-			if(sizeof($resultArr)<1)
-			{
-				$this->alterError = $errormsg . sprintf($lang['tbl_inexistent'], htmlencode($table));
-				if($debug) echo "ERROR: unknown table<hr>";
-				return false;
-			}
-			for($i=0; $i<sizeof($resultArr); $i++)
-			{
-				$row = $resultArr[$i];
-				if($row['type'] != 'table')
-				{
-					// store the CREATE statements of triggers and indexes to recreate them later
-					$recreateQueries[] = $row['sql']."; ";
-					if($debug) echo "recreate=(".$row['sql'].";)<hr />";
-				}
-				else
-				{
-					// ALTER the table
-					$tmpname = 't'.time();
-					$origsql = $row['sql'];
-					$preg_remove_create_table = "/^\s*+CREATE\s++TABLE\s++".$this->sqlite_surroundings_preg($table)."\s*+(\(.*+)$/is";
-					$origsql_no_create = preg_replace($preg_remove_create_table, '$1', $origsql, 1);
-					if($debug) echo "origsql=($origsql)<br />preg_remove_create_table=($preg_remove_create_table)<hr>";
-					if($origsql_no_create == $origsql)
-					{
-						$this->alterError = $errormsg . $lang['alter_tbl_name_not_replacable'];
-						if($debug) echo "ERROR: could not get rid of CREATE TABLE<hr />";
-						return false;
-					}
-					$createtemptableSQL = "CREATE TEMPORARY TABLE ".$this->quote($tmpname)." ".$origsql_no_create;
-					if($debug) echo "createtemptableSQL=($createtemptableSQL)<hr>";
-					$createindexsql = array();
-					preg_match_all("/(?:DROP|ADD|CHANGE|RENAME TO)\s+(?:\"(?:[^\"]|\"\")+\"|'(?:[^']|'')+')((?:[^,')]|'[^']*')+)?/i",$alterdefs,$matches);
-					$defs = $matches[0];
-					
-					$get_oldcols_query = "PRAGMA table_info(".$this->quote_id($table).")";
-					$result_oldcols = $this->selectArray($get_oldcols_query);
-					$newcols = array();
-					$coltypes = array();
-					foreach($result_oldcols as $column_info)
-					{
-						$newcols[$column_info['name']] = $column_info['name'];
-						$coltypes[$column_info['name']] = $column_info['type'];
-					}
-					$newcolumns = '';
-					$oldcolumns = '';
-					reset($newcols);
-					while(list($key, $val) = each($newcols))
-					{
-						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
-						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
-					}
-					$copytotempsql = 'INSERT INTO '.$this->quote_id($tmpname).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($table);
-					$dropoldsql = 'DROP TABLE '.$this->quote_id($table);
-					$createtesttableSQL = $createtemptableSQL;
-					if(count($defs)<1)
-					{
-						$this->alterError = $errormsg . $lang['alter_no_def'];
-						if($debug) echo "ERROR: defs&lt;1<hr />";
-						return false;
-					}
-					foreach($defs as $def)
-					{
-						if($debug) echo "def=$def<hr />";
-						$parse_def = preg_match("/^(DROP|ADD|CHANGE|RENAME TO)\s+(?:\"((?:[^\"]|\"\")+)\"|'((?:[^']|'')+)')((?:\s+'((?:[^']|'')+)')?\s+(TEXT|INTEGER|BLOB|REAL).*)?\s*$/i",$def,$matches);
-						if($parse_def===false)
-						{
-							$this->alterError = $errormsg . $lang['alter_parse_failed'];
-							if($debug) echo "ERROR: !parse_def<hr />";
-							return false;
-						}
-						if(!isset($matches[1]))
-						{
-							$this->alterError = $errormsg . $lang['alter_action_not_recognized'];
-							if($debug) echo "ERROR: !isset(matches[1])<hr />";
-							return false;
-						}
-						$action = strtolower($matches[1]);
-						if($action == 'add' || $action == 'rename to')	
-							$column = str_replace("''","'",$matches[3]);		// enclosed in ''
-						else
-							$column = str_replace('""','"',$matches[2]);		// enclosed in ""
-							
-						$column_escaped = str_replace("'","''",$column);
-
-						if($debug) echo "action=($action), column=($column), column_escaped=($column_escaped)<hr />";
-
-						/* we build a regex that devides the CREATE TABLE statement parts:
-						  Part example                            Group  Explanation
-						  1. CREATE TABLE t... (                  $1
-						  2. 'col1' ..., 'col2' ..., 'colN' ...,  $3     (with col1-colN being columns that are not changed and listed before the col to change)
-						  3. 'colX' ...,                                 (with colX being the column to change/drop)
-						  4. 'colX+1' ..., ..., 'colK')           $5     (with colX+1-colK being columns after the column to change/drop)
-						*/
-						$preg_create_table = "\s*+(CREATE\s++TEMPORARY\s++TABLE\s++".preg_quote($this->quote($tmpname),"/")."\s*+\()";   // This is group $1 (keep unchanged)
-						$preg_column_definiton = "\s*+".$this->sqlite_surroundings_preg("+",false," '\"\[`,")."(?:\s+".$this->sqlite_surroundings_preg("*",false,"'\",`\[ ").")++";		// catches a complete column definition, even if it is
-														// 'column' TEXT NOT NULL DEFAULT 'we have a comma, here and a double ''quote!'
-						if($debug) echo "preg_column_definition=(".$preg_column_definiton.")<hr />";
-						$preg_columns_before =  // columns before the one changed/dropped (keep)
-							"(?:".
-								"(".			// group $2. Keep this one unchanged!
-									"(?:".
-										"$preg_column_definiton,\s*+".		// column definition + comma
-									")*".								// there might be any number of such columns here
-									$preg_column_definiton.				// last column definition 
-								")".			// end of group $2
-								",\s*+"			// the last comma of the last column before the column to change. Do not keep it!
-							.")?";    // there might be no columns before
-						if($debug) echo "preg_columns_before=(".$preg_columns_before.")<hr />";
-						$preg_columns_after = "(,\s*(.+))?"; // the columns after the column to drop. This is group $3 (drop) or $4(change) (keep!)
-												// we could remove the comma using $6 instead of $5, but then we might have no comma at all.
-												// Keeping it leaves a problem if we drop the first column, so we fix that case in another regex.
-						$table_new = $table;
-	
-						switch($action)
-						{
-							case 'add':
-								if(!isset($matches[4]))
-								{
-									$this->alterError = $errormsg . ' (add) - '. $lang['alter_no_add_col'];
-									return false;
-								}
-								$new_col_definition = "'$column_escaped' ".$matches[4];
-								$preg_pattern_add = "/^".$preg_create_table.   // the CREATE TABLE statement ($1)
-									"((?:(?!,\s*(?:PRIMARY\s+KEY\s*\(|CONSTRAINT\s|UNIQUE\s*\(|CHECK\s*\(|FOREIGN\s+KEY\s*\()).)*)". // column definitions ($2)
-									"(.*)\\)\s*$/s"; // table-constraints like PRIMARY KEY(a,b) ($3) and the closing bracket
-								// append the column definiton in the CREATE TABLE statement
-								$newSQL = preg_replace($preg_pattern_add, '$1$2, '.strtr($new_col_definition, array('\\' => '\\\\', '$' => '\$')).' $3', $createtesttableSQL).')';
-								if($debug)
-								{
-									echo $createtesttableSQL."<hr>";
-									echo $newSQL."<hr>";
-									echo $preg_pattern_add."<hr>";
-								}
-								if($newSQL==$createtesttableSQL) // pattern did not match, so column adding did not succed
-									{
-									$this->alterError = $errormsg . ' (add) - '.$lang['alter_pattern_mismatch'].'. '.$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
-									return false;
-									}
-								$createtesttableSQL = $newSQL;
-								break;
-							case 'change':
-								if(!isset($matches[5]) || !isset($matches[6]))
-								{
-									$this->alterError = $errormsg . ' (change) - '.$lang['alter_col_not_recognized'];
-									return false;
-								}
-								$new_col_name = $matches[5];
-								$new_col_type = $matches[6];
-								$new_col_definition = "'$new_col_name' $new_col_type";
-								$preg_column_to_change = "\s*".$this->sqlite_surroundings_preg($column)."(?:\s+".preg_quote($coltypes[$column]).")?(\s+(?:".$this->sqlite_surroundings_preg("*",false,",'\"`\[").")+)?";
-												// replace this part (we want to change this column)
-												// group $3 contains the column constraints (keep!). the name & data type is replaced.
-								$preg_pattern_change = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_change.$preg_columns_after."\s*\\)\s*$/s";
-
-								// replace the column definiton in the CREATE TABLE statement
-								$newSQL = preg_replace($preg_pattern_change, '$1$2,'.strtr($new_col_definition, array('\\' => '\\\\', '$' => '\$')).'$3$4)', $createtesttableSQL);
-								// remove comma at the beginning if the first column is changed
-								// probably somebody is able to put this into the first regex (using lookahead probably).
-								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+".preg_quote($this->quote($tmpname),"/")."\s+\(),\s*/",'$1',$newSQL);
-								if($debug)
-								{
-									echo "preg_column_to_change=(".$preg_column_to_change.")<hr />";
-									echo $createtesttableSQL."<hr />";
-									echo $newSQL."<hr />";
-
-									echo $preg_pattern_change."<hr />";
-									
-								}
-								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
-								{
-									$this->alterError = $errormsg . ' (change) - '.$lang['alter_pattern_mismatch'].'. '.$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
-									return false;
-								}
-								$createtesttableSQL = $newSQL;
-								$newcols[$column] = str_replace("''","'",$new_col_name);
-								break;
-							case 'drop':
-								$preg_column_to_drop = "\s*".$this->sqlite_surroundings_preg($column)."\s+(?:".$this->sqlite_surroundings_preg("*",false,",'\"\[`").")+";      // delete this part (we want to drop this column)
-								$preg_pattern_drop = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_drop.$preg_columns_after."\s*\\)\s*$/s";
-
-								// remove the column out of the CREATE TABLE statement
-								$newSQL = preg_replace($preg_pattern_drop, '$1$2$3)', $createtesttableSQL);
-								// remove comma at the beginning if the first column is removed
-								// probably somebody is able to put this into the first regex (using lookahead probably).
-								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+".preg_quote($this->quote($tmpname),"/")."\s+\(),\s*/",'$1',$newSQL);
-								if($debug)
-								{
-									echo $createtesttableSQL."<hr>";
-									echo $newSQL."<hr>";
-									echo $preg_pattern_drop."<hr>";
-								}
-								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
-								{
-									$this->alterError = $errormsg . ' (drop) - '.$lang['alter_pattern_mismatch'].'. '.$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
-									return false;
-								}
-								$createtesttableSQL = $newSQL;
-								unset($newcols[$column]);
-								break;
-							case 'rename to':
-								// don't change column definition at all
-								$newSQL = $createtesttableSQL;
-								// only change the name of the table
-								$table_new = $column;
-								break;
-							default:
-								if($debug) echo 'ERROR: unknown alter operation!<hr />';
-								$this->alterError = $errormsg . $lang['alter_unknown_operation'];
-								return false;
-						}
-					}
-					$droptempsql = 'DROP TABLE '.$this->quote_id($tmpname);
-
-					$createnewtableSQL = "CREATE TABLE ".$this->quote($table_new)." ".preg_replace("/^\s*CREATE\s+TEMPORARY\s+TABLE\s+'?".str_replace("'","''",preg_quote($tmpname,"/"))."'?\s+(.*)$/is", '$1', $createtesttableSQL, 1);
-
-					$newcolumns = '';
-					$oldcolumns = '';
-					reset($newcols);
-					while(list($key,$val) = each($newcols))
-					{
-						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
-						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
-					}
-					$copytonewsql = 'INSERT INTO '.$this->quote_id($table_new).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($tmpname);
-				}
-			}
-			$alter_transaction  = 'BEGIN; ';
-			$alter_transaction .= $createtemptableSQL.'; ';  //create temp table
-			$alter_transaction .= $copytotempsql.'; ';       //copy to table
-			$alter_transaction .= $dropoldsql.'; ';          //drop old table
-			$alter_transaction .= $createnewtableSQL.'; ';   //recreate original table
-			$alter_transaction .= $copytonewsql.'; ';        //copy back to original table
-			$alter_transaction .= $droptempsql.'; ';         //drop temp table
-
-			$preg_index="/^\s*(CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*ON\s+)(".$this->sqlite_surroundings_preg($table).")(\s*\((?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*\)\s*;)\s*$/i";				
-			for($i=0; $i<sizeof($recreateQueries); $i++)
-			{
-				// recreate triggers / indexes
-				if($table == $table_new)
-				{
-					// we had no RENAME TO, so we can recreate indexes/triggers just like the original ones
-				    $alter_transaction .= $recreateQueries[$i];
-				} else
-				{
-					// we had a RENAME TO, so we need to exchange the table-name in the CREATE-SQL of triggers & indexes
-					// first let's try if it's an index...
-					$recreate_queryIndex = preg_replace($preg_index, '$1'.$this->quote_id(strtr($table_new, array('\\' => '\\\\', '$' => '\$'))).'$3 ', $recreateQueries[$i]);
-					if($recreate_queryIndex!=$recreateQueries[$i] && $recreate_queryIndex != NULL)
-					{
-						// the CREATE INDEX regex did match
-						$alter_transaction .= $recreate_queryIndex;
-					} else
-					{
-						// the CREATE INDEX regex did not match, so we try if it's a CREATE TRIGGER
-						
-					    $recreate_queryTrigger = $recreateQueries[$i];
-						// TODO: IMPLEMENT
-					    
-						$alter_transaction .= $recreate_queryTrigger;
-					}
-				}
-			}
-			$alter_transaction .= 'COMMIT;';
-			if($debug) echo $alter_transaction;
-			return $this->multiQuery($alter_transaction);
-		}
-	}
-
-	//multiple query execution
-	public function multiQuery($query)
-	{
-		$error = "Unknown error.";
-		if($this->type=="PDO")
-		{
-			$success = $this->db->exec($query);
-			if(!$success) $error =  implode(" - ", $this->db->errorInfo());
-		}
-		else if($this->type=="SQLite3")
-		{
-			$success = $this->db->exec($query);
-			if(!$success) $error = $this->db->lastErrorMsg();
-		}
-		else
-		{
-			$success = $this->db->queryExec($query, $error);
-		}
-		if(!$success)
-		{
-			return "Error in query: '".htmlencode($error)."'";
-		}
-		else
-		{
-			return true;	
-		}
-	}
-
-	
-	// checks whether a table has a primary key
-	public function hasPrimaryKey($table)
-	{
-		$query = "PRAGMA table_info(".$this->quote_id($table).")";
-		$table_info = $this->selectArray($query);
-		foreach($table_info as $row_id => $row_data)
-		{
-			if($row_data['pk'])
-			{
-				return true;
-			}
-		 
-		}
-		return false;
-	}
-	
-	//get number of rows in table
-	public function numRows($table, $dontTakeLong = false)
-	{
-		// as Count(*) can be slow on huge tables without PK,
-		// if $dontTakeLong is set and the size is > 2MB only count() if there is a PK
-		if(!$dontTakeLong || $this->getSize() <= 2000 || $this->hasPrimaryKey($table))
-		{
-			$result = $this->select("SELECT Count(*) FROM ".$this->quote_id($table));
-			return $result[0];
-		} else
-		{
-			return '?';
-		}
-	}
-
-	//correctly escape a string to be injected into an SQL query
-	public function quote($value)
-	{
-		if($this->type=="PDO")
-		{
-			// PDO quote() escapes and adds quotes
-			return $this->db->quote($value);
-		}
-		else if($this->type=="SQLite3")
-		{
-			return "'".$this->db->escapeString($value)."'";
-		}
-		else
-		{
-			return "'".sqlite_escape_string($value)."'";
-		}
-	}
-
-	//correctly escape an identifier (column / table / trigger / index name) to be injected into an SQL query
-	public function quote_id($value)
-	{
-		// double-quotes need to be escaped by doubling them
-		$value = str_replace('"','""',$value);
-		return '"'.$value.'"';
-	}
-
-
-	//import sql
-	public function import_sql($query)
-	{
-		return $this->multiQuery($query);
-	}
-	
-	//import csv
-	public function import_csv($filename, $table, $field_terminate, $field_enclosed, $field_escaped, $null, $fields_in_first_row)
-	{
-		// CSV import implemented by Christopher Kramer - http://www.christosoft.de
-		$csv_handle = fopen($filename,'r');
-		$csv_insert = "BEGIN;\n";
-		$csv_number_of_rows = 0;
-		// PHP requires enclosure defined, but has no problem if it was not used
-		if($field_enclosed=="") $field_enclosed='"';
-		// PHP requires escaper defined
-		if($field_escaped=="") $field_escaped='\\';
-		while(!feof($csv_handle))
-		{
-			$csv_data = fgetcsv($csv_handle, 0, $field_terminate, $field_enclosed, $field_escaped); 
-			if($csv_data[0] != NULL || count($csv_data)>1)
-			{
-				$csv_number_of_rows++;
-				if($fields_in_first_row && $csv_number_of_rows==1) continue; 
-				$csv_col_number = count($csv_data);
-				$csv_insert .= "INSERT INTO ".$this->quote_id($table)." VALUES (";
-				foreach($csv_data as $csv_col => $csv_cell)
-				{
-					if($csv_cell == $null) $csv_insert .= "NULL";
-					else
-					{
-						$csv_insert.= $this->quote($csv_cell);
-					}
-					if($csv_col == $csv_col_number-2 && $csv_data[$csv_col+1]=='')
-					{
-						// the CSV row ends with the separator (like old phpliteadmin exported)
-						break;
-					} 
-					if($csv_col < $csv_col_number-1) $csv_insert .= ",";
-				}
-				$csv_insert .= ");\n";
-				
-				if($csv_number_of_rows > 5000)
-				{
-					$csv_insert .= "COMMIT;\nBEGIN;\n";
-					$csv_number_of_rows = 0;
-				}
-			}
-		}
-		$csv_insert .= "COMMIT;";
-		fclose($csv_handle);
-		return $this->multiQuery($csv_insert);
-
-	}
-	
-	//export csv
-	public function export_csv($tables, $field_terminate, $field_enclosed, $field_escaped, $null, $crlf, $fields_in_first_row)
-	{
-		$field_enclosed = $field_enclosed;
-		$query = "SELECT * FROM sqlite_master WHERE type='table' or type='view' ORDER BY type DESC";
-		$result = $this->selectArray($query);
-		for($i=0; $i<sizeof($result); $i++)
-		{
-			$valid = false;
-			for($j=0; $j<sizeof($tables); $j++)
-			{
-				if($result[$i]['tbl_name']==$tables[$j])
-					$valid = true;
-			}
-			if($valid)
-			{
-				$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
-				$temp = $this->selectArray($query);
-				$cols = array();
-				for($z=0; $z<sizeof($temp); $z++)
-					$cols[$z] = $temp[$z][1];
-				if($fields_in_first_row)
-				{
-					for($z=0; $z<sizeof($cols); $z++)
-					{
-						echo $field_enclosed.$cols[$z].$field_enclosed;
-						// do not terminate the last column!
-						if($z < sizeof($cols)-1)
-							echo $field_terminate;
-					}
-					echo "\r\n";	
-				}
-				$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
-				$arr = $this->selectArray($query, "assoc");
-				for($z=0; $z<sizeof($arr); $z++)
-				{
-					for($y=0; $y<sizeof($cols); $y++)
-					{
-						$cell = $arr[$z][$cols[$y]];
-						if($crlf)
-						{
-							$cell = str_replace("\n","", $cell);
-							$cell = str_replace("\r","", $cell);
-						}
-						$cell = str_replace($field_terminate,$field_escaped.$field_terminate,$cell);
-						$cell = str_replace($field_enclosed,$field_escaped.$field_enclosed,$cell);
-						// do not enclose NULLs
-						if($cell == NULL)
-							echo $null;  
-						else
-							echo $field_enclosed.$cell.$field_enclosed;
-						// do not terminate the last column!
-						if($y < sizeof($cols)-1)
-							echo $field_terminate;
-					}
-					if($z<sizeof($arr)-1)
-						echo "\r\n";	
-				}
-				if($i<sizeof($result)-1)
-					echo "\r\n";
-			}
-		}
-	}
-	
-	//export sql
-	public function export_sql($tables, $drop, $structure, $data, $transaction, $comments)
-	{
-		global $lang;
-		if($comments)
-		{
-			echo "----\r\n";
-			echo "-- ".PROJECT." ".$lang['db_dump']." (".PROJECT_URL.")\r\n";
-			echo "-- ".PROJECT." ".$lang['ver'].": ".VERSION."\r\n";
-			echo "-- ".$lang['exported'].": ".date($lang['date_format'])."\r\n";
-			echo "-- ".$lang['db_f'].": ".$this->getPath()."\r\n";
-			echo "----\r\n";
-		}
-		$query = "SELECT * FROM sqlite_master WHERE type='table' OR type='index' OR type='view' OR type='trigger' ORDER BY type='trigger', type='index', type='view', type='table'";
-		$result = $this->selectArray($query);
-
-		if($transaction)
-			echo "BEGIN TRANSACTION;\r\n";
-
-		//iterate through each table
-		for($i=0; $i<sizeof($result); $i++)
-		{
-			$valid = false;
-			for($j=0; $j<sizeof($tables); $j++)
-			{
-				if($result[$i]['tbl_name']==$tables[$j])
-					$valid = true;
-			}
-			if($valid)
-			{
-				if($drop)
-				{
-					if($comments)
-					{
-						echo "\r\n----\r\n";
-						echo "-- ".$lang['drop']." ".$result[$i]['type']." ".$lang['for']." ".$result[$i]['name']."\r\n";
-						echo "----\r\n";
-					}
-					echo "DROP ".strtoupper($result[$i]['type'])." ".$this->quote_id($result[$i]['name']).";\r\n";
-				}
-				if($structure)
-				{
-					if($comments)
-					{
-						echo "\r\n----\r\n";
-						if($result[$i]['type']=="table" || $result[$i]['type']=="view")
-							echo "-- ".ucfirst($result[$i]['type'])." ".$lang['struct_for']." ".$result[$i]['tbl_name']."\r\n";
-						else // index or trigger
-							echo "-- ".$lang['struct_for']." ".$result[$i]['type']." ".$result[$i]['name']." ".$lang['on_tbl']." ".$result[$i]['tbl_name']."\r\n";
-						echo "----\r\n";
-					}
-					echo $result[$i]['sql'].";\r\n";
-				}
-				if($data && $result[$i]['type']=="table")
-				{
-					$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
-					$arr = $this->selectArray($query, "assoc");
-
-					if($comments)
-					{
-						echo "\r\n----\r\n";
-						echo "-- ".$lang['data_dump']." ".$result[$i]['tbl_name'].", ".sprintf($lang['total_rows'], sizeof($arr))."\r\n";
-						echo "----\r\n";
-					}
-					$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
-					$temp = $this->selectArray($query);
-					$cols = array();
-					$cols_quoted = array();
-					$vals = array();
-					for($z=0; $z<sizeof($temp); $z++)
-					{
-						$cols[$z] = $temp[$z][1];
-						$cols_quoted[$z] = $this->quote_id($temp[$z][1]);
-					}
-					for($z=0; $z<sizeof($arr); $z++)
-					{
-						for($y=0; $y<sizeof($cols); $y++)
-						{
-							if(!isset($vals[$z]))
-								$vals[$z] = array();
-							if($arr[$z][$cols[$y]] === NULL)
-								$vals[$z][$cols[$y]] = 'NULL';
-							else
-								$vals[$z][$cols[$y]] = $this->quote($arr[$z][$cols[$y]]);
-						}
-					}
-					for($j=0; $j<sizeof($vals); $j++)
-						echo "INSERT INTO ".$this->quote_id($result[$i]['tbl_name'])." (".implode(",", $cols_quoted).") VALUES (".implode(",", $vals[$j]).");\r\n";
-				}
-			}
-		}
-		if($transaction)
-			echo "COMMIT;\r\n";
-	}
-}
 
 $auth = new Authorization(); //create authorization object
 
@@ -1935,6 +872,7 @@ if ($auth->isAuthorized())
 	if(isset($_POST['import']))
 	{
 		$db = new Database($_SESSION[COOKIENAME.'currentDB']);
+		$db->registerUserFunction($custom_functions);
 		if($_POST['import_type']=="sql")
 		{
 			$data = file_get_contents($_FILES["file"]["tmp_name"]);
@@ -1961,7 +899,7 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
 <!-- Copyright <?php echo date("Y").' '.PROJECT.' ('.PROJECT_URL.')'; ?> -->
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-<link rel="shortcut icon" href="<?php echo PAGE ?>?resource=favicon" />
+<link rel="shortcut icon" href="?resource=favicon" />
 <title><?php echo PROJECT ?></title>
 
 <?php
@@ -1975,7 +913,7 @@ if (file_exists($theme))
 	echo "<link href='{$theme}' rel='stylesheet' type='text/css' />", PHP_EOL;
 else
 	// only use the default stylesheet if an external one does not exist
-	echo "<link href='", PAGE, "?resource=css' rel='stylesheet' type='text/css' />", PHP_EOL;
+	echo "<link href='?resource=css' rel='stylesheet' type='text/css' />", PHP_EOL;
 
 if(isset($_GET['help'])) //this page is used as the popup help section
 {
@@ -2018,7 +956,7 @@ if(isset($_GET['help'])) //this page is used as the popup help section
 }
 ?>
 <!-- JavaScript Support -->
-<script type='text/javascript' src='<?php echo PAGE ?>?resource=javascript'></script>
+<script type='text/javascript' src='?resource=javascript'></script>
 </head>
 <body style="direction:<?php echo $lang['direction']; ?>;">
 <?php
@@ -2055,10 +993,7 @@ else //user is authorized - display the main application
 	if(!isset($_SESSION[COOKIENAME.'currentDB']) && count($databases)>0)
 	{
 		//set the current database to the first existing one in the array (default)
-		$i=0;
-		// this might not be $databases[0], as this might have just been dropped
-		while(!isset($databases[$i]) && $i<(count($databases)+1)) $i++;
-		$_SESSION[COOKIENAME.'currentDB'] = $databases[$i];
+		$_SESSION[COOKIENAME.'currentDB'] = reset($databases);
 	}
 	if(sizeof($databases)>0)
 		$currentDB = $_SESSION[COOKIENAME.'currentDB'];
@@ -2073,8 +1008,7 @@ else //user is authorized - display the main application
 			{
 				echo "<div class='confirm' style='margin:10px 20px;'>";
 				echo $lang['err'].': '.$lang['extension_not_allowed'].': ';
-				foreach($allowed_extensions as $ext_i => $extension)
-					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo implode(', ', array_map('htmlencode', $allowed_extensions));
 				echo '<br />'.$lang['add_allowed_extension'];
 				echo "</div><br/>";
 			}			
@@ -2122,6 +1056,7 @@ else //user is authorized - display the main application
 
 	//create the objects
 	$db = new Database($currentDB); //create the Database object
+	$db->registerUserFunction($custom_functions);
 
 	//switch board for various operations a user could have requested - these actions are invisible and produce no output
 	if(isset($_GET['action']) && isset($_GET['confirm']))
@@ -2160,12 +1095,17 @@ else //user is authorized - display the main application
 						}
 						if(!isset($_POST[$i.'_primarykey']) && isset($_POST[$i.'_notnull']))
 							$query .= "NOT NULL ";
-						if($_POST[$i.'_defaultvalue']!="")
+						if($_POST[$i.'_defaultoption']!='defined' && $_POST[$i.'_defaultoption']!='none' && $_POST[$i.'_defaultoption']!='expr')
+							$query .= "DEFAULT ".$_POST[$i.'_defaultoption']." ";
+						elseif($_POST[$i.'_defaultoption']=='expr')
+							$query .= "DEFAULT (".$_POST[$i.'_defaultvalue'].") ";
+						elseif(isset($_POST[$i.'_defaultvalue']) && $_POST[$i.'_defaultoption']=='defined')
 						{
-							if($_POST[$i.'_type']=="INTEGER" && is_numeric($_POST[$i.'_defaultvalue']))
-								$query .= "default ".$_POST[$i.'_defaultvalue']."  ";
+							$typeAffinity = get_type_affinity($_POST[$i.'_type']);
+							if(($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC") && is_numeric($_POST[$i.'_defaultvalue']))
+								$query .= "DEFAULT ".$_POST[$i.'_defaultvalue']."  ";
 							else
-								$query .= "default ".$db->quote($_POST[$i.'_defaultvalue'])." ";
+								$query .= "DEFAULT ".$db->quote($_POST[$i.'_defaultvalue'])." ";
 						}
 						$query = substr($query, 0, sizeof($query)-2);
 						$query .= ", ";
@@ -2183,45 +1123,50 @@ else //user is authorized - display the main application
 				$query = substr($query, 0, sizeof($query)-3);
 				$query .= ")";
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_POST['tablename'])."' ".$lang['created'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($name);
 				break;
 			/////////////////////////////////////////////// empty table
 			case "table_empty":
 				$query = "DELETE FROM ".$db->quote_id($_POST['tablename']);
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$query = "VACUUM";
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_POST['tablename'])."' ".$lang['emptied'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=row_view&amp;table=".urlencode($name);
 				break;
 			/////////////////////////////////////////////// create view
 			case "view_create":
 				$query = "CREATE VIEW ".$db->quote($_POST['viewname'])." AS ".$_POST['select'];
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['view']." '".htmlencode($_POST['viewname'])."' ".$lang['created'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_POST['viewname'])."&amp;view=1";
 				break;
 			/////////////////////////////////////////////// drop table
 			case "table_drop":
 				$query = "DROP TABLE ".$db->quote_id($_POST['tablename']);
 				$result=$db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_POST['tablename'])."' ".$lang['dropped'].".";
+				$backlinkParameters = "";
 				break;
 			/////////////////////////////////////////////// drop view
 			case "view_drop":
 				$query = "DROP VIEW ".$db->quote_id($_POST['viewname']);
 				$result=$db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['view']." '".htmlencode($_POST['viewname'])."' ".$lang['dropped'].".";
+				$backlinkParameters = "";
 				break;
 			/////////////////////////////////////////////// rename table
 			case "table_rename":
@@ -2230,9 +1175,10 @@ else //user is authorized - display the main application
 					$result = $db->query($query, true);
 				else
 					$result = $db->query($query, false);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_POST['oldname'])."' ".$lang['renamed']." '".htmlencode($_POST['newname'])."'.<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=row_view&amp;table=".urlencode($_POST['newname']);
 				break;
 			//row actions
 			/////////////////////////////////////////////// create row
@@ -2249,13 +1195,9 @@ else //user is authorized - display the main application
 				{
 					if(!isset($_POST[$i.":ignore"]))
 					{
-						$query = "INSERT INTO ".$db->quote_id($_GET['table'])." (";
-						for($j=0; $j<sizeof($fields); $j++)
-						{
-							$query .= "".$db->quote_id($fields[$j]).",";
-						}
-						$query = substr($query, 0, sizeof($query)-2);
-						$query .= ") VALUES (";
+						$query_cols = "";
+						$query_vals = "";
+						$all_default = true;
 						for($j=0; $j<sizeof($fields); $j++)
 						{
 							// PHP replaces space with underscore
@@ -2274,33 +1216,50 @@ else //user is authorized - display the main application
 							}
 							else
 								$value = "";
+							if($value===$result[$j]['dflt_value'])
+							{
+								// if the value is the default value, skip it
+								continue;
+							} else
+								$all_default = false;
+							$query_cols .= $db->quote_id($fields[$j]).",";
+							
 							$type = $result[$j]['type'];
+							$typeAffinity = get_type_affinity($type);
 							$function = $_POST["function_".$i."_".$fields[$j]];
 							if($function!="")
-								$query .= $function."(";
-								//di - messed around with this logic for null values
-							if(($type=="TEXT" || $type=="BLOB") && $null==false)
-								$query .= $db->quote($value);
-							else if(($type=="INTEGER" || $type=="REAL") && $null==false && $value=="")
-								$query .= "NULL";
-							else if($null==true)
-								$query .= "NULL";
+								$query_vals .= $function."(";
+							if(($typeAffinity=="TEXT" || $typeAffinity=="NONE") && !$null)
+								$query_vals .= $db->quote($value);
+							elseif(($typeAffinity=="INTEGER" || $typeAffinity=="REAL"|| $typeAffinity=="NUMERIC") && $value=="")
+								$query_vals .= "NULL";
+							elseif($null)
+								$query_vals .= "NULL";
 							else
-								$query .= $db->quote($value);
+								$query_vals .= $db->quote($value);
 							if($function!="")
-								$query .= ")";
-							$query .= ",";
+								$query_vals .= ")";
+							$query_vals .= ",";
 						}
-						$query = substr($query, 0, sizeof($query)-2);
-						$query .= ")";
+						$query = "INSERT INTO ".$db->quote_id($_GET['table']);
+						if(!$all_default)
+						{
+							$query_cols = substr($query_cols, 0, strlen($query_cols)-1);
+							$query_vals = substr($query_vals, 0, strlen($query_vals)-1);
+						
+							$query.=" (". $query_cols . ") VALUES (". $query_vals. ")";
+						} else {
+							$query .= " DEFAULT VALUES";
+						}
 						$result1 = $db->query($query);
-						if(!$result1)
+						if($result1===false)
 							$error = true;
 						$completed .= "<span style='font-size:11px;'>".htmlencode($query)."</span><br/>";
 						$z++;
 					}
 				}
 				$completed = $z." ".$lang['rows']." ".$lang['inserted'].".<br/><br/>".$completed;
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// delete row
 			case "row_delete":
@@ -2311,9 +1270,10 @@ else //user is authorized - display the main application
 					$query .= " OR ROWID = ".$pks[$i];
 				}
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = sizeof($pks)." ".$lang['rows']." ".$lang['deleted'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=row_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// edit row
 			case "row_edit":
@@ -2347,13 +1307,14 @@ else //user is authorized - display the main application
 							$value = $_POST[$pks[$i].":".$field_index];
 							$null = isset($_POST[$pks[$i].":".$field_index."_null"]);
 							$type = $result[$j][2];
+							$typeAffinity = get_type_affinity($type);
 							$function = $_POST["function_".$pks[$i]."_".$field_index];
 							if($function!="")
 								$query .= $function."(";
 								//di - messed around with this logic for null values
-							if(($type=="TEXT" || $type=="BLOB") && $null==false)
+							if(($typeAffinity=="TEXT" || $typeAffinity=="NONE") && $null==false)
 								$query .= $db->quote($value);
-							else if(($type=="INTEGER" || $type=="REAL") && $null==false && $value=="")
+							else if(($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC") && $null==false && $value=="")
 								$query .= "NULL";
 							else if($null==true)
 								$query .= "NULL";
@@ -2366,7 +1327,7 @@ else //user is authorized - display the main application
 						$query = substr($query, 0, sizeof($query)-2);
 						$query .= ")";
 						$result1 = $db->query($query);
-						if(!$result1)
+						if($result1===false)
 							$error = true;
 						$z++;
 					}
@@ -2393,7 +1354,7 @@ else //user is authorized - display the main application
 						$query = substr($query, 0, sizeof($query)-3);
 						$query .= " WHERE ROWID = ".$pks[$i];
 						$result1 = $db->query($query);
-						if(!$result1)
+						if($result1===false)
 						{
 							$error = true;
 						}
@@ -2402,6 +1363,7 @@ else //user is authorized - display the main application
 				}
 				if(isset($_POST['new_row']))
 					$completed = $z." ".$lang['rows']." ".$lang['inserted'].".<br/><br/>".$completed;
+				$backlinkParameters = "&amp;action=row_view&amp;table=".urlencode($_GET['table']);
 				break;
 			//column actions
 			/////////////////////////////////////////////// create column
@@ -2417,22 +1379,31 @@ else //user is authorized - display the main application
 							$query .= "PRIMARY KEY ";
 						if(isset($_POST[$i.'_notnull']))
 							$query .= "NOT NULL ";
-						if($_POST[$i.'_defaultvalue']!="")
+						if($_POST[$i.'_defaultoption']!='defined' && $_POST[$i.'_defaultoption']!='none' && $_POST[$i.'_defaultoption']!='expr')
+							$query .= "DEFAULT ".$_POST[$i.'_defaultoption']." ";
+						elseif($_POST[$i.'_defaultoption']=='expr')
+							$query .= "DEFAULT (".$_POST[$i.'_defaultvalue'].") ";
+						elseif(isset($_POST[$i.'_defaultvalue']) && $_POST[$i.'_defaultoption']=='defined')
 						{
-							if($_POST[$i.'_type']=="INTEGER" && is_numeric($_POST[$i.'_defaultvalue']))
+							$typeAffinity = get_type_affinity($_POST[$i.'_type']);
+							if(($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC") && is_numeric($_POST[$i.'_defaultvalue']))
 								$query .= "DEFAULT ".$_POST[$i.'_defaultvalue']."  ";
 							else
 								$query .= "DEFAULT ".$db->quote($_POST[$i.'_defaultvalue'])." ";
 						}
-						if($db->getVersion()==3)
+						if($db->getVersion()==3 &&
+							($_POST[$i.'_defaultoption']=='defined' || $_POST[$i.'_defaultoption']=='none' || $_POST[$i.'_defaultoption']=='NULL')
+							// Sqlite3 cannot add columns with default values that are not constant, so use AlterTable-workaround
+							&& !isset($_POST[$i.'_primarykey'])) // sqlite3 cannot add primary key columns
 							$result = $db->query($query, true);
 						else
 							$result = $db->query($query, false);
-						if(!$result)
+						if($result===false)
 							$error = true;
 					}
 				}
 				$completed = $lang['tbl']." '".htmlencode($_GET['table'])."' ".$lang['altered'].".";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// delete column
 			case "column_delete":
@@ -2443,33 +1414,52 @@ else //user is authorized - display the main application
 					$query .= ", DROP ".$db->quote_id($pks[$i]);
 				}
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_GET['table'])."' ".$lang['altered'].".";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
+				break;
+			/////////////////////////////////////////////// add a primary key
+			case "primarykey_add":
+				$pks = explode(":", $_GET['pk']);
+				$query = "ALTER TABLE ".$db->quote_id($_GET['table']).' ADD PRIMARY KEY ('.$db->quote_id($pks[0]);
+				for($i=1; $i<sizeof($pks); $i++)
+				{
+					$query .= ", ".$db->quote_id($pks[$i]);
+				}
+				$query .= ")";
+				$result = $db->query($query);
+				if($result===false)
+					$error = true;
+				$completed = $lang['tbl']." '".htmlencode($_GET['table'])."' ".$lang['altered'].".";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// edit column
 			case "column_edit":
 				$query = "ALTER TABLE ".$db->quote_id($_GET['table']).' CHANGE '.$db->quote_id($_POST['oldvalue'])." ".$db->quote($_POST['0_field'])." ".$_POST['0_type'];
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['tbl']." '".htmlencode($_GET['table'])."' ".$lang['altered'].".";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// delete trigger
 			case "trigger_delete":
 				$query = "DROP TRIGGER ".$db->quote_id($_GET['pk']);
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['trigger']." '".htmlencode($_GET['pk'])."' ".$lang['deleted'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// delete index
 			case "index_delete":
 				$query = "DROP INDEX ".$db->quote_id($_GET['pk']);
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['index']." '".htmlencode($_GET['pk'])."' ".$lang['deleted'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// create trigger
 			case "trigger_create":
@@ -2486,9 +1476,10 @@ else //user is authorized - display the main application
 				$str .= " END";
 				$query = $str;
 				$result = $db->query($query);
-				if(!$result)
+				if($result===false)
 					$error = true;
 				$completed = $lang['trigger']." ".$lang['created'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 			/////////////////////////////////////////////// create index
 			case "index_create":
@@ -2511,15 +1502,16 @@ else //user is authorized - display the main application
 					for($i=1; $i<$num; $i++)
 					{
 						if($_POST[$i.'_field']!="")
-							$str .= ", ".$_POST[$i.'_field'].$_POST[$i.'_order'];
+							$str .= ", ".$db->quote_id($_POST[$i.'_field']).$_POST[$i.'_order'];
 					}
 					$str .= ")";
 					$query = $str;
 					$result = $db->query($query);
-					if(!$result)
+					if($result===false)
 						$error = true;
 					$completed = $lang['index']." ".$lang['created'].".<br/><span style='font-size:11px;'>".htmlencode($query)."</span>";
 				}
+				$backlinkParameters = "&amp;action=column_view&amp;table=".urlencode($_GET['table']);
 				break;
 		}
 	}
@@ -2544,9 +1536,9 @@ else //user is authorized - display the main application
 			echo '[' . ($database['readable'] ? 'r':' ' ) . ($database['writable'] && $database['writable_dir'] ? 'w':' ' ) . '] ';
 			$url_path = str_replace(DIRECTORY_SEPARATOR,'/',$database['path']);
 			if($database == $_SESSION[COOKIENAME.'currentDB'])
-				echo "<a href='".PAGE."?switchdb=".urlencode($database['path'])."' class='active_db'>".htmlencode($database['name'])."</a>  (<a href='".htmlencode($url_path)."' title='".$lang['backup']."'>&darr;</a>)";
+				echo "<a href='?switchdb=".urlencode($database['path'])."' class='active_db'>".htmlencode($database['name'])."</a>  (<a href='".htmlencode($url_path)."' title='".$lang['backup']."'>&darr;</a>)";
 			else
-				echo "<a href='".PAGE."?switchdb=".urlencode($database['path'])."'>".htmlencode($database['name'])."</a>  (<a href='".htmlencode($url_path)."' title='".$lang['backup']."'>&darr;</a>)";
+				echo "<a href='?switchdb=".urlencode($database['path'])."'>".htmlencode($database['name'])."</a>  (<a href='".htmlencode($url_path)."' title='".$lang['backup']."'>&darr;</a>)";
 			if($i<sizeof($databases))
 				echo "<br/>";
 		}
@@ -2583,7 +1575,7 @@ else //user is authorized - display the main application
 		if(substr($result[$i]['name'], 0, 7)!="sqlite_" && $result[$i]['name']!="")
 		{
 			echo "<span class='sidebar_table'>[".$lang[$result[$i]['type']=='table'?'tbl':'view']."]</span> ";
-			echo "<a href='".PAGE."?action=row_view&amp;table=".urlencode($result[$i]['name']).($result[$i]['type']=='view'?'&amp;view=1':'')."'";
+			echo "<a href='?action=row_view&amp;table=".urlencode($result[$i]['name']).($result[$i]['type']=='view'?'&amp;view=1':'')."'";
 			if(isset($_GET['table']) && $_GET['table']==$result[$i]['name'])
 				echo " class='active_table'";
 			echo ">".htmlencode($result[$i]['name'])."</a><br/>";
@@ -2614,7 +1606,7 @@ else //user is authorized - display the main application
 	//breadcrumb navigation
 	echo "<a href='".PAGE."'>".htmlencode($currentDB['name'])."</a>";
 	if(isset($_GET['table']))
-		echo " &rarr; <a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".htmlencode($_GET['table'])."</a>";
+		echo " &rarr; <a href='?table=".urlencode($_GET['table'])."&amp;action=row_view'>".htmlencode($_GET['table'])."</a>";
 	echo "<br/><br/>";
 
 	//user has performed some action so show the resulting message
@@ -2623,16 +1615,16 @@ else //user is authorized - display the main application
 		echo "<div id='main'>";
 		echo "<div class='confirm'>";
 		if(isset($error) && $error) //an error occured during the action, so show an error message
-			echo $lang['err'].": ".$db->getError().".<br/>".$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
+			echo $lang['err'].": ".$db->getError()."<br/>".$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
 		else //action was performed successfully - show success message
 			echo $completed;
 		echo "</div>";
 		if($_GET['action']=="row_delete" || $_GET['action']=="row_create" || $_GET['action']=="row_edit")
-			echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['return']."</a>";
+			echo "<br/><br/><a href='?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['return']."</a>";
 		else if($_GET['action']=="column_create" || $_GET['action']=="column_delete" || $_GET['action']=="column_edit" || $_GET['action']=="index_create" || $_GET['action']=="index_delete" || $_GET['action']=="trigger_delete" || $_GET['action']=="trigger_create")
-			echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['return']."</a>";
+			echo "<br/><br/><a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['return']."</a>";
 		else
-			echo "<br/><br/><a href='".PAGE."'>".$lang['return']."</a>";
+			echo "<br/><br/><a href='".PAGE.(isset($backlinkParameters)?"?".$backlinkParameters:'')."'>".$lang['return']."</a>";
 		echo "</div>";
 	}
 
@@ -2641,95 +1633,95 @@ else //user is authorized - display the main application
 	{
 		if(!isset($_GET['view']))
 		{
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=row_view' ";
 			if($_GET['action']=="row_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['browse']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view' ";
 			if($_GET['action']=="column_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['struct']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_sql' ";
 			if($_GET['action']=="table_sql")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['sql']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_search' ";
 			if($_GET['action']=="table_search")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['srch']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=row_create' ";
 			if($_GET['action']=="row_create")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['insert']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_export' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_export' ";
 			if($_GET['action']=="table_export")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['export']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_import' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_import' ";
 			if($_GET['action']=="table_import")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['import']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_rename' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_rename' ";
 			if($_GET['action']=="table_rename")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['rename']."</a>";
-			echo "<a href='".PAGE."?action=table_empty&amp;table=".urlencode($_GET['table'])."' ";
+			echo "<a href='?action=table_empty&amp;table=".urlencode($_GET['table'])."' ";
 			echo "class='tab empty'";
 			echo ">".$lang['empty']."</a>";
-			echo "<a href='".PAGE."?action=table_drop&amp;table=".urlencode($_GET['table'])."' ";
+			echo "<a href='?action=table_drop&amp;table=".urlencode($_GET['table'])."' ";
 			echo "class='tab drop'";
 			echo ">".$lang['drop']."</a>";
 			echo "<div style='clear:both;'></div>";
 		}
 		else
 		{
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view&amp;view=1' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=row_view&amp;view=1' ";
 			if($_GET['action']=="row_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['browse']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view&amp;view=1' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view&amp;view=1' ";
 			if($_GET['action']=="column_view")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['struct']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' ";
 			if($_GET['action']=="table_sql")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['sql']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1' ";
 			if($_GET['action']=="table_search")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['srch']."</a>";
-			echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_export&amp;view=1' ";
+			echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_export&amp;view=1' ";
 			if($_GET['action']=="table_export")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['export']."</a>";
-			echo "<a href='".PAGE."?action=view_drop&amp;table=".urlencode($_GET['table'])."&amp;view=1' ";
+			echo "<a href='?action=view_drop&amp;table=".urlencode($_GET['table'])."&amp;view=1' ";
 			echo "class='tab drop'";
 			echo ">".$lang['drop']."</a>";
 			echo "<div style='clear:both;'></div>";
@@ -2762,15 +1754,15 @@ else //user is authorized - display the main application
 				{
 					$num = intval($_POST['tablefields']);
 					$name = $_POST['tablename'];
-					echo "<form action='".PAGE."?action=table_create&amp;confirm=1' method='post'>";
+					echo "<form action='?action=table_create&amp;confirm=1' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
 					echo "<input type='hidden' name='rows' value='".$num."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
-					$headings = array("Field", "Type", "Primary Key");
-					if($db->getType() != "SQLiteDatabase") $headings[] = "Autoincrement";
-					$headings[] = "Not NULL";
-					$headings[] = "Default Value";
+					$headings = array($lang['fld'], $lang['type'], $lang['prim_key']);
+					if($db->getType() != "SQLiteDatabase") $headings[] = $lang['autoincrement'];
+					$headings[] = $lang['not_null'];
+					$headings[] = $lang['def_val'];
 					for($k=0; $k<count($headings); $k++)
 						echo "<td class='tdheader'>" . $headings[$k] . "</td>";
 					echo "</tr>";
@@ -2784,9 +1776,9 @@ else //user is authorized - display the main application
 						echo "</td>";
 						echo $tdWithClass;
 						echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
-						$types = unserialize(DATATYPES);
-						for($z=0; $z<sizeof($types); $z++)
-							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
+						foreach ($sqlite_datatypes as $t) {
+							echo "<option value='".htmlencode($t)."'>".htmlencode($t)."</option>";
+						}
 						echo "</select>";
 						echo "</td>";
 						echo $tdWithClass;
@@ -2802,7 +1794,10 @@ else //user is authorized - display the main application
 						echo "<label><input type='checkbox' name='".$i."_notnull' id='i".$i."_notnull'/> ".$lang['yes']."</label>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='text' name='".$i."_defaultvalue' style='width:100px;'/>";
+						echo "<select name='".$i."_defaultoption' id='i".$i."_defaultoption' onchange=\"if(this.value!='defined' && this.value!='expr') document.getElementById('i".$i."_defaultvalue').value='';\">";
+						echo "<option value='none'>".$lang['none']."</option><option value='defined'>".$lang['as_defined'].":</option><option>NULL</option><option>CURRENT_TIME</option><option>CURRENT_DATE</option><option>CURRENT_TIMESTAMP</option><option value='expr'>".$lang['expression'].":</option>";
+						echo "</select>";
+						echo "<input type='text' name='".$i."_defaultvalue' id='i".$i."_defaultvalue' style='width:100px;' onchange=\"if(document.getElementById('i".$i."_defaultoption').value!='expr') document.getElementById('i".$i."_defaultoption').value='defined';\"/>";
 						echo "</td>";
 						echo "</tr>";
 					}
@@ -2831,7 +1826,7 @@ else //user is authorized - display the main application
 						if(str_replace(" ", "", str_replace("\n", "", str_replace("\r", "", $query[$i])))!="") //make sure this query is not an empty string
 						{
 							$queryTimer = new MicroTimer();
-							if(preg_match('/^\s*(?:select|pragma)\s/i', $query[$i])===1)   // pragma often returns rows just like select
+							if(preg_match('/^\s*(?:select|pragma|explain)\s/i', $query[$i])===1)   // pragma and explain often return rows just like select
 							{
 								$isSelect = true;
 								$result = $db->selectArray($query[$i], "assoc");
@@ -2888,7 +1883,12 @@ else //user is authorized - display the main application
 										for($z=0; $z<sizeof($headers); $z++)
 										{
 											echo $tdWithClass;
-											echo htmlencode($result[$j][$headers[$z]]);
+											if($result[$j][$headers[$z]]==="")
+												echo "&nbsp;";
+											elseif($result[$j][$headers[$z]]===NULL)
+												echo "<i class='null'>NULL</i>";
+											else
+												echo subString(htmlencode($result[$j][$headers[$z]]));
 											echo "</td>";
 										}
 										echo "</tr>";
@@ -2908,9 +1908,9 @@ else //user is authorized - display the main application
 				echo "<fieldset>";
 				echo "<legend><b>".sprintf($lang['run_sql'],htmlencode($db->getName()))."</b></legend>";
 				if(!isset($_GET['view']))
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=table_sql' method='post'>";
 				else
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=table_sql&amp;view=1' method='post'>";
 				echo "<div style='float:left; width:70%;'>";
 				echo "<textarea style='width:97%; height:300px;' name='queryval' id='queryval' cols='50' rows='8'>".htmlencode($queryStr)."</textarea>";
 				echo "</div>";
@@ -2934,7 +1934,7 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// empty table
 			case "table_empty":
-				echo "<form action='".PAGE."?action=table_empty&amp;confirm=1' method='post'>";
+				echo "<form action='?action=table_empty&amp;confirm=1' method='post'>";
 				echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
 				echo sprintf($lang['ques_empty'], htmlencode($_GET['table']))."<br/><br/>";
@@ -2944,7 +1944,7 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// drop table
 			case "table_drop":
-				echo "<form action='".PAGE."?action=table_drop&amp;confirm=1' method='post'>";
+				echo "<form action='?action=table_drop&amp;confirm=1' method='post'>";
 				echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
 				echo sprintf($lang['ques_drop'], htmlencode($_GET['table']))."<br/><br/>";
@@ -2954,7 +1954,7 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// drop view
 			case "view_drop":
-				echo "<form action='".PAGE."?action=view_drop&amp;confirm=1' method='post'>";
+				echo "<form action='?action=view_drop&amp;confirm=1' method='post'>";
 				echo "<input type='hidden' name='viewname' value='".htmlencode($_GET['table'])."'/>";
 				echo "<div class='confirm'>";
 				echo sprintf($lang['ques_drop_view'], htmlencode($_GET['table']))."<br/><br/>";
@@ -3014,10 +2014,10 @@ else //user is authorized - display the main application
 					if($importSuccess===true)
 						echo $lang['import_suc'];
 					else
-						echo $importSuccess;
+						echo $lang['err'].': '.$importSuccess;
 					echo "</div><br/>";
 				}
-				echo "<form method='post' action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_import' enctype='multipart/form-data'>";
+				echo "<form method='post' action='?table=".urlencode($_GET['table'])."&amp;action=table_import' enctype='multipart/form-data'>";
 				echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>".$lang['import_into']." ".htmlencode($_GET['table'])."</b></legend>";
 				echo "<label><input type='radio' name='import_type' checked='checked' value='sql' onclick='toggleImports(\"sql\");'/> ".$lang['sql']."</label>";
 				echo "<br/><label><input type='radio' name='import_type' value='csv' onclick='toggleImports(\"csv\");'/> ".$lang['csv']."</label>";
@@ -3053,7 +2053,7 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// rename table
 			case "table_rename":
-				echo "<form action='".PAGE."?action=table_rename&amp;confirm=1' method='post'>";
+				echo "<form action='?action=table_rename&amp;confirm=1' method='post'>";
 				echo "<input type='hidden' name='oldname' value='".htmlencode($_GET['table'])."'/>";
 				printf($lang['rename_tbl'], htmlencode($_GET['table']));
 				echo " <input type='text' name='newname' style='width:200px;'/> <input type='submit' value='".$lang['rename']."' name='rename' class='btn'/>";
@@ -3147,8 +2147,8 @@ else //user is authorized - display the main application
 							$tdWithClass = "<td class='td".($j%2 ? "1" : "2")."'>";
 							$cVal = 0;
 							echo "<tr>";
-							echo $tdWithClass."<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=edit' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a></td>"; 
-							echo $tdWithClass."<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=delete' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a></td>";
+							echo $tdWithClass."<a href='?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=edit' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a></td>"; 
+							echo $tdWithClass."<a href='?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=delete' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a></td>";
 							for($z=0; $z<sizeof($headers); $z++)
 							{
 								echo $tdWithClass;
@@ -3167,9 +2167,9 @@ else //user is authorized - display the main application
 					}
 					
 					if(!isset($_GET['view']))
-						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search'>".$lang['srch_again']."</a>";
+						echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_search'>".$lang['srch_again']."</a>";
 					else
-						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1'>".$lang['srch_again']."</a>";
+						echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1'>".$lang['srch_again']."</a>";
 				}
 				else
 				{
@@ -3177,9 +2177,9 @@ else //user is authorized - display the main application
 					$result = $db->selectArray($query);
 					
 					if(!isset($_GET['view']))
-						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;done=1' method='post'>";
+						echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;done=1' method='post'>";
 					else
-						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1&amp;done=1' method='post'>";
+						echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=table_search&amp;view=1&amp;done=1' method='post'>";
 						
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 					echo "<tr>";
@@ -3192,33 +2192,34 @@ else //user is authorized - display the main application
 					for($i=0; $i<sizeof($result); $i++)
 					{
 					  $field = $result[$i][1];
-					  $type = $result[$i][2];
+					  $type = $result[$i]['type'];
+					  $typeAffinity = get_type_affinity($type);
 					  $tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 					  $tdWithClassLeft = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;'>";
 					  echo "<tr>";
 					  echo $tdWithClassLeft;
-					  echo $field;
+					  echo htmlencode($field);
 					  echo "</td>";
 					  echo $tdWithClassLeft;
-					  echo $type;
+					  echo htmlencode($type);
 					  echo "</td>";
 					  echo $tdWithClassLeft;
 					  echo "<select name='".htmlencode($field).":operator' onchange='checkLike(\"".htmlencode($field)."_search\", this.options[this.selectedIndex].value); '>";
 					  echo "<option value='='>=</option>";
-					  if($type=="INTEGER" || $type=="REAL")
+					  if($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC")
 					  {
 						  echo "<option value='&gt;'>&gt;</option>";
 						  echo "<option value='&gt;='>&gt;=</option>";
 						  echo "<option value='&lt;'>&lt;</option>";
 						  echo "<option value='&lt;='>&lt;=</option>";
 					  }
-					  else if($type=="TEXT" || $type=="BLOB")
+					  else if($typeAffinity=="TEXT" || $typeAffinity=="NONE")
 					  {
 						  echo "<option value='= '''>= ''</option>";
 						  echo "<option value='!= '''>!= ''</option>";
 					  }
 					  echo "<option value='!='>!=</option>";
-					  if($type=="TEXT" || $type=="BLOB")
+					  if($typeAffinity=="TEXT" || $typeAffinity=="NONE")
 						  echo "<option value='LIKE' selected='selected'>LIKE</option>";
 					  else
 						  echo "<option value='LIKE'>LIKE</option>";
@@ -3227,7 +2228,7 @@ else //user is authorized - display the main application
 					  echo "</select>";
 					  echo "</td>";
 					  echo $tdWithClassLeft;
-					  if($type=="INTEGER" || $type=="REAL" || $type=="NULL")
+					  if($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC")
 						  echo "<input type='text' id='".htmlencode($field)."_search' name='".htmlencode($field)."'/>";
 					  else
 						  echo "<textarea id='".htmlencode($field)."_search' name='".htmlencode($field)."' rows='1' cols='60'></textarea>";
@@ -3279,14 +2280,14 @@ else //user is authorized - display the main application
 				if($_POST['startRow']>0)
 				{
 					echo "<div style='float:left;'>";
-					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
+					echo "<form action='?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='0'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&larr;&larr;' name='previous' class='btn'/> ";
 					echo "</form>";
 					echo "</div>";
 					echo "<div style='float:left; overflow:hidden; margin-right:20px;'>";
-					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
+					echo "<form action='?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($_POST['startRow']-$_SESSION[COOKIENAME.'numRows'])."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&larr;' name='previous_full' class='btn'/> ";
@@ -3296,7 +2297,7 @@ else //user is authorized - display the main application
 				
 				//show certain number buttons
 				echo "<div style='float:left;'>";
-				echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
+				echo "<form action='?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
 				echo "<input type='submit' value='".$lang['show']." : ' name='show' class='btn'/> ";
 				echo "<input type='text' name='numRows' style='width:50px;' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 				echo $lang['rows_records'];
@@ -3325,14 +2326,14 @@ else //user is authorized - display the main application
 				if(intval($_POST['startRow']+$_SESSION[COOKIENAME.'numRows'])<$rowCount)
 				{
 					echo "<div style='float:left; margin-left:20px; '>";
-					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
+					echo "<form action='?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($_POST['startRow']+$_SESSION[COOKIENAME.'numRows'])."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&rarr;' name='next' class='btn'/> ";
 					echo "</form>";
 					echo "</div>";
 					echo "<div style='float:left; '>";
-					echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
+					echo "<form action='?action=row_view&amp;table=".urlencode($table).$is_view."' method='post'>";
 					echo "<input type='hidden' name='startRow' value='".intval($rowCount-$remainder)."'/>";
 					echo "<input type='hidden' name='numRows' value='".$_SESSION[COOKIENAME.'numRows']."'/> ";
 					echo "<input type='submit' value='&rarr;&rarr;' name='next_full' class='btn'/> ";
@@ -3395,7 +2396,7 @@ else //user is authorized - display the main application
 					
 					if(!isset($_SESSION[COOKIENAME.'viewtype']) || $_SESSION[COOKIENAME.'viewtype']=="table")
 					{
-						echo "<form action='".PAGE."?action=row_editordelete&amp;table=".urlencode($table).$is_view."' method='post' name='checkForm'>";
+						echo "<form action='?action=row_editordelete&amp;table=".urlencode($table).$is_view."' method='post' name='checkForm'>";
 						echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 						echo "<tr>";
 						if(!isset($_GET['view']))
@@ -3405,15 +2406,15 @@ else //user is authorized - display the main application
 						{
 							echo "<td class='tdheader'>";
 							if(!isset($_GET['view']))
-								echo "<a href='".PAGE."?action=row_view&amp;table=".urlencode($table)."&amp;sort=".urlencode($result[$i]['name']);
+								echo "<a href='?action=row_view&amp;table=".urlencode($table)."&amp;sort=".urlencode($result[$i]['name']);
 							else
-								echo "<a href='".PAGE."?action=row_view&amp;table=".urlencode($table)."&amp;view=1&amp;sort=".urlencode($result[$i]['name']);
+								echo "<a href='?action=row_view&amp;table=".urlencode($table)."&amp;view=1&amp;sort=".urlencode($result[$i]['name']);
 							if(isset($_SESSION[COOKIENAME.'sortRows']))
 								$orderTag = ($_SESSION[COOKIENAME.'sortRows']==$result[$i]['name'] && $_SESSION[COOKIENAME.'orderRows']=="ASC") ? "DESC" : "ASC";
 							else
 								$orderTag = "ASC";
 							echo "&amp;order=".$orderTag;
-							echo "'>".$result[$i]['name']."</a>";
+							echo "'>".htmlencode($result[$i]['name'])."</a>";
 							if(isset($_SESSION[COOKIENAME.'sortRows']) && $_SESSION[COOKIENAME.'sortRows']==$result[$i]['name'])
 								echo (($_SESSION[COOKIENAME.'orderRows']=="ASC") ? " <b>&uarr;</b>" : " <b>&darr;</b>");
 							echo "</td>";
@@ -3434,21 +2435,22 @@ else //user is authorized - display the main application
 								echo "</td>";
 								echo $tdWithClass;
 								// -g-> Here, we need to put the ROWID in as the link for both the edit and delete.
-								echo "<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=edit' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a>";
+								echo "<a href='?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=edit' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a>";
 								echo "</td>";
 								echo $tdWithClass;
-								echo "<a href='".PAGE."?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=delete' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
+								echo "<a href='?table=".urlencode($table)."&amp;action=row_editordelete&amp;pk=".urlencode($pk)."&amp;type=delete' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
 								echo "</td>";
 							}
 							for($j=0; $j<sizeof($result); $j++)
 							{
-								if(strtolower($result[$j]['type'])=="integer" || strtolower($result[$j]['type'])=="float" || strtolower($result[$j]['type'])=="real")
+								$typeAffinity = get_type_affinity($result[$j]['type']);
+								if($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC")
 									echo $tdWithClass;
 								else
 									echo $tdWithClassLeft;
-								// -g-> although the inputs do not interpret HTML on the way "in", when we print the contents of the database the interpretation cannot be avoided.
-								// di - i don't understand how SQLite returns null values. I played around with the conditional here and couldn't get empty strings to differeniate from actual null values...
-								if($arr[$i][$j]===NULL)
+								if($arr[$i][$j]==="")
+									echo "&nbsp;";
+								elseif($arr[$i][$j]===NULL)
 									echo "<i class='null'>NULL</i>";
 								else
 									echo subString(htmlencode($arr[$i][$j]));
@@ -3475,8 +2477,7 @@ else //user is authorized - display the main application
 							// No label-column set. Try to pick a text-column as label-column.
 							for($i=0; $i<sizeof($result); $i++)
 							{
-								$col_type = strtolower($result[$i]['type']);
-								if(strpos($col_type, 'text')!==false || strpos($col_type, 'char')!==false || strpos($col_type, 'clob')!==false)
+								if(get_type_affinity($result[$i]['type'])=='TEXT')
 								{
 									$_SESSION[COOKIENAME.$_GET['table'].'chartlabels'] = $i;
 									break;
@@ -3499,8 +2500,8 @@ else //user is authorized - display the main application
 									// the first column (of any type) that is not the label-column
 									$potential_value_column = $i;
 								// check if the col is numeric
-								$col_type = strtolower($result[$i]['type']);  
-								if(strpos($col_type, 'int')!==false || strpos($col_type, 'real')!==false || strpos($col_type, 'floa')!==false || strpos($col_type, 'doub')!==false)
+								$typeAffinity = get_type_affinity($result[$i]['type']);  
+								if($typeAffinity=='INTEGER' || $typeAffinity=='REAL' || $typeAffinity=='NUMERIC')
 								{
 									// this is defined as a numeric column, so prefer this as a value column over $potential_value_column
 									$_SESSION[COOKIENAME.$_GET['table'].'chartvalues'] = $i;
@@ -3586,7 +2587,7 @@ else //user is authorized - display the main application
 						<div id="chart_div" style="float:left;"><?php echo $lang['no_chart']; ?></div>
 						<?php
 						echo "<fieldset style='float:right; text-align:center;' id='chartsettingsbox'><legend><b>Chart Settings</b></legend>";
-						echo "<form action='".PAGE."?action=row_view&amp;table=".urlencode($_GET['table']).$is_view."' method='post'>";
+						echo "<form action='?action=row_view&amp;table=".urlencode($_GET['table']).$is_view."' method='post'>";
 						echo $lang['chart_type'].": <select name='charttype'>";
 						echo "<option value='bar'";
 						if($_SESSION[COOKIENAME.'charttype']=="bar")
@@ -3635,14 +2636,14 @@ else //user is authorized - display the main application
 				}
 				elseif(!isset($_GET['view']))
 				{
-					echo "<br/><br/>".$lang['empty_tbl']." <a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create'>".$lang['click']."</a> ".$lang['insert_rows'];
+					echo "<br/><br/>".$lang['empty_tbl']." <a href='?table=".urlencode($_GET['table'])."&amp;action=row_create'>".$lang['click']."</a> ".$lang['insert_rows'];
 				}
 
 				break;
 			/////////////////////////////////////////////// create row
 			case "row_create":
 				$fieldStr = "";
-				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create' method='post'>";
+				echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=row_create' method='post'>";
 				echo $lang['restart_insert'];
 				echo " <select name='num'>";
 				for($i=1; $i<=40; $i++)
@@ -3659,7 +2660,7 @@ else //user is authorized - display the main application
 				echo "<br/>";
 				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
-				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_create&amp;confirm=1' method='post'>";
+				echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=row_create&amp;confirm=1' method='post'>";
 				if(isset($_POST['num']))
 					$num = $_POST['num'];
 				else
@@ -3685,7 +2686,7 @@ else //user is authorized - display the main application
 						if($j==0)
 							$fieldStr .= ":".$field;
 						$type = strtolower($result[$i]['type']);
-						$scalarField = $type=="integer" || $type=="real" || $type=="null";
+						$typeAffinity = get_type_affinity($type);
 						$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 						$tdWithClassLeft = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;'>";
 						echo "<tr>";
@@ -3693,15 +2694,13 @@ else //user is authorized - display the main application
 						echo $field_html;
 						echo "</td>";
 						echo $tdWithClassLeft;
-						echo $type;
+						echo htmlencode($type);
 						echo "</td>";
 						echo $tdWithClassLeft;
 						echo "<select name='function_".$j."_".$field_html."' onchange='notNull(\"row_".$j."_field_".$i."_null\");'>";
 						echo "<option value=''>&nbsp;</option>";
-						$functions = array_merge(unserialize(FUNCTIONS), $db->getUserFunctions());
-						for($z=0; $z<sizeof($functions); $z++)
-						{
-							echo "<option value='".htmlencode($functions[$z])."'>".htmlencode($functions[$z])."</option>";
+						foreach (array_merge($sqlite_functions, $custom_functions) as $f) {
+							echo "<option value='".htmlencode($f)."'>".htmlencode($f)."</option>";
 						}
 						echo "</select>";
 						echo "</td>";
@@ -3709,18 +2708,22 @@ else //user is authorized - display the main application
 						echo $tdWithClassLeft;
 						if($result[$i]['notnull']==0)
 						{
-							if($result[$i]['dflt_value']===NULL)
+							if($result[$i]['dflt_value']==="NULL")
 								echo "<input type='checkbox' name='".$j.":".$field_html."_null' id='row_".$j."_field_".$i."_null' checked='checked' onclick='disableText(this, \"row_".$j."_field_".$i."_value\");'/>";
 							else
 								echo "<input type='checkbox' name='".$j.":".$field_html."_null' id='row_".$j."_field_".$i."_null' onclick='disableText(this, \"row_".$j."_field_".$i."_value\");'/>";
 						}
 						echo "</td>";
 						echo $tdWithClassLeft;
-						$type = strtolower($type);
-						if($scalarField)
-							echo "<input type='text' id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' value='".htmlencode(deQuoteSQL($result[$i]['dflt_value']))."' onblur='changeIgnore(this, \"row_".$j."_ignore\");' onclick='notNull(\"row_".$j."_field_".$i."_null\");'/>";
+						if($result[$i]['dflt_value'] === "NULL")
+							$dflt_value = "";
 						else
-							echo "<textarea id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' rows='5' cols='60' onclick='notNull(\"row_".$j."_field_".$i."_null\");' onblur='changeIgnore(this, \"row_".$j."_ignore\");'>".htmlencode(deQuoteSQL($result[$i]['dflt_value']))."</textarea>";
+							$dflt_value = htmlencode(deQuoteSQL($result[$i]['dflt_value']));
+						
+						if($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC")
+							echo "<input type='text' id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' value='".$dflt_value."' onblur='changeIgnore(this, \"row_".$j."_ignore\");' onclick='notNull(\"row_".$j."_field_".$i."_null\");'/>";
+						else
+							echo "<textarea id='row_".$j."_field_".$i."_value' name='".$j.":".$field_html."' rows='5' cols='60' onclick='notNull(\"row_".$j."_field_".$i."_null\");' onblur='changeIgnore(this, \"row_".$j."_ignore\");'>".$dflt_value."</textarea>";
 					echo "</td>";
 					echo "</tr>";
 					}
@@ -3754,13 +2757,13 @@ else //user is authorized - display the main application
 					echo "<div class='confirm'>";
 					echo $lang['err'].": ".$lang['no_sel'];
 					echo "</div>";
-					echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['return']."</a>";
+					echo "<br/><br/><a href='?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['return']."</a>";
 				}
 				else
 				{
 					if((isset($_POST['type']) && $_POST['type']=="edit") || (isset($_GET['type']) && $_GET['type']=="edit")) //edit
 					{
-						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_edit&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
+						echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=row_edit&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
 						$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 						$result = $db->selectArray($query);
 
@@ -3789,24 +2792,23 @@ else //user is authorized - display the main application
 							for($i=0; $i<sizeof($result); $i++)
 							{
 								$field = $result[$i][1];
-								$type = $result[$i][2];
+								$type = $result[$i]['type'];
+								$typeAffinity = get_type_affinity($type);
 								$value = $result1[$i];
 								$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 								$tdWithClassLeft = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;'>";
 								echo "<tr>";
 								echo $tdWithClass;
-								echo $field;
+								echo htmlencode($field);
 								echo "</td>";
 								echo $tdWithClass;
-								echo $type;
+								echo htmlencode($type);
 								echo "</td>";
 								echo $tdWithClassLeft;
 								echo "<select name='function_".htmlencode($pks[$j])."_".htmlencode($field)."' onchange='notNull(\"".htmlencode($pks[$j]).":".htmlencode($field)."_null\");'>";
 								echo "<option value=''></option>";
-								$functions = array_merge(unserialize(FUNCTIONS), $db->getUserFunctions());
-								for($z=0; $z<sizeof($functions); $z++)
-								{
-									echo "<option value='".htmlencode($functions[$z])."'>".htmlencode($functions[$z])."</option>";
+								foreach (array_merge($sqlite_functions, $custom_functions) as $f) {
+									echo "<option value='".htmlencode($f)."'>".htmlencode($f)."</option>";
 								}
 								echo "</select>";
 								echo "</td>";
@@ -3820,7 +2822,7 @@ else //user is authorized - display the main application
 								}
 								echo "</td>";
 								echo $tdWithClassLeft;
-								if($type=="INTEGER" || $type=="REAL" || $type=="NULL")
+								if($typeAffinity=="INTEGER" || $typeAffinity=="REAL" || $typeAffinity=="NUMERIC")
 									echo "<input type='text' name='".htmlencode($pks[$j]).":".htmlencode($field)."' value='".htmlencode($value)."' onblur='changeIgnore(this, \"".$j."\", \"".htmlencode($pks[$j]).":".htmlencode($field)."_null\")' />";
 								else
 									echo "<textarea name='".htmlencode($pks[$j]).":".htmlencode($field)."' rows='1' cols='60' class='".htmlencode($field)."_textarea' onblur='changeIgnore(this, \"".$j."\", \"".htmlencode($pks[$j]).":".htmlencode($field)."_null\")'>".htmlencode($value)."</textarea>";
@@ -3829,9 +2831,10 @@ else //user is authorized - display the main application
 							}
 							echo "<tr>";
 							echo "<td class='tdheader' style='text-align:right;' colspan='5'>";
-							echo "<input type='submit' name='new_row' value='".$lang['new_insert']."' class='btn'/> ";
+							// Note: the 'Save changes' button must be first in the code so it is the one used when submitting the form with the Enter key (issue #215)
 							echo "<input type='submit' value='".$lang['save_ch']."' class='btn'/> ";
-							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['cancel']."</a>";
+							echo "<input type='submit' name='new_row' value='".$lang['new_insert']."' class='btn'/> ";
+							echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['cancel']."</a>";
 							echo "</td>";
 							echo "</tr>";
 							echo "</table>";
@@ -3841,12 +2844,12 @@ else //user is authorized - display the main application
 					}
 					else //delete
 					{
-						echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_delete&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
+						echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=row_delete&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
 						echo "<div class='confirm'>";
 						printf($lang['ques_del_rows'], htmlencode($str), htmlencode($_GET['table']));
 						echo "<br/><br/>";
 						echo "<input type='submit' value='".$lang['confirm']."' class='btn'/> ";
-						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['cancel']."</a>";
+						echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=row_view'>".$lang['cancel']."</a>";
 						echo "</div>";
 					}
 				}
@@ -3857,7 +2860,7 @@ else //user is authorized - display the main application
 				$query = "PRAGMA table_info(".$db->quote_id($_GET['table']).")";
 				$result = $db->selectArray($query);
 
-				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete' method='post' name='checkForm'>";
+				echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=column_confirm' method='post' name='checkForm'>";
 				echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
 				echo "<tr>";
 				if(!isset($_GET['view']))
@@ -3870,23 +2873,28 @@ else //user is authorized - display the main application
 				echo "<td class='tdheader'>".$lang['prim_key']."</td>";
 				echo "</tr>";
 
+				$noPrimaryKey = true;
+				
 				for($i=0; $i<sizeof($result); $i++)
 				{
 					$colVal = $result[$i][0];
 					$fieldVal = $result[$i][1];
-					$typeVal = $result[$i][2];
+					$typeVal = $result[$i]['type'];
 					$notnullVal = $result[$i][3];
 					$defaultVal = $result[$i][4];
 					$primarykeyVal = $result[$i][5];
 
 					if(intval($notnullVal)!=0)
-						$notnullVal = "yes";
+						$notnullVal = $lang['yes'];
 					else
-						$notnullVal = "no";
+						$notnullVal = $lang['no'];
 					if(intval($primarykeyVal)!=0)
-						$primarykeyVal = "yes";
+					{
+						$primarykeyVal = $lang['yes'];
+						$noPrimaryKey = false;
+					}
 					else
-						$primarykeyVal = "no";
+						$primarykeyVal = $lang['no'];
 
 					$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 					$tdWithClassLeft = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;'>";
@@ -3897,10 +2905,10 @@ else //user is authorized - display the main application
 						echo "<input type='checkbox' name='check[]' value='".htmlencode($fieldVal)."' id='check_".$i."'/>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_edit&amp;pk=".urlencode($fieldVal)."' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a>";
+						echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_edit&amp;pk=".urlencode($fieldVal)."' title='".$lang['edit']."' class='edit'><span>".$lang['edit']."</span></a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete&amp;pk=".urlencode($fieldVal)."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
+						echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_confirm&amp;action2=column_delete&amp;pk=".urlencode($fieldVal)."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
 						echo "</td>";
 					}
 					echo $tdWithClass;
@@ -3916,8 +2924,12 @@ else //user is authorized - display the main application
 					echo htmlencode($notnullVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
-					if($defaultVal==="NULL") echo "<i class='null'>NULL</i>";
-					else echo htmlencode($defaultVal);
+					if($defaultVal===NULL)
+						echo "<i class='null'>".$lang['none']."</i>";
+					elseif($defaultVal==="NULL")
+						echo "<i class='null'>NULL</i>";
+					else
+						echo htmlencode($defaultVal);
 					echo "</td>";
 					echo $tdWithClassLeft;
 					echo htmlencode($primarykeyVal);
@@ -3929,18 +2941,19 @@ else //user is authorized - display the main application
 				if(!isset($_GET['view']))
 				{
 					echo "<a onclick='checkAll()'>".$lang['chk_all']."</a> / <a onclick='uncheckAll()'>".$lang['unchk_all']."</a> <i>".$lang['with_sel'].":</i> ";
-					echo "<select name='massType'>";
+					echo "<select name='action2'>";
 					//echo "<option value='edit'>".$lang['edit']."</option>";
-					echo "<option value='delete'>".$lang['del']."</option>";
+					echo "<option value='column_delete'>".$lang['del']."</option>";
+					if($noPrimaryKey)
+						echo "<option value='primarykey_add'>".$lang['prim_key']."</option>";
 					echo "</select> ";
-					echo "<input type='hidden' name='structureDel' value='true'/>";
 					echo "<input type='submit' value='".$lang['go']."' name='massGo' class='btn'/>";
 				}
 				echo "</form>";
 				if(!isset($_GET['view']))
 				{
 					echo "<br/>";
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_create' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=column_create' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo $lang['add']." <input type='text' name='tablefields' style='width:30px;' value='1'/> ".$lang['tbl_end']." <input type='submit' value='".$lang['go']."' name='addfields' class='btn'/>";
 					echo "</form>";
@@ -3982,9 +2995,9 @@ else //user is authorized - display the main application
 						for($i=0; $i<sizeof($result); $i++)
 						{
 							if($result[$i]['unique']==0)
-								$unique = "no";
+								$unique = $lang['no'];
 							else
-								$unique = "yes";
+								$unique = $lang['yes'];
 	
 							$query = "PRAGMA index_info(".$db->quote_id($result[$i]['name']).")";
 							$info = $db->selectArray($query);
@@ -3996,7 +3009,7 @@ else //user is authorized - display the main application
 							$tdWithClassLeftSpan = "<td class='td".($i%2 ? "1" : "2")."' style='text-align:left;' rowspan='".$span."'>";
 							echo "<tr>";
 							echo $tdWithClassSpan;
-							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($result[$i]['name'])."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
+							echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($result[$i]['name'])."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
 							echo "</td>";
 							echo $tdWithClassLeftSpan;
 							echo $result[$i]['name'];
@@ -4041,7 +3054,7 @@ else //user is authorized - display the main application
 							$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
 							echo "<tr>";
 							echo $tdWithClass;
-							echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($result[$i]['name'])."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
+							echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($result[$i]['name'])."' title='".$lang['del']."' class='delete'><span>".$lang['del']."</span></a>";
 							echo "</td>";
 							echo $tdWithClass;
 							echo htmlencode($result[$i]['name']);
@@ -4053,14 +3066,14 @@ else //user is authorized - display the main application
 						echo "</table><br/><br/>";
 					}
 					
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_create' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=index_create' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo "<br/><div class='tdheader'>";
 					echo $lang['create_index2']." <input type='text' name='numcolumns' style='width:30px;' value='1'/> ".$lang['cols']." <input type='submit' value='".$lang['go']."' name='addindex' class='btn'/>";
 					echo "</div>";
 					echo "</form>";
 					
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_create' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=trigger_create' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($_GET['table'])."'/>";
 					echo "<br/><div class='tdheader'>";
 					echo $lang['create_trigger2']." <input type='submit' value='".$lang['go']."' name='addindex' class='btn'/>";
@@ -4079,7 +3092,7 @@ else //user is authorized - display the main application
 				{
 					$num = intval($_POST['tablefields']);
 					$name = $_POST['tablename'];
-					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_create&amp;confirm=1' method='post'>";
+					echo "<form action='?table=".urlencode($_POST['tablename'])."&amp;action=column_create&amp;confirm=1' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
 					echo "<input type='hidden' name='rows' value='".$num."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
@@ -4102,9 +3115,9 @@ else //user is authorized - display the main application
 						echo "</td>";
 						echo $tdWithClass;
 						echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
-						$types = unserialize(DATATYPES);
-						for($z=0; $z<sizeof($types); $z++)
-							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
+						foreach ($sqlite_datatypes as $t) {
+							echo "<option value='".htmlencode($t)."'>".htmlencode($t)."</option>";
+						}
 						echo "</select>";
 						echo "</td>";
 						echo $tdWithClass;
@@ -4120,14 +3133,17 @@ else //user is authorized - display the main application
 						echo "<label><input type='checkbox' name='".$i."_notnull'/> ".$lang['yes']."</label>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<input type='text' name='".$i."_defaultvalue' style='width:100px;'/>";
+						echo "<select name='".$i."_defaultoption' id='i".$i."_defaultoption' onchange=\"if(this.value!='defined' && this.value!='expr') document.getElementById('i".$i."_defaultvalue').value='';\">";
+						echo "<option value='none'>".$lang['none']."</option><option value='defined'>".$lang['as_defined'].":</option><option>NULL</option><option>CURRENT_TIME</option><option>CURRENT_DATE</option><option>CURRENT_TIMESTAMP</option><option value='expr'>".$lang['expression'].":</option>";
+						echo "</select>";
+						echo "<input type='text' name='".$i."_defaultvalue' id='i".$i."_defaultvalue' style='width:100px;' onchange=\"if(document.getElementById('i".$i."_defaultoption').value!='expr') document.getElementById('i".$i."_defaultoption').value='defined';\"/>";
 						echo "</td>";
 						echo "</tr>";
 					}
 					echo "<tr>";
 					echo "<td class='tdheader' style='text-align:right;' colspan='6'>";
 					echo "<input type='submit' value='".$lang['add_flds']."' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+					echo "<a href='?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 					echo "</td>";
 					echo "</tr>";
 					echo "</table>";
@@ -4135,7 +3151,7 @@ else //user is authorized - display the main application
 				}
 				break;
 			/////////////////////////////////////////////// delete column
-			case "column_delete":
+			case "column_confirm":
 				if(isset($_POST['check']))
 					$pks = $_POST['check'];
 				elseif(isset($_GET['pk']))
@@ -4147,7 +3163,7 @@ else //user is authorized - display the main application
 					echo "<div class='confirm'>";
 					echo $lang['err'].": ".$lang['no_sel'];
 					echo "</div>";
-					echo "<br/><br/><a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['return']."</a>";
+					echo "<br/><br/><a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['return']."</a>";
 				}
 				else
 				{
@@ -4158,12 +3174,12 @@ else //user is authorized - display the main application
 						$str .= ", ".$pks[$i];
 						$pkVal .= ":".$pks[$i];
 					}
-					echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_delete&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
+					echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=".$_REQUEST['action2']."&amp;confirm=1&amp;pk=".urlencode($pkVal)."' method='post'>";
 					echo "<div class='confirm'>";
-					printf($lang['ques_del_col'], htmlencode($str), htmlencode($_GET['table']));
+					printf($lang['ques_'.$_REQUEST['action2']], htmlencode($str), htmlencode($_GET['table']));
 					echo "<br/><br/>";
 					echo "<input type='submit' value='".$lang['confirm']."' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+					echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 					echo "</div>";
 				}
 				break;
@@ -4186,7 +3202,7 @@ else //user is authorized - display the main application
 						{
 							$colVal = $result[$i][0];
 							$fieldVal = $result[$i][1];
-							$typeVal = $result[$i][2];
+							$typeVal = $result[$i]['type'];
 							$notnullVal = $result[$i][3];
 							$defaultVal = $result[$i][4];
 							$primarykeyVal = $result[$i][5];
@@ -4195,7 +3211,7 @@ else //user is authorized - display the main application
 					}
 					
 					$name = $_GET['table'];
-					echo "<form action='".PAGE."?table=".urlencode($name)."&amp;action=column_edit&amp;confirm=1' method='post'>";
+					echo "<form action='?table=".urlencode($name)."&amp;action=column_edit&amp;confirm=1' method='post'>";
 					echo "<input type='hidden' name='tablename' value='".htmlencode($name)."'/>";
 					echo "<input type='hidden' name='oldvalue' value='".htmlencode($_GET['pk'])."'/>";
 					echo "<table border='0' cellpadding='2' cellspacing='1' class='viewTable'>";
@@ -4214,13 +3230,13 @@ else //user is authorized - display the main application
 					echo "</td>";
 					echo $tdWithClass;
 					echo "<select name='".$i."_type' id='i".$i."_type' onchange='toggleAutoincrement(".$i.");'>";
-					$types = unserialize(DATATYPES);
-					for($z=0; $z<sizeof($types); $z++)
-					{
-						if($types[$z]==$typeVal)
-							echo "<option value='".htmlencode($types[$z])."' selected='selected'>".htmlencode($types[$z])."</option>";
+					if(!in_array($typeVal, $sqlite_datatypes))
+						echo "<option value='".htmlencode($typeVal)."' selected='selected'>".htmlencode($typeVal)."</option>";
+					foreach ($sqlite_datatypes as $t) {
+						if($t==$typeVal)
+							echo "<option value='".htmlencode($t)."' selected='selected'>".htmlencode($t)."</option>";
 						else
-							echo "<option value='".htmlencode($types[$z])."'>".htmlencode($types[$z])."</option>";
+							echo "<option value='".htmlencode($t)."'>".htmlencode($t)."</option>";
 					}
 					echo "</select>";
 					echo "</td>";
@@ -4252,7 +3268,7 @@ else //user is authorized - display the main application
 					echo "<tr>";
 					echo "<td class='tdheader' style='text-align:right;' colspan='6'>";
 					echo "<input type='submit' value='".$lang['save_ch']."' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+					echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 					echo "</td>";
 					echo "</tr>";
 					echo "</table>";
@@ -4261,21 +3277,21 @@ else //user is authorized - display the main application
 				break;
 			/////////////////////////////////////////////// delete index
 			case "index_delete":
-				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
+				echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=index_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
 				echo "<div class='confirm'>";
 				echo sprintf($lang['ques_del_index'], htmlencode($_GET['pk']))."<br/><br/>";
 				echo "<input type='submit' value='".$lang['confirm']."' class='btn'/> ";
-				echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+				echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 				echo "</div>";
 				echo "</form>";
 				break;
 			/////////////////////////////////////////////// delete trigger
 			case "trigger_delete":
-				echo "<form action='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
+				echo "<form action='?table=".urlencode($_GET['table'])."&amp;action=trigger_delete&amp;pk=".urlencode($_GET['pk'])."&amp;confirm=1' method='post'>";
 				echo "<div class='confirm'>";
 				echo sprintf($lang['ques_del_trigger'], htmlencode($_GET['pk']))."<br/><br/>";
 				echo "<input type='submit' value='".$lang['confirm']."' class='btn'/> ";
-				echo "<a href='".PAGE."?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+				echo "<a href='?table=".urlencode($_GET['table'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 				echo "</div>";
 				echo "</form>";
 				break;
@@ -4286,7 +3302,7 @@ else //user is authorized - display the main application
 					echo $lang['specify_tbl'];
 				else
 				{
-					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=trigger_create&amp;confirm=1' method='post'>";
+					echo "<form action='?table=".urlencode($_POST['tablename'])."&amp;action=trigger_create&amp;confirm=1' method='post'>";
 					echo $lang['trigger_name'].": <input type='text' name='trigger_name'/><br/><br/>";
 					echo "<fieldset><legend>".$lang['db_event']."</legend>";
 					echo $lang['before']."/".$lang['after'].": ";
@@ -4313,7 +3329,7 @@ else //user is authorized - display the main application
 					echo "<textarea name='triggersteps' style='width:500px; height:100px;' rows='8' cols='50'></textarea>";
 					echo "</fieldset><br/><br/>";
 					echo "<input type='submit' value='".$lang['create_trigger2']."' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+					echo "<a href='?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 					echo "</form>";
 				}
 				break;
@@ -4326,7 +3342,7 @@ else //user is authorized - display the main application
 					echo $lang['specify_tbl'];
 				else
 				{
-					echo "<form action='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=index_create&amp;confirm=1' method='post'>";
+					echo "<form action='?table=".urlencode($_POST['tablename'])."&amp;action=index_create&amp;confirm=1' method='post'>";
 					$num = intval($_POST['numcolumns']);
 					$query = "PRAGMA table_info(".$db->quote_id($_POST['tablename']).")";
 
@@ -4358,7 +3374,7 @@ else //user is authorized - display the main application
 					echo "<br/><br/>";
 					echo "<input type='hidden' name='num' value='".$num."'/>";
 					echo "<input type='submit' value='".$lang['create_index1']."' class='btn'/> ";
-					echo "<a href='".PAGE."?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
+					echo "<a href='?table=".urlencode($_POST['tablename'])."&amp;action=column_view'>".$lang['cancel']."</a>";
 					echo "</form>";
 				}
 				break;
@@ -4375,31 +3391,31 @@ else //user is authorized - display the main application
 		else
 			$view = "structure";
 
-		echo "<a href='".PAGE."?view=structure' ";
+		echo "<a href='?view=structure' ";
 		if($view=="structure")
 			echo "class='tab_pressed'";
 		else
 			echo "class='tab'";
 		echo ">".$lang['struct']."</a>";
-		echo "<a href='".PAGE."?view=sql' ";
+		echo "<a href='?view=sql' ";
 		if($view=="sql")
 			echo "class='tab_pressed'";
 		else
 			echo "class='tab'";
 		echo ">".$lang['sql']."</a>";
-		echo "<a href='".PAGE."?view=export' ";
+		echo "<a href='?view=export' ";
 		if($view=="export")
 			echo "class='tab_pressed'";
 		else
 			echo "class='tab'";
 		echo ">".$lang['export']."</a>";
-		echo "<a href='".PAGE."?view=import' ";
+		echo "<a href='?view=import' ";
 		if($view=="import")
 			echo "class='tab_pressed'";
 		else
 			echo "class='tab'";
 		echo ">".$lang['import']."</a>";
-		echo "<a href='".PAGE."?view=vacuum' ";
+		echo "<a href='?view=vacuum' ";
 		if($view=="vacuum")
 			echo "class='tab_pressed'";
 		else
@@ -4407,14 +3423,14 @@ else //user is authorized - display the main application
 		echo ">".$lang['vac']."</a>";
 		if($directory!==false && is_writable($directory))
 		{
-			echo "<a href='".PAGE."?view=rename' ";
+			echo "<a href='?view=rename' ";
 			if($view=="rename")
 				echo "class='tab_pressed'";
 			else
 				echo "class='tab'";
 			echo ">".$lang['db_rename']."</a>";
 			
-			echo "<a href='".PAGE."?view=delete' title='".$lang['db_del']."' ";
+			echo "<a href='?view=delete' title='".$lang['db_del']."' ";
 			if($view=="delete")
 				echo "class='tab_pressed delete_db'";
 			else
@@ -4448,15 +3464,14 @@ else //user is authorized - display the main application
 			{
 				echo "<div class='confirm' style='margin:10px 20px;'>";
 				echo $lang['extension_not_allowed'].': ';
-				foreach($allowed_extensions as $ext_i => $extension)
-					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo implode(', ', array_map('htmlencode', $allowed_extensions));
 				echo '<br />'.$lang['add_allowed_extension'];
 				echo "</div><br/>";
 			}
 
 			if ($auth->isPasswordDefault())
 			{
-				echo "<div class='confirm' style='margin:20px;'>";
+				echo "<div class='confirm' style='margin:20px 0px;'>";
 				echo sprintf($lang['warn_passwd'],(is_readable('phpliteadmin.config.php')?'phpliteadmin.config.php':PAGE))."<br />".$lang['warn0'];
 				echo "</div>";
 			}
@@ -4493,7 +3508,7 @@ else //user is authorized - display the main application
 				echo "<tr>";
 				
 				echo "<td class='tdheader'>";
-				echo "<a href='".PAGE."?sort=type";
+				echo "<a href='?sort=type";
 				if(isset($_SESSION[COOKIENAME.'sortTables']))
 					$orderTag = ($_SESSION[COOKIENAME.'sortTables']=="type" && $_SESSION[COOKIENAME.'orderTables']=="ASC") ? "DESC" : "ASC";
 				else
@@ -4505,7 +3520,7 @@ else //user is authorized - display the main application
 				echo "</td>";
 				
 				echo "<td class='tdheader'>";
-				echo "<a href='".PAGE."?sort=name";
+				echo "<a href='?sort=name";
 				if(isset($_SESSION[COOKIENAME.'sortTables']))
 					$orderTag = ($_SESSION[COOKIENAME.'sortTables']=="name" && $_SESSION[COOKIENAME.'orderTables']=="ASC") ? "DESC" : "ASC";
 				else
@@ -4524,9 +3539,12 @@ else //user is authorized - display the main application
 				$skippedTables = false;
 				for($i=0; $i<sizeof($result); $i++)
 				{
-					$records = $db->numRows($result[$i]['name'], true);
+					$records = $db->numRows($result[$i]['name'], (!isset($_GET['forceCount'])));
 					if($records == '?')
+					{
 						$skippedTables = true;
+						$records = "<a href='?forceCount=1'>?</a>";
+					}
 					else
 						$totalRecords += $records;
 					$tdWithClass = "<td class='td".($i%2 ? "1" : "2")."'>";
@@ -4539,37 +3557,37 @@ else //user is authorized - display the main application
 						echo $lang['tbl'];
 						echo "</td>";
 						echo $tdWithClassLeft;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>".htmlencode($result[$i]['name'])."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>".htmlencode($result[$i]['name'])."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>".$lang['browse']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=row_view'>".$lang['browse']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=column_view'>".$lang['struct']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=column_view'>".$lang['struct']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_sql'>".$lang['sql']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_sql'>".$lang['sql']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_search'>".$lang['srch']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_search'>".$lang['srch']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_create'>".$lang['insert']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=row_create'>".$lang['insert']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_export'>".$lang['export']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_export'>".$lang['export']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_import'>".$lang['import']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_import'>".$lang['import']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_rename'>".$lang['rename']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_rename'>".$lang['rename']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_empty' class='empty'>".$lang['empty']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_empty' class='empty'>".$lang['empty']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_drop' class='drop'>".$lang['drop']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_drop' class='drop'>".$lang['drop']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
 						echo $records;
@@ -4583,37 +3601,37 @@ else //user is authorized - display the main application
 						echo "View";
 						echo "</td>";
 						echo $tdWithClassLeft;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>".htmlencode($result[$i]['name'])."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>".htmlencode($result[$i]['name'])."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>".$lang['browse']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=row_view&amp;view=1'>".$lang['browse']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=column_view&amp;view=1'>".$lang['struct']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=column_view&amp;view=1'>".$lang['struct']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_sql&amp;view=1'>".$lang['sql']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_sql&amp;view=1'>".$lang['sql']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_search&amp;view=1'>".$lang['srch']."</a>";
-						echo "</td>";
-						echo $tdWithClass;
-						echo "";
-						echo "</td>";
-						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=table_export&amp;view=1'>".$lang['export']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_search&amp;view=1'>".$lang['srch']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
 						echo "";
 						echo "</td>";
 						echo $tdWithClass;
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=table_export&amp;view=1'>".$lang['export']."</a>";
+						echo "</td>";
+						echo $tdWithClass;
+						echo "";
+						echo "</td>";
+						echo $tdWithClass;
 						echo "";
 						echo "</td>";
 						echo $tdWithClass;
 						echo "";
 						echo "</td>";
 						echo $tdWithClass;
-						echo "<a href='".PAGE."?table=".urlencode($result[$i]['name'])."&amp;action=view_drop&amp;view=1' class='drop'>".$lang['drop']."</a>";
+						echo "<a href='?table=".urlencode($result[$i]['name'])."&amp;action=view_drop&amp;view=1' class='drop'>".$lang['drop']."</a>";
 						echo "</td>";
 						echo $tdWithClass;
 						echo $records;
@@ -4623,14 +3641,16 @@ else //user is authorized - display the main application
 				}
 				echo "<tr>";
 				echo "<td class='tdheader' colspan='12'>".sizeof($result)." total</td>";
-				echo "<td class='tdheader' colspan='1' style='text-align:right;'>".$totalRecords.($skippedTables?' + ?':'')."</td>";
+				echo "<td class='tdheader' colspan='1' style='text-align:right;'>".$totalRecords.($skippedTables?" <a href='?forceCount=1'>+ ?</a>":"")."</td>";
 				echo "</tr>";
 				echo "</table>";
 				echo "<br/>";
+				if($skippedTables)
+					echo "<div class='confirm' style='margin-bottom:20px;'>".sprintf($lang["counting_skipped"],"<a href='?forceCount=1'>","</a>")."</div>";
 			}
 			echo "<fieldset>";
 			echo "<legend><b>".$lang['create_tbl_db']." '".htmlencode($db->getName())."'</b></legend>";
-			echo "<form action='".PAGE."?action=table_create' method='post'>";
+			echo "<form action='?action=table_create' method='post'>";
 			echo $lang['name'].": <input type='text' name='tablename' style='width:200px;'/> ";
 			echo $lang['fld_num'].": <input type='text' name='tablefields' style='width:90px;'/> ";
 			echo "<input type='submit' name='createtable' value='".$lang['go']."' class='btn'/>";
@@ -4639,7 +3659,7 @@ else //user is authorized - display the main application
 			echo "<br/>";
 			echo "<fieldset>";
 			echo "<legend><b>".$lang['create_view']." '".htmlencode($db->getName())."'</b></legend>";
-			echo "<form action='".PAGE."?action=view_create&amp;confirm=1' method='post'>";
+			echo "<form action='?action=view_create&amp;confirm=1' method='post'>";
 			echo $lang['name'].": <input type='text' name='viewname' style='width:200px;'/> ";
 			echo $lang['sel_state']." ".helpLink($lang['help4']).": <input type='text' name='select' style='width:400px;'/> "; 
 			echo "<input type='submit' name='createtable' value='".$lang['go']."' class='btn'/>";
@@ -4660,7 +3680,7 @@ else //user is authorized - display the main application
 					if(str_replace(" ", "", str_replace("\n", "", str_replace("\r", "", $query[$i])))!="") //make sure this query is not an empty string
 					{
 						$queryTimer = new MicroTimer();
-						if(preg_match('/^\s*(?:select|pragma)\s/i', $query[$i])===1)   // pragma often returns rows just like select
+						if(preg_match('/^\s*(?:select|pragma|explain)\s/i', $query[$i])===1)   // pragma and explain often return rows just like select
 						{
 							$isSelect = true;
 							$result = $db->selectArray($query[$i], "assoc");
@@ -4675,7 +3695,7 @@ else //user is authorized - display the main application
 						echo "<div class='confirm'>";
 						echo "<b>";
 						// 22 August 2011: gkf fixed bugs 46, 51 and 52.
-						if($result)
+						if($result!==false)
 						{
 							if($isSelect)
 							{
@@ -4718,7 +3738,12 @@ else //user is authorized - display the main application
 									for($z=0; $z<sizeof($headers); $z++)
 									{
 										echo $tdWithClass;
-										echo htmlencode($result[$j][$headers[$z]]);
+										if($result[$j][$headers[$z]]==="")
+											echo "&nbsp;";
+										elseif($result[$j][$headers[$z]]===NULL)
+											echo "<i class='null'>NULL</i>";
+										else
+											echo subString(htmlencode($result[$j][$headers[$z]]));
 										echo "</td>";
 									}
 									echo "</tr>";
@@ -4737,7 +3762,7 @@ else //user is authorized - display the main application
 
 			echo "<fieldset>";
 			echo "<legend><b>".sprintf($lang['run_sql'],htmlencode($db->getName()))."</b></legend>";
-			echo "<form action='".PAGE."?view=sql' method='post'>";
+			echo "<form action='?view=sql' method='post'>";
 			echo "<textarea style='width:100%; height:300px;' name='queryval' cols='50' rows='8'>".htmlencode($queryStr)."</textarea>";
 			echo $lang['delimit']." <input type='text' name='delimiter' value='".htmlencode($delimiter)."' style='width:50px;'/> ";
 			echo "<input type='submit' name='query' value='".$lang['go']."' class='btn'/>";
@@ -4754,7 +3779,7 @@ else //user is authorized - display the main application
 				printf($lang['db_vac'], htmlencode($db->getName()));
 				echo "</div><br/>";
 			}
-			echo "<form method='post' action='".PAGE."?view=vacuum'>";
+			echo "<form method='post' action='?view=vacuum'>";
 			printf($lang['vac_desc'],htmlencode($db->getName()));
 			echo "<br/><br/>";
 			echo "<input type='submit' value='".$lang['vac']."' name='vacuum' class='btn'/>";
@@ -4762,7 +3787,7 @@ else //user is authorized - display the main application
 		}
 		else if($view=="export")
 		{
-			echo "<form method='post' action='".PAGE."?view=export'>";
+			echo "<form method='post' action='?view=export'>";
 			echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>".$lang['export']."</b></legend>";
 			echo "<select multiple='multiple' size='10' style='width:240px;' name='tables[]'>";
 			$query = "SELECT name FROM sqlite_master WHERE type='table' OR type='view' ORDER BY name";
@@ -4780,7 +3805,7 @@ else //user is authorized - display the main application
 			
 			echo "<fieldset style='float:left; max-width:350px;' id='exportoptions_sql'><legend><b>".$lang['options']."</b></legend>";
 			echo "<label><input type='checkbox' checked='checked' name='structure'/> ".$lang['export_struct']."</label> ".helpLink($lang['help5'])."<br/>"; 
-			echo "<label><input type='checkbox' checked='checked' name='data'/> Export with data</label> ".helpLink($lang['help6'])."<br/>";
+			echo "<label><input type='checkbox' checked='checked' name='data'/> ".$lang['export_data']."</label> ".helpLink($lang['help6'])."<br/>";
 			echo "<label><input type='checkbox' name='drop'/> ".$lang['add_drop']."</label> ".helpLink($lang['help7'])."<br/>"; 
 			echo "<label><input type='checkbox' checked='checked' name='transaction'/> ".$lang['add_transact']."</label> ".helpLink($lang['help8'])."<br/>";
 			echo "<label><input type='checkbox' checked='checked' name='comments'/> ".$lang['comments']."</label> ".helpLink($lang['help9'])."<br/>"; 
@@ -4824,7 +3849,7 @@ else //user is authorized - display the main application
 				echo "</div><br/>";
 			}
 			
-			echo "<form method='post' action='".PAGE."?view=import' enctype='multipart/form-data'>";
+			echo "<form method='post' action='?view=import' enctype='multipart/form-data'>";
 			echo "<fieldset style='float:left; width:260px; margin-right:20px;'><legend><b>".$lang['import']."</b></legend>";
 			echo "<label><input type='radio' name='import_type' checked='checked' value='sql' onclick='toggleImports(\"sql\");'/> ".$lang['sql']."</label>";
 			echo "<br/><label><input type='radio' name='import_type' value='csv' onclick='toggleImports(\"csv\");'/> ".$lang['csv']."</label>";
@@ -4874,8 +3899,7 @@ else //user is authorized - display the main application
 			{
 				echo "<div class='confirm'>";
 				echo $lang['extension_not_allowed'].': ';
-				foreach($allowed_extensions as $ext_i => $extension)
-					echo htmlencode($extension). ($ext_i==count($allowed_extensions)-1?'':', ');
+				echo implode(', ', array_map('htmlencode', $allowed_extensions));
 				echo '<br />'.$lang['add_allowed_extension'];
 				echo "</div><br/>";
 			}
@@ -4897,14 +3921,14 @@ else //user is authorized - display the main application
 				echo " '".htmlencode($newpath)."'.";
 				echo "</div><br/>";
 			}
-			echo "<form action='".PAGE."?view=rename&amp;database_rename=1' method='post'>";
+			echo "<form action='?view=rename&amp;database_rename=1' method='post'>";
 			echo "<input type='hidden' name='oldname' value='".htmlencode($db->getPath())."'/>";
 			echo $lang['db_rename']." '".htmlencode($db->getPath())."' ".$lang['to']." <input type='text' name='newname' style='width:200px;' value='".htmlencode($db->getPath())."'/> <input type='submit' value='".$lang['rename']."' name='rename' class='btn'/>";
 			echo "</form>";	
 		}
 		else if($view=="delete")
 		{
-			echo "<form action='".PAGE."?database_delete=1' method='post'>";
+			echo "<form action='?database_delete=1' method='post'>";
 			echo "<div class='confirm'>";
 			echo sprintf($lang['ques_del_db'],htmlencode($db->getPath()))."<br/><br/>";
 			echo "<input name='database_delete' value='".htmlencode($db->getPath())."' type='hidden'/>";
@@ -4927,11 +3951,1169 @@ else //user is authorized - display the main application
 echo "</body>";
 echo "</html>";
 
+// end of main code
 
-/*	class MicroTimer (issue #146)
-	wraps calls to microtime(), calculating the elapsed time and rounding output
-*/
+// Authorization class
+// Maintains user's logged-in state and security of application
+//
+class Authorization
+{
+	private $authorized;
+	private $login_failed;
+	private $system_password_encrypted;
 
+	public function __construct()
+	{
+		// the salt and password encrypting is probably unnecessary protection but is done just
+		// for the sake of being very secure
+		if(!isset($_SESSION[COOKIENAME.'_salt']) && !isset($_COOKIE[COOKIENAME.'_salt']))
+		{
+			// create a random salt for this session if a cookie doesn't already exist for it
+			$_SESSION[COOKIENAME.'_salt'] = self::generateSalt(20);
+		}
+		else if(!isset($_SESSION[COOKIENAME.'_salt']) && isset($_COOKIE[COOKIENAME.'_salt']))
+		{
+			// session doesn't exist, but cookie does so grab it
+			$_SESSION[COOKIENAME.'_salt'] = $_COOKIE[COOKIENAME.'_salt'];
+		}
+
+		// salted and encrypted password used for checking
+		$this->system_password_encrypted = md5(SYSTEMPASSWORD."_".$_SESSION[COOKIENAME.'_salt']);
+
+		$this->authorized =
+			// no password
+			SYSTEMPASSWORD == ''
+			// correct password stored in session
+			|| isset($_SESSION[COOKIENAME.'password']) && $_SESSION[COOKIENAME.'password'] == $this->system_password_encrypted 
+			// correct password stored in cookie
+			|| isset($_COOKIE[COOKIENAME]) && isset($_COOKIE[COOKIENAME.'_salt']) && md5(SYSTEMPASSWORD."_".$_COOKIE[COOKIENAME.'_salt']) == $_COOKIE[COOKIENAME];
+	}
+
+	public function attemptGrant($password, $remember)
+	{
+		if ($password == SYSTEMPASSWORD) {
+			if ($remember) {
+				// user wants to be remembered, so set a cookie
+				$expire = time()+60*60*24*30; //set expiration to 1 month from now
+				setcookie(COOKIENAME, $this->system_password_encrypted, $expire, null, null, null, true);
+				setcookie(COOKIENAME."_salt", $_SESSION[COOKIENAME.'_salt'], $expire, null, null, null, true);
+			} else {
+				// user does not want to be remembered, so destroy any potential cookies
+				setcookie(COOKIENAME, "", time()-86400, null, null, null, true);
+				setcookie(COOKIENAME."_salt", "", time()-86400, null, null, null, true);
+				unset($_COOKIE[COOKIENAME]);
+				unset($_COOKIE[COOKIENAME.'_salt']);
+			}
+
+			$_SESSION[COOKIENAME.'password'] = $this->system_password_encrypted;
+			$this->authorized = true;
+			return true;
+		}
+
+		$this->login_failed = true;
+		return false;
+	}
+
+	public function revoke()
+	{
+		//destroy everything - cookies and session vars
+		setcookie(COOKIENAME, "", time()-86400, null, null, null, true);
+		setcookie(COOKIENAME."_salt", "", time()-86400, null, null, null, true);
+		unset($_COOKIE[COOKIENAME]);
+		unset($_COOKIE[COOKIENAME.'_salt']);
+		session_unset();
+		session_destroy();
+		$this->authorized = false;
+	}
+
+	public function isAuthorized()
+	{
+		return $this->authorized;      
+	}
+
+	public function isFailedLogin()
+	{
+		return $this->login_failed;
+	}
+
+	public function isPasswordDefault()
+	{
+		return SYSTEMPASSWORD == 'admin';
+	}
+
+	private static function generateSalt($saltSize)
+	{
+		$set = 'ABCDEFGHiJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$setLast = strlen($set) - 1;
+		$salt = '';
+		while ($saltSize-- > 0) {
+			$salt .= $set[mt_rand(0, $setLast)];
+		}
+		return $salt;
+	}
+
+}
+// Database class
+// Generic database abstraction class to manage interaction with database without worrying about SQLite vs. PHP versions
+//
+class Database
+{
+	protected $db; //reference to the DB object
+	protected $type; //the extension for PHP that handles SQLite
+	protected $data;
+	protected $lastResult;
+	protected $alterError;
+
+	public function __construct($data)
+	{
+		global $lang;
+		$this->data = $data;
+		try
+		{
+			if(!file_exists($this->data["path"]) && !is_writable(dirname($this->data["path"]))) //make sure the containing directory is writable if the database does not exist
+			{
+				echo "<div class='confirm' style='margin:20px;'>";
+				printf($lang['db_not_writeable'], htmlencode($this->data["path"]), htmlencode(dirname($this->data["path"])));
+				echo "<form action='".PAGE."' method='post'>";
+				echo "<input type='submit' value='Log Out' name='".$lang['logout']."' class='btn'/>";
+				echo "</form>";
+				echo "</div><br/>";
+				exit();
+			}
+
+			$ver = $this->getVersion();
+
+			switch(true)
+			{
+				case (FORCETYPE=="PDO" || ((FORCETYPE==false || $ver!=-1) && class_exists("PDO") && ($ver==-1 || $ver==3))):
+					$this->db = new PDO("sqlite:".$this->data['path']);
+					if($this->db!=NULL)
+					{
+						$this->type = "PDO";
+						break;
+					}
+				case (FORCETYPE=="SQLite3" || ((FORCETYPE==false || $ver!=-1) && class_exists("SQLite3") && ($ver==-1 || $ver==3))):
+					$this->db = new SQLite3($this->data['path']);
+					if($this->db!=NULL)
+					{
+						$this->type = "SQLite3";
+						break;
+					}
+				case (FORCETYPE=="SQLiteDatabase" || ((FORCETYPE==false || $ver!=-1) && class_exists("SQLiteDatabase") && ($ver==-1 || $ver==2))):
+					$this->db = new SQLiteDatabase($this->data['path']);
+					if($this->db!=NULL)
+					{
+						$this->type = "SQLiteDatabase";
+						break;
+					}
+				default:
+					$this->showError();
+					exit();
+			}
+		}
+		catch(Exception $e)
+		{
+			$this->showError();
+			exit();
+		}
+	}
+
+	public function registerUserFunction($ids)
+	{
+		// in case a single function id was passed
+		if (is_string($ids))
+			$ids = array($ids);
+
+		if ($this->type == 'PDO') {
+			foreach ($ids as $id) {
+				$this->db->sqliteCreateFunction($id, $id, 1);
+			}
+		} else { // type is Sqlite3 or SQLiteDatabase
+			foreach ($ids as $id) {
+				$this->db->createFunction($id, $id, 1);
+			}
+		}
+	}
+	
+	public function getError()
+	{
+		if($this->alterError!='')
+		{
+			$error = $this->alterError;
+			$this->alterError = "";
+			return $error;
+		}
+		else if($this->type=="PDO")
+		{
+			$e = $this->db->errorInfo();
+			return $e[2];
+		}
+		else if($this->type=="SQLite3")
+		{
+			return $this->db->lastErrorMsg();
+		}
+		else
+		{
+			return sqlite_error_string($this->db->lastError());
+		}
+	}
+	
+	public function showError()
+	{
+		global $lang;
+		$classPDO = class_exists("PDO");
+		$classSQLite3 = class_exists("SQLite3");
+		$classSQLiteDatabase = class_exists("SQLiteDatabase");
+		if($classPDO)	// PDO is there, check if the SQLite driver for PDO is missing
+			$PDOSqliteDriver = (in_array("sqlite", PDO::getAvailableDrivers() ));
+		else
+			$PDOSqliteDriver = false;
+		echo "<div class='confirm' style='margin:20px;'>";
+		printf($lang['db_setup'], $this->getPath());
+		echo ".<br/><br/><i>".$lang['chk_ext']."...<br/><br/>";
+		echo "<b>PDO</b>: ".($classPDO ? $lang['installed'] : $lang['not_installed'])."<br/>";
+		echo "<b>PDO SQLite Driver</b>: ".($PDOSqliteDriver ? $lang['installed'] : $lang['not_installed'])."<br/>";
+		echo "<b>SQLite3</b>: ".($classSQLite3 ? $lang['installed'] : $lang['not_installed'])."<br/>";
+		echo "<b>SQLiteDatabase</b>: ".($classSQLiteDatabase ? $lang['installed'] : $lang['not_installed'])."<br/>";
+		echo "<br/>...".$lang['done'].".</i><br/><br/>";
+		if(!$classPDO && !$classSQLite3 && !$classSQLiteDatabase)
+			printf($lang['sqlite_ext_support'], PROJECT);
+		else
+		{
+			if(!$classPDO && !$classSQLite3 && $this->getVersion()==3)
+				printf($lang['sqlite_v_error'], 3, PROJECT, 2);
+			else if(!$classSQLiteDatabase && $this->getVersion()==2)
+				printf($lang['sqlite_v_error'], 2, PROJECT, 3);
+			else
+				echo $lang['report_issue'].' '.PROJECT_BUGTRACKER_LINK.'.';
+		}
+		echo "<br />See <a href='https://code.google.com/p/phpliteadmin/wiki/Installation'>https://code.google.com/p/phpliteadmin/wiki/Installation</a> for help.";
+		echo "</div><br/>";
+	}
+
+	public function __destruct()
+	{
+		if($this->db)
+			$this->close();
+	}
+
+	//get the exact PHP extension being used for SQLite
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	//get the name of the database
+	public function getName()
+	{
+		return $this->data["name"];
+	}
+
+	//get the filename of the database
+	public function getPath()
+	{
+		return $this->data["path"];
+	}
+
+	//is the db-file writable?
+	public function isWritable()
+	{
+		return $this->data["writable"];
+	}
+
+	//is the db-folder writable?
+	public function isDirWritable()
+	{
+		return $this->data["writable_dir"];
+	}
+
+	//get the version of the database
+	public function getVersion()
+	{
+		if(file_exists($this->data['path'])) //make sure file exists before getting its contents
+		{
+			$content = strtolower(file_get_contents($this->data['path'], NULL, NULL, 0, 40)); //get the first 40 characters of the database file
+			$p = strpos($content, "** this file contains an sqlite 2"); //this text is at the beginning of every SQLite2 database
+			if($p!==false) //the text is found - this is version 2
+				return 2;
+			else
+				return 3;
+		}
+		else //return -1 to indicate that it does not exist and needs to be created
+		{
+			return -1;
+		}
+	}
+
+	//get the size of the database (in KB)
+	public function getSize()
+	{
+		return round(filesize($this->data["path"])*0.0009765625, 1);
+	}
+
+	//get the last modified time of database
+	public function getDate()
+	{
+		global $lang;
+		return date($lang['date_format'], filemtime($this->data['path']));
+	}
+
+	//get number of affected rows from last query
+	public function getAffectedRows()
+	{
+		if($this->type=="PDO")
+			if(!is_object($this->lastResult))
+				// in case it was an alter table statement, there is no lastResult object
+				return 0;
+			else
+				return $this->lastResult->rowCount();
+		else if($this->type=="SQLite3")
+			return $this->db->changes();
+		else if($this->type=="SQLiteDatabase")
+			return $this->db->changes();
+	}
+
+	public function close()
+	{
+		if($this->type=="PDO")
+			$this->db = NULL;
+		else if($this->type=="SQLite3")
+			$this->db->close();
+		else if($this->type=="SQLiteDatabase")
+			$this->db = NULL;
+	}
+
+	public function beginTransaction()
+	{
+		$this->query("BEGIN");
+	}
+
+	public function commitTransaction()
+	{
+		$this->query("COMMIT");
+	}
+
+	public function rollbackTransaction()
+	{
+		$this->query("ROLLBACK");
+	}
+
+	//generic query wrapper
+	//returns false on error and the query result on success
+	public function query($query, $ignoreAlterCase=false)
+	{
+		global $debug;
+		if(strtolower(substr(ltrim($query),0,5))=='alter' && $ignoreAlterCase==false) //this query is an ALTER query - call the necessary function
+		{
+			preg_match("/^\s*ALTER\s+TABLE\s+\"((?:[^\"]|\"\")+)\"\s+(.*)$/i",$query,$matches);
+			if(!isset($matches[1]) || !isset($matches[2]))
+			{
+				if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
+				return false;
+			}
+			$tablename = str_replace('""','"',$matches[1]);
+			$alterdefs = $matches[2];
+			if($debug) echo "ALTER TABLE QUERY=(".htmlencode($query)."), tablename=($tablename), alterdefs=($alterdefs)<hr>";
+			$result = $this->alterTable($tablename, $alterdefs);
+		}
+		else //this query is normal - proceed as normal
+		{
+			$result = $this->db->query($query);
+			if($debug) echo "<span title='".htmlencode($query)."' onclick='this.innerHTML=\"".htmlencode(str_replace('"','\"',$query))."\"' style='cursor:pointer'>SQL?</span><br />";
+		}
+		if($result===false)
+			return false;
+		$this->lastResult = $result;
+		return $result;
+	}
+
+	//wrapper for an INSERT and returns the ID of the inserted row
+	public function insert($query)
+	{
+		$result = $this->query($query);
+		if($this->type=="PDO")
+			return $this->db->lastInsertId();
+		else if($this->type=="SQLite3")
+			return $this->db->lastInsertRowID();
+		else if($this->type=="SQLiteDatabase")
+			return $this->db->lastInsertRowid();
+	}
+
+	//returns an array for SELECT
+	public function select($query, $mode="both")
+	{
+		$result = $this->query($query);
+		if(!$result) //make sure the result is valid
+			return NULL;
+		if($this->type=="PDO")
+		{
+			if($mode=="assoc")
+				$mode = PDO::FETCH_ASSOC;
+			else if($mode=="num")
+				$mode = PDO::FETCH_NUM;
+			else
+				$mode = PDO::FETCH_BOTH;
+			return $result->fetch($mode);
+		}
+		else if($this->type=="SQLite3")
+		{
+			if($mode=="assoc")
+				$mode = SQLITE3_ASSOC;
+			else if($mode=="num")
+				$mode = SQLITE3_NUM;
+			else
+				$mode = SQLITE3_BOTH;
+			return $result->fetchArray($mode);
+		}
+		else if($this->type=="SQLiteDatabase")
+		{
+			if($mode=="assoc")
+				$mode = SQLITE_ASSOC;
+			else if($mode=="num")
+				$mode = SQLITE_NUM;
+			else
+				$mode = SQLITE_BOTH;
+			return $result->fetch($mode);
+		}
+	}
+
+	//returns an array of arrays after doing a SELECT
+	public function selectArray($query, $mode="both")
+	{
+		$result = $this->query($query);
+		if(!$result) //make sure the result is valid
+			return NULL;
+		if($this->type=="PDO")
+		{
+			if($mode=="assoc")
+				$mode = PDO::FETCH_ASSOC;
+			else if($mode=="num")
+				$mode = PDO::FETCH_NUM;
+			else
+				$mode = PDO::FETCH_BOTH;
+			return $result->fetchAll($mode);
+		}
+		else if($this->type=="SQLite3")
+		{
+			if($mode=="assoc")
+				$mode = SQLITE3_ASSOC;
+			else if($mode=="num")
+				$mode = SQLITE3_NUM;
+			else
+				$mode = SQLITE3_BOTH;
+			$arr = array();
+			$i = 0;
+			while($res = $result->fetchArray($mode))
+			{
+				$arr[$i] = $res;
+				$i++;
+			}
+			return $arr;
+		}
+		else if($this->type=="SQLiteDatabase")
+		{
+			if($mode=="assoc")
+				$mode = SQLITE_ASSOC;
+			else if($mode=="num")
+				$mode = SQLITE_NUM;
+			else
+				$mode = SQLITE_BOTH;
+			return $result->fetchAll($mode);
+		}
+	}
+
+	
+	// SQlite supports multiple ways of surrounding names in quotes:
+	// single-quotes, double-quotes, backticks, square brackets.
+	// As sqlite does not keep this strict, we also need to be flexible here.
+	// This function generates a regex that matches any of the possibilities.
+	private function sqlite_surroundings_preg($name,$preg_quote=true,$notAllowedCharsIfNone="'\"",$notAllowedName=false)
+	{
+		if($name=="*" || $name=="+")
+		{
+			if($notAllowedName!==false && $preg_quote)
+				$notAllowedName = preg_quote($notAllowedName,"/");
+			// use possesive quantifiers to save memory
+			$nameSingle   = ($notAllowedName!==false?"(?!".$notAllowedName."')":"")."(?:[^']$name+|'')$name+";
+			$nameDouble   = ($notAllowedName!==false?"(?!".$notAllowedName."\")":"")."(?:[^\"]$name+|\"\")$name+";
+			$nameBacktick = ($notAllowedName!==false?"(?!".$notAllowedName."`)":"")."(?:[^`]$name+|``)$name+";
+			$nameSquare   = ($notAllowedName!==false?"(?!".$notAllowedName."\])":"")."(?:[^\]]$name+|\]\])$name+";
+			$nameNo = ($notAllowedName!==false?"(?!".$notAllowedName."\s)":"")."[^".$notAllowedCharsIfNone."]$name";
+		}
+		else
+		{
+			if($preg_quote) $name = preg_quote($name,"/");
+			
+			$nameSingle = str_replace("'","''",$name);
+			$nameDouble = str_replace('"','""',$name);
+			$nameBacktick = str_replace('`','``',$name);
+			$nameSquare = str_replace(']',']]',$name);
+			$nameNo = $name;
+		}
+		
+		$preg =	"(?:'".$nameSingle."'|".   // single-quote surrounded or not in quotes (correct SQL for values/new names)
+				$nameNo."|".               // not surrounded (correct SQL if not containing reserved words, spaces or some special chars)
+				"\"".$nameDouble."\"|".    // double-quote surrounded (correct SQL for identifiers)
+				"`".$nameBacktick."`|".    // backtick surrounded (MySQL-Style)
+				"\[".$nameSquare."\])";    // square-bracket surrounded (MS Access/SQL server-Style)
+		return $preg;
+	}
+	
+	// Returns the last PREG error as a string, '' if no error occured
+	private function getPregError()
+	{
+		$error = preg_last_error();
+		switch ($error)
+		{
+			case PREG_NO_ERROR: return 'No error';
+			case PREG_INTERNAL_ERROR: return 'There is an internal error!';
+			case PREG_BACKTRACK_LIMIT_ERROR: return 'Backtrack limit was exhausted!';
+			case PREG_RECURSION_LIMIT_ERROR: return 'Recursion limit was exhausted!';
+			case PREG_BAD_UTF8_ERROR: return 'Bad UTF8 error!';
+			case PREG_BAD_UTF8_ERROR: return 'Bad UTF8 offset error!';
+			default: return 'Unknown Error';
+		} 
+	}
+	
+	// function that is called for an alter table statement in a query
+	// code borrowed with permission from http://code.jenseng.com/db/
+	// this has been completely debugged / rewritten by Christopher Kramer
+	public function alterTable($table, $alterdefs)
+	{
+		global $debug, $lang;
+		$this->alterError="";
+		$errormsg = sprintf($lang['alter_failed'],htmlencode($table)).' - ';
+		if($debug) echo "ALTER TABLE: table=($table), alterdefs=($alterdefs)<hr>";
+		if($alterdefs != '')
+		{
+			$recreateQueries = array();
+			$resultArr = $this->selectArray("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = ".$this->quote($table));
+			if(sizeof($resultArr)<1)
+			{
+				$this->alterError = $errormsg . sprintf($lang['tbl_inexistent'], htmlencode($table));
+				if($debug) echo "ERROR: unknown table<hr>";
+				return false;
+			}
+			for($i=0; $i<sizeof($resultArr); $i++)
+			{
+				$row = $resultArr[$i];
+				if($row['type'] != 'table')
+				{
+					// store the CREATE statements of triggers and indexes to recreate them later
+					$recreateQueries[] = $row;
+					if($debug) echo "recreate=(".$row['sql'].";)<hr />";
+				}
+				else
+				{
+					// ALTER the table
+					$tmpname = 't'.time();
+					$origsql = $row['sql'];
+					$preg_remove_create_table = "/^\s*+CREATE\s++TABLE\s++".$this->sqlite_surroundings_preg($table)."\s*+(\(.*+)$/is";
+					$origsql_no_create = preg_replace($preg_remove_create_table, '$1', $origsql, 1);
+					if($debug) echo "origsql=($origsql)<br />preg_remove_create_table=($preg_remove_create_table)<hr>";
+					if($origsql_no_create == $origsql)
+					{
+						$this->alterError = $errormsg . $lang['alter_tbl_name_not_replacable'];
+						if($debug) echo "ERROR: could not get rid of CREATE TABLE<hr />";
+						return false;
+					}
+					$createtemptableSQL = "CREATE TEMPORARY TABLE ".$this->quote($tmpname)." ".$origsql_no_create;
+					if($debug) echo "createtemptableSQL=($createtemptableSQL)<hr>";
+					$createindexsql = array();
+					$preg_alter_part = "/(?:DROP|ADD(?! PRIMARY KEY)|CHANGE|RENAME TO|ADD PRIMARY KEY)\s+" // the ALTER command
+						."(?:"
+							."\(".$this->sqlite_surroundings_preg("+",false,"\"'\[`)")."+\)"	// stuff in brackets (in case of ADD PRIMARY KEY)
+						."|"																	// or
+							.$this->sqlite_surroundings_preg("+",false,",'\"\[`")				// column names and stuff like this
+						.")*/i";
+					if($debug)
+						echo "preg_alter_part=(".$preg_alter_part.")<hr />";
+					preg_match_all($preg_alter_part,$alterdefs,$matches);
+					$defs = $matches[0];
+					
+					$get_oldcols_query = "PRAGMA table_info(".$this->quote_id($table).")";
+					$result_oldcols = $this->selectArray($get_oldcols_query);
+					$newcols = array();
+					$coltypes = array();
+					foreach($result_oldcols as $column_info)
+					{
+						$newcols[$column_info['name']] = $column_info['name'];
+						$coltypes[$column_info['name']] = $column_info['type'];
+					}
+					$newcolumns = '';
+					$oldcolumns = '';
+					reset($newcols);
+					while(list($key, $val) = each($newcols))
+					{
+						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
+						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
+					}
+					$copytotempsql = 'INSERT INTO '.$this->quote_id($tmpname).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($table);
+					$dropoldsql = 'DROP TABLE '.$this->quote_id($table);
+					$createtesttableSQL = $createtemptableSQL;
+					if(count($defs)<1)
+					{
+						$this->alterError = $errormsg . $lang['alter_no_def'];
+						if($debug) echo "ERROR: defs&lt;1<hr />";
+						return false;
+					}
+					foreach($defs as $def)
+					{
+						if($debug) echo "def=$def<hr />";
+						$parse_def = preg_match("/^(DROP|ADD(?! PRIMARY KEY)|CHANGE|RENAME TO|ADD PRIMARY KEY)\s+"   // $matches[1]: command
+							."(?:"												// this is either
+								."(?:\((.+)\)\s*$)"							// anything in brackets (for ADD PRIMARY KEY)
+																				// then $matches[2] is what there is in brackets
+							."|"												// OR: 
+								."(?:\"((?:[^\"]|\"\")+)\"|'((?:[^']|'')+)')"	// (first) column name, either in single or double quotes
+																				// in case of RENAME TO, it is the new a table name
+																				// $matches[3] will be the column/table name without the quotes if double quoted
+																				// $matches[4] will be the column/table name without the quotes if single quoted
+								."("											// $matches[5]: anything after the column name
+									."(?:\s+'((?:[^']|'')+)')?"					// $matches[6] (optional): a second column name surrounded with single quotes
+																				//		(the match does not contain the quotes) 
+									."\s+"
+									."((?:[A-Z]+\s*)+(?:\(\s*[+-]?\s*[0-9]+(?:\s*,\s*[+-]?\s*[0-9]+)?\s*\))?)\s*"	// $matches[7]: a type name
+									.".*".
+								")"
+								."?\s*$"
+							.")/i",$def,$matches);
+						if($parse_def===false)
+						{
+							$this->alterError = $errormsg . $lang['alter_parse_failed'];
+							if($debug) echo "ERROR: !parse_def<hr />";
+							return false;
+						}
+						if(!isset($matches[1]))
+						{
+							$this->alterError = $errormsg . $lang['alter_action_not_recognized'];
+							if($debug) echo "ERROR: !isset(matches[1])<hr />";
+							return false;
+						}
+						$action = strtolower($matches[1]);
+						if($action == 'add' || $action == 'rename to')	
+							$column = str_replace("''","'",$matches[4]);		// enclosed in ''
+						elseif($action == 'add primary key')
+							$column = $matches[2];	
+						else
+							$column = str_replace('""','"',$matches[3]);		// enclosed in ""
+
+						$column_escaped = str_replace("'","''",$column);
+
+						if($debug) echo "action=($action), column=($column), column_escaped=($column_escaped)<hr />";
+
+						/* we build a regex that devides the CREATE TABLE statement parts:
+						  Part example                            Group  Explanation
+						  1. CREATE TABLE t... (                  $1
+						  2. 'col1' ..., 'col2' ..., 'colN' ...,  $3     (with col1-colN being columns that are not changed and listed before the col to change)
+						  3. 'colX' ...,                                 (with colX being the column to change/drop)
+						  4. 'colX+1' ..., ..., 'colK')           $5     (with colX+1-colK being columns after the column to change/drop)
+						*/
+						$preg_create_table = "\s*+(CREATE\s++TEMPORARY\s++TABLE\s++".preg_quote($this->quote($tmpname),"/")."\s*+\()";   // This is group $1 (keep unchanged)
+						$preg_column_definiton = "\s*+".$this->sqlite_surroundings_preg("+",true," '\"\[`,",$column)."(?:\s*+".$this->sqlite_surroundings_preg("*",false,"'\",`\[ ").")++";		// catches a complete column definition, even if it is
+														// 'column' TEXT NOT NULL DEFAULT 'we have a comma, here and a double ''quote!'
+														// this definition does NOT match columns with the column name $column
+						if($debug) echo "preg_column_definition=(".$preg_column_definiton.")<hr />";
+						$preg_columns_before =  // columns before the one changed/dropped (keep)
+							"(?:".
+								"(".			// group $2. Keep this one unchanged!
+									"(?:".
+										"$preg_column_definiton,\s*+".		// column definition + comma
+									")*".								// there might be any number of such columns here
+									$preg_column_definiton.				// last column definition 
+								")".			// end of group $2
+								",\s*+"			// the last comma of the last column before the column to change. Do not keep it!
+							.")?";    // there might be no columns before
+						if($debug) echo "preg_columns_before=(".$preg_columns_before.")<hr />";
+						$preg_columns_after = "(,\s*(.+))?"; // the columns after the column to drop. This is group $3 (drop) or $4(change) (keep!)
+												// we could remove the comma using $6 instead of $5, but then we might have no comma at all.
+												// Keeping it leaves a problem if we drop the first column, so we fix that case in another regex.
+						$table_new = $table;
+	
+						switch($action)
+						{
+							case 'add':
+								if(!isset($matches[5]))
+								{
+									$this->alterError = $errormsg . ' (add) - '. $lang['alter_no_add_col'];
+									return false;
+								}
+								$new_col_definition = "'$column_escaped' ".$matches[5];
+								$preg_pattern_add = "/^".$preg_create_table.   // the CREATE TABLE statement ($1)
+									"((?:(?!,\s*(?:PRIMARY\s+KEY\s*\(|CONSTRAINT\s|UNIQUE\s*\(|CHECK\s*\(|FOREIGN\s+KEY\s*\()).)*)". // column definitions ($2)
+									"(.*)\\)\s*$/s"; // table-constraints like PRIMARY KEY(a,b) ($3) and the closing bracket
+								// append the column definiton in the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_add, '$1$2, '.strtr($new_col_definition, array('\\' => '\\\\', '$' => '\$')).' $3', $createtesttableSQL).')';
+								$preg_error = $this->getPregError();
+								if($debug)
+								{
+									echo $createtesttableSQL."<hr>";
+									echo $newSQL."<hr>";
+									echo $preg_pattern_add."<hr>";
+								}
+								if($newSQL==$createtesttableSQL) // pattern did not match, so column adding did not succed
+									{
+									$this->alterError = $errormsg . ' (add) - '.$lang['alter_pattern_mismatch'].'. PREG ERROR: '.$preg_error;
+									return false;
+									}
+								$createtesttableSQL = $newSQL;
+								break;
+							case 'change':
+								if(!isset($matches[6]) || !isset($matches[7]))
+								{
+									$this->alterError = $errormsg . ' (change) - '.$lang['alter_col_not_recognized'];
+									return false;
+								}
+								$new_col_name = $matches[6];
+								$new_col_type = $matches[7];
+								$new_col_definition = "'$new_col_name' $new_col_type";
+								$preg_column_to_change = "\s*".$this->sqlite_surroundings_preg($column)."(?:\s+".preg_quote($coltypes[$column]).")?(\s+(?:".$this->sqlite_surroundings_preg("*",false,",'\"`\[").")+)?";
+												// replace this part (we want to change this column)
+												// group $3 contains the column constraints (keep!). the name & data type is replaced.
+								$preg_pattern_change = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_change.$preg_columns_after."\s*\\)\s*$/s";
+
+								// replace the column definiton in the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_change, '$1$2,'.strtr($new_col_definition, array('\\' => '\\\\', '$' => '\$')).'$3$4)', $createtesttableSQL);
+								$preg_error = $this->getPregError();
+								// remove comma at the beginning if the first column is changed
+								// probably somebody is able to put this into the first regex (using lookahead probably).
+								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+".preg_quote($this->quote($tmpname),"/")."\s+\(),\s*/",'$1',$newSQL);
+								if($debug)
+								{
+									echo "preg_column_to_change=(".$preg_column_to_change.")<hr />";
+									echo $createtesttableSQL."<hr />";
+									echo $newSQL."<hr />";
+
+									echo $preg_pattern_change."<hr />";
+								}
+								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
+								{
+									$this->alterError = $errormsg . ' (change) - '.$lang['alter_pattern_mismatch'].'. PREG ERROR: '.$preg_error;
+									return false;
+								}
+								$createtesttableSQL = $newSQL;
+								$newcols[$column] = str_replace("''","'",$new_col_name);
+								break;
+							case 'drop':
+								$preg_column_to_drop = "\s*".$this->sqlite_surroundings_preg($column)."\s+(?:".$this->sqlite_surroundings_preg("*",false,",'\"\[`").")+";      // delete this part (we want to drop this column)
+								$preg_pattern_drop = "/^".$preg_create_table.$preg_columns_before.$preg_column_to_drop.$preg_columns_after."\s*\\)\s*$/s";
+
+								// remove the column out of the CREATE TABLE statement
+								$newSQL = preg_replace($preg_pattern_drop, '$1$2$3)', $createtesttableSQL);
+								$preg_error = $this->getPregError();
+								// remove comma at the beginning if the first column is removed
+								// probably somebody is able to put this into the first regex (using lookahead probably).
+								$newSQL = preg_replace("/^\s*(CREATE\s+TEMPORARY\s+TABLE\s+".preg_quote($this->quote($tmpname),"/")."\s+\(),\s*/",'$1',$newSQL);
+								if($debug)
+								{
+									echo $createtesttableSQL."<hr>";
+									echo $newSQL."<hr>";
+									echo $preg_pattern_drop."<hr>";
+								}
+								if($newSQL==$createtesttableSQL || $newSQL=="") // pattern did not match, so column removal did not succed
+								{
+									$this->alterError = $errormsg . ' (drop) - '.$lang['alter_pattern_mismatch'].'. PREG ERROR: '.$preg_error;
+									return false;
+								}
+								$createtesttableSQL = $newSQL;
+								unset($newcols[$column]);
+								break;
+							case 'rename to':
+								// don't change column definition at all
+								$newSQL = $createtesttableSQL;
+								// only change the name of the table
+								$table_new = $column;
+								break;
+							case 'add primary key':
+								// we want to add a primary key for the column(s) stored in $column
+								$newSQL = preg_replace("/\)\s*$/", ", PRIMARY KEY (".$column.") )", $createtesttableSQL);
+								$createtesttableSQL = $newSQL;
+								break;
+							default:
+								if($debug) echo 'ERROR: unknown alter operation!<hr />';
+								$this->alterError = $errormsg . $lang['alter_unknown_operation'];
+								return false;
+						}
+					}
+					$droptempsql = 'DROP TABLE '.$this->quote_id($tmpname);
+
+					$createnewtableSQL = "CREATE TABLE ".$this->quote($table_new)." ".preg_replace("/^\s*CREATE\s+TEMPORARY\s+TABLE\s+'?".str_replace("'","''",preg_quote($tmpname,"/"))."'?\s+(.*)$/is", '$1', $createtesttableSQL, 1);
+
+					$newcolumns = '';
+					$oldcolumns = '';
+					reset($newcols);
+					while(list($key,$val) = each($newcols))
+					{
+						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
+						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
+					}
+					$copytonewsql = 'INSERT INTO '.$this->quote_id($table_new).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($tmpname);
+				}
+			}
+			$alter_transaction  = 'BEGIN; ';
+			$alter_transaction .= $createtemptableSQL.'; ';  //create temp table
+			$alter_transaction .= $copytotempsql.'; ';       //copy to table
+			$alter_transaction .= $dropoldsql.'; ';          //drop old table
+			$alter_transaction .= $createnewtableSQL.'; ';   //recreate original table
+			$alter_transaction .= $copytonewsql.'; ';        //copy back to original table
+			$alter_transaction .= $droptempsql.'; ';         //drop temp table
+
+			$preg_index="/^\s*(CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*ON\s+)(".$this->sqlite_surroundings_preg($table).")(\s*\((?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*\)\s*)\s*$/i";				
+			foreach($recreateQueries as $recreate_query)
+			{
+				if($recreate_query['type']=='index')
+				{
+					// this is an index. We need to make sure the index is not on a column that we drop. If it is, we drop the index as well.
+					$indexInfos = $this->selectArray('PRAGMA index_info('.$this->quote_id($recreate_query['name']).')');
+					foreach($indexInfos as $indexInfo)
+					{
+						if(!isset($newcols[$indexInfo['name']]))
+						{
+							if($debug) echo 'Not recreating the following index: <hr />'.htmlencode($recreate_query['sql']).'<hr />'; 
+							// Index on a column that was dropped. Skip recreation.
+							continue 2;
+						}
+					}
+				}
+				// TODO: In case we renamed a column on which there is an index, we need to recreate the index with the column name adjusted.
+				
+				// recreate triggers / indexes
+				if($table == $table_new)
+				{
+					// we had no RENAME TO, so we can recreate indexes/triggers just like the original ones
+					$alter_transaction .= $recreate_query['sql'].';';
+				} else
+				{
+					// we had a RENAME TO, so we need to exchange the table-name in the CREATE-SQL of triggers & indexes
+					switch ($recreate_query['type'])
+					{
+						case 'index':
+							$recreate_queryIndex = preg_replace($preg_index, '$1'.$this->quote_id(strtr($table_new, array('\\' => '\\\\', '$' => '\$'))).'$3 ', $recreate_query['sql']);
+							if($recreate_queryIndex!=$recreate_query['sql'] && $recreate_queryIndex != NULL)
+								$alter_transaction .= $recreate_queryIndex.';';
+							else
+							{
+								// the CREATE INDEX regex did not match. this normally should not happen
+								if($debug) echo  'ERROR: CREATE INDEX regex did not match!?<hr />';
+								// just try to recreate the index originally (will fail most likely)
+								$alter_transaction .= $recreate_query['sql'].';';
+							}
+							break;
+							
+						case 'trigger':
+							// TODO: IMPLEMENT
+							$alter_transaction .= $recreate_query['sql'].';';
+							break;
+						default:
+							if($debug) echo 'ERROR: Unknown type '.htmlencode($recreate_query['type']).'<hr />';
+							$alter_transaction .= $recreate_query['sql'].';';
+					}
+				}
+			}
+			$alter_transaction .= 'COMMIT;';
+			if($debug) echo $alter_transaction;
+			return $this->multiQuery($alter_transaction);
+		}
+	}
+
+	//multiple query execution
+	//returns true on success, false otherwise. Use getError() to fetch the error.
+	public function multiQuery($query)
+	{
+		if($this->type=="PDO")
+			$success = $this->db->exec($query);
+		else if($this->type=="SQLite3")
+			$success = $this->db->exec($query);
+		else
+			$success = $this->db->queryExec($query, $error);
+		return $success;
+	}
+
+	
+	// checks whether a table has a primary key
+	public function hasPrimaryKey($table)
+	{
+		$query = "PRAGMA table_info(".$this->quote_id($table).")";
+		$table_info = $this->selectArray($query);
+		foreach($table_info as $row_id => $row_data)
+		{
+			if($row_data['pk'])
+			{
+				return true;
+			}
+		 
+		}
+		return false;
+	}
+	
+	//get number of rows in table
+	public function numRows($table, $dontTakeLong = false)
+	{
+		// as Count(*) can be slow on huge tables without PK,
+		// if $dontTakeLong is set and the size is > 2MB only count() if there is a PK
+		if(!$dontTakeLong || $this->getSize() <= 2000 || $this->hasPrimaryKey($table))
+		{
+			$result = $this->select("SELECT Count(*) FROM ".$this->quote_id($table));
+			return $result[0];
+		} else
+		{
+			return '?';
+		}
+	}
+
+	//correctly escape a string to be injected into an SQL query
+	public function quote($value)
+	{
+		if($this->type=="PDO")
+		{
+			// PDO quote() escapes and adds quotes
+			return $this->db->quote($value);
+		}
+		else if($this->type=="SQLite3")
+		{
+			return "'".$this->db->escapeString($value)."'";
+		}
+		else
+		{
+			return "'".sqlite_escape_string($value)."'";
+		}
+	}
+
+	//correctly escape an identifier (column / table / trigger / index name) to be injected into an SQL query
+	public function quote_id($value)
+	{
+		// double-quotes need to be escaped by doubling them
+		$value = str_replace('"','""',$value);
+		return '"'.$value.'"';
+	}
+
+
+	//import sql
+	//returns true on success, error message otherwise
+	public function import_sql($query)
+	{
+		$import = $this->multiQuery($query);
+		if(!$import)
+			return $this->getError();
+		else
+			return true;
+	}
+	
+	//import csv
+	//returns true on success, error message otherwise
+	public function import_csv($filename, $table, $field_terminate, $field_enclosed, $field_escaped, $null, $fields_in_first_row)
+	{
+		// CSV import implemented by Christopher Kramer - http://www.christosoft.de
+		$csv_handle = fopen($filename,'r');
+		$csv_insert = "BEGIN;\n";
+		$csv_number_of_rows = 0;
+		// PHP requires enclosure defined, but has no problem if it was not used
+		if($field_enclosed=="") $field_enclosed='"';
+		// PHP requires escaper defined
+		if($field_escaped=="") $field_escaped='\\';
+		while(!feof($csv_handle))
+		{
+			$csv_data = fgetcsv($csv_handle, 0, $field_terminate, $field_enclosed, $field_escaped); 
+			if($csv_data[0] != NULL || count($csv_data)>1)
+			{
+				$csv_number_of_rows++;
+				if($fields_in_first_row && $csv_number_of_rows==1) continue; 
+				$csv_col_number = count($csv_data);
+				$csv_insert .= "INSERT INTO ".$this->quote_id($table)." VALUES (";
+				foreach($csv_data as $csv_col => $csv_cell)
+				{
+					if($csv_cell == $null) $csv_insert .= "NULL";
+					else
+					{
+						$csv_insert.= $this->quote($csv_cell);
+					}
+					if($csv_col == $csv_col_number-2 && $csv_data[$csv_col+1]=='')
+					{
+						// the CSV row ends with the separator (like old phpliteadmin exported)
+						break;
+					} 
+					if($csv_col < $csv_col_number-1) $csv_insert .= ",";
+				}
+				$csv_insert .= ");\n";
+				
+				if($csv_number_of_rows > 5000)
+				{
+					$csv_insert .= "COMMIT;\nBEGIN;\n";
+					$csv_number_of_rows = 0;
+				}
+			}
+		}
+		$csv_insert .= "COMMIT;";
+		fclose($csv_handle);
+		$import = $this->multiQuery($csv_insert);
+		if(!$import)
+			return $this->getError();
+		else
+			return true;
+	}
+	
+	//export csv
+	public function export_csv($tables, $field_terminate, $field_enclosed, $field_escaped, $null, $crlf, $fields_in_first_row)
+	{
+		$field_enclosed = $field_enclosed;
+		$query = "SELECT * FROM sqlite_master WHERE type='table' or type='view' ORDER BY type DESC";
+		$result = $this->selectArray($query);
+		for($i=0; $i<sizeof($result); $i++)
+		{
+			$valid = false;
+			for($j=0; $j<sizeof($tables); $j++)
+			{
+				if($result[$i]['tbl_name']==$tables[$j])
+					$valid = true;
+			}
+			if($valid)
+			{
+				$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
+				$temp = $this->selectArray($query);
+				$cols = array();
+				for($z=0; $z<sizeof($temp); $z++)
+					$cols[$z] = $temp[$z][1];
+				if($fields_in_first_row)
+				{
+					for($z=0; $z<sizeof($cols); $z++)
+					{
+						echo $field_enclosed.$cols[$z].$field_enclosed;
+						// do not terminate the last column!
+						if($z < sizeof($cols)-1)
+							echo $field_terminate;
+					}
+					echo "\r\n";	
+				}
+				$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
+				$arr = $this->selectArray($query, "assoc");
+				for($z=0; $z<sizeof($arr); $z++)
+				{
+					for($y=0; $y<sizeof($cols); $y++)
+					{
+						$cell = $arr[$z][$cols[$y]];
+						if($crlf)
+						{
+							$cell = str_replace("\n","", $cell);
+							$cell = str_replace("\r","", $cell);
+						}
+						$cell = str_replace($field_terminate,$field_escaped.$field_terminate,$cell);
+						$cell = str_replace($field_enclosed,$field_escaped.$field_enclosed,$cell);
+						// do not enclose NULLs
+						if($cell == NULL)
+							echo $null;  
+						else
+							echo $field_enclosed.$cell.$field_enclosed;
+						// do not terminate the last column!
+						if($y < sizeof($cols)-1)
+							echo $field_terminate;
+					}
+					if($z<sizeof($arr)-1)
+						echo "\r\n";	
+				}
+				if($i<sizeof($result)-1)
+					echo "\r\n";
+			}
+		}
+	}
+	
+	//export sql
+	public function export_sql($tables, $drop, $structure, $data, $transaction, $comments)
+	{
+		global $lang;
+		if($comments)
+		{
+			echo "----\r\n";
+			echo "-- ".PROJECT." ".$lang['db_dump']." (".PROJECT_URL.")\r\n";
+			echo "-- ".PROJECT." ".$lang['ver'].": ".VERSION."\r\n";
+			echo "-- ".$lang['exported'].": ".date($lang['date_format'])."\r\n";
+			echo "-- ".$lang['db_f'].": ".$this->getPath()."\r\n";
+			echo "----\r\n";
+		}
+		$query = "SELECT * FROM sqlite_master WHERE type='table' OR type='index' OR type='view' OR type='trigger' ORDER BY type='trigger', type='index', type='view', type='table'";
+		$result = $this->selectArray($query);
+
+		if($transaction)
+			echo "BEGIN TRANSACTION;\r\n";
+
+		//iterate through each table
+		for($i=0; $i<sizeof($result); $i++)
+		{
+			$valid = false;
+			for($j=0; $j<sizeof($tables); $j++)
+			{
+				if($result[$i]['tbl_name']==$tables[$j])
+					$valid = true;
+			}
+			if($valid)
+			{
+				if($drop)
+				{
+					if($comments)
+					{
+						echo "\r\n----\r\n";
+						echo "-- ".$lang['drop']." ".$result[$i]['type']." ".$lang['for']." ".$result[$i]['name']."\r\n";
+						echo "----\r\n";
+					}
+					echo "DROP ".strtoupper($result[$i]['type'])." ".$this->quote_id($result[$i]['name']).";\r\n";
+				}
+				if($structure)
+				{
+					if($comments)
+					{
+						echo "\r\n----\r\n";
+						if($result[$i]['type']=="table" || $result[$i]['type']=="view")
+							echo "-- ".ucfirst($result[$i]['type'])." ".$lang['struct_for']." ".$result[$i]['tbl_name']."\r\n";
+						else // index or trigger
+							echo "-- ".$lang['struct_for']." ".$result[$i]['type']." ".$result[$i]['name']." ".$lang['on_tbl']." ".$result[$i]['tbl_name']."\r\n";
+						echo "----\r\n";
+					}
+					echo $result[$i]['sql'].";\r\n";
+				}
+				if($data && $result[$i]['type']=="table")
+				{
+					$query = "SELECT * FROM ".$this->quote_id($result[$i]['tbl_name']);
+					$arr = $this->selectArray($query, "assoc");
+
+					if($comments)
+					{
+						echo "\r\n----\r\n";
+						echo "-- ".$lang['data_dump']." ".$result[$i]['tbl_name'].", ".sprintf($lang['total_rows'], sizeof($arr))."\r\n";
+						echo "----\r\n";
+					}
+					$query = "PRAGMA table_info(".$this->quote_id($result[$i]['tbl_name']).")";
+					$temp = $this->selectArray($query);
+					$cols = array();
+					$cols_quoted = array();
+					$vals = array();
+					for($z=0; $z<sizeof($temp); $z++)
+					{
+						$cols[$z] = $temp[$z][1];
+						$cols_quoted[$z] = $this->quote_id($temp[$z][1]);
+					}
+					for($z=0; $z<sizeof($arr); $z++)
+					{
+						for($y=0; $y<sizeof($cols); $y++)
+						{
+							if(!isset($vals[$z]))
+								$vals[$z] = array();
+							if($arr[$z][$cols[$y]] === NULL)
+								$vals[$z][$cols[$y]] = 'NULL';
+							else
+								$vals[$z][$cols[$y]] = $this->quote($arr[$z][$cols[$y]]);
+						}
+					}
+					for($j=0; $j<sizeof($vals); $j++)
+						echo "INSERT INTO ".$this->quote_id($result[$i]['tbl_name'])." (".implode(",", $cols_quoted).") VALUES (".implode(",", $vals[$j]).");\r\n";
+				}
+			}
+		}
+		if($transaction)
+			echo "COMMIT;\r\n";
+	}
+}
+//	class MicroTimer (issue #146)
+//	wraps calls to microtime(), calculating the elapsed time and rounding output
+//
 class MicroTimer {
 
 	private $startTime, $stopTime;
@@ -4965,38 +5147,31 @@ class MicroTimer {
 	}
 
 }
-
-
-/*	class Resources (issue #157)
-	outputs secondary files, such as css and javascript
-	data is stored gzipped (gzencode) and encoded (base64_encode)
-*/
-
+//	class Resources (issue #157)
+//	outputs secondary files, such as css and javascript
+//	data is stored gzipped (gzencode) and encoded (base64_encode)
+//
 class Resources {
+
+	// set this to the file containing getInternalResource;
+	// currently unused in split mode; set to __FILE__ for built PLA.
+	public static $embedding_file = __FILE__;
 
 	private static $_resources = array(
 		'css' => array(
 			'mime' => 'text/css',
-			'data' => 'body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#000;background-color:#e0ebf6;overflow:auto;}.body_tbl td{padding:9px 2px 9px 9px;}.left_td{width:100px;}a{color:#03F;text-decoration:none;cursor:pointer;}a:hover{color:#06F;}hr{height:1px;border:0;color:#bbb;background-color:#bbb;width:100%;}h1{margin:0;padding:5px;font-size:24px;background-color:#f3cece;text-align:center;color:#000;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;}#headerlinks{text-align:center;margin-bottom:10px;padding:5px;border-color:#03F;border-width:1px;border-style:solid;border-left-style:none;border-right-style:none;font-size:12px;background-color:#e0ebf6;font-weight:bold;}h1 #version{color:#000;font-size:16px;}h1 #logo{color:#000;}h2{margin:0;padding:0;font-size:14px;margin-bottom:20px;}input,select,textarea{font-family:Arial,Helvetica,sans-serif;background-color:#eaeaea;color:#03F;border-color:#03F;border-style:solid;border-width:1px;margin:5px;border-radius:5px;-moz-border-radius:5px;padding:3px;}input.btn{cursor:pointer;}input.btn:hover{background-color:#ccc;}fieldset{padding:15px;border-color:#03F;border-width:1px;border-style:solid;border-radius:5px;-moz-border-radius:5px;background-color:#f9f9f9;}#container{padding:10px;}#leftNav{min-width:250px;padding:0;border-color:#03F;border-width:1px;border-style:solid;background-color:#FFF;padding-bottom:15px;border-radius:5px;-moz-border-radius:5px;}.viewTable tr td{padding:1px;}#loginBox{width:500px;margin-left:auto;margin-right:auto;margin-top:50px;border-color:#03F;border-width:1px;border-style:solid;background-color:#FFF;border-radius:5px;-moz-border-radius:5px;}#main{border-color:#03F;border-width:1px;border-style:solid;padding:15px;background-color:#FFF;border-bottom-left-radius:5px;border-bottom-right-radius:5px;border-top-right-radius:5px;-moz-border-radius-bottomleft:5px;-moz-border-radius-bottomright:5px;-moz-border-radius-topright:5px;}.td1{background-color:#f9e3e3;text-align:right;font-size:12px;padding-left:10px;padding-right:10px;}.td2{background-color:#f3cece;text-align:right;font-size:12px;padding-left:10px;padding-right:10px;}.tdheader{border-color:#03F;border-width:1px;border-style:solid;font-weight:bold;font-size:12px;padding-left:10px;padding-right:10px;background-color:#e0ebf6;border-radius:5px;-moz-border-radius:5px;}.confirm{border-color:#03F;border-width:1px;border-style:dashed;padding:15px;background-color:#e0ebf6;}.tab{display:block;padding:5px;padding-right:8px;padding-left:8px;border-color:#03F;border-width:1px;border-style:solid;margin-right:5px;float:left;border-bottom-style:none;position:relative;top:1px;padding-bottom:4px;background-color:#eaeaea;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;}.tab_pressed{display:block;padding:5px;padding-right:8px;padding-left:8px;border-color:#03F;border-width:1px;border-style:solid;margin-right:5px;float:left;border-bottom-style:none;position:relative;top:1px;background-color:#FFF;cursor:default;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;}.helpq{font-size:11px;font-weight:normal;}#help_container{padding:0;font-size:12px;margin-left:auto;margin-right:auto;background-color:#fff;}.help_outer{background-color:#FFF;padding:0;height:300px;position:relative;}.help_list{padding:10px;height:auto;}.headd{font-size:14px;font-weight:bold;display:block;padding:10px;background-color:#e0ebf6;border-color:#03F;border-width:1px;border-style:solid;border-left-style:none;border-right-style:none;}.help_inner{padding:10px;}.help_top{display:block;position:absolute;right:10px;bottom:10px;}.warning,.delete,.empty,.drop,.delete_db{color:red;}.sidebar_table{font-size:11px;}.active_table,.active_db{text-decoration:underline;}.null{color:#888;}.found{background:#FF0;text-decoration:none;}',
+			'data' => 'resources/phpliteadmin.css',
 		),
 		'javascript' => array(
 			'mime' => 'text/javascript',
-			'data' => 'function initAutoincrement(){var a=0;while(document.getElementById("i"+a+"_autoincrement")!=undefined){document.getElementById("i"+a+"_autoincrement").disabled=true;a++}}function toggleAutoincrement(b){var c=document.getElementById("i"+b+"_type");var d=document.getElementById("i"+b+"_primarykey");var a=document.getElementById("i"+b+"_autoincrement");if(!a){return false}if(c.value=="INTEGER"&&d.checked){a.disabled=false}else{a.disabled=true;a.checked=false}}function toggleNull(a){var b=document.getElementById("i"+a+"_primarykey");var c=document.getElementById("i"+a+"_notnull");if(b.checked){c.disabled=true;c.checked=true}else{c.disabled=false}}function checkAll(b){var a=0;while(document.getElementById("check_"+a)!=undefined){document.getElementById("check_"+a).checked=true;a++}}function uncheckAll(b){var a=0;while(document.getElementById("check_"+a)!=undefined){document.getElementById("check_"+a).checked=false;a++}}function changeIgnore(b,c,a){if(b.value!=""){if(document.getElementById(c)!=undefined){document.getElementById(c).checked=false}if(document.getElementById(a)!=undefined){document.getElementById(a).checked=false}}}function moveFields(){var a=document.getElementById("fieldcontainer");var c=new Array();for(var b=0;b<a.options.length;b++){if(a.options[b].selected){c.push(a.options[b].value)}}for(var b=0;b<c.length;b++){insertAtCaret("queryval",\'"\'+c[b].replace(/"/g,\'""\')+\'"\')}}function insertAtCaret(g,h){var f=document.getElementById(g);var a=f.scrollTop;var c=0;var i=((f.selectionStart||f.selectionStart=="0")?"ff":(document.selection?"ie":false));if(i=="ie"){f.focus();var e=document.selection.createRange();e.moveStart("character",-f.value.length);c=e.text.length}else{if(i=="ff"){c=f.selectionStart}}var b=(f.value).substring(0,c);var d=(f.value).substring(c,f.value.length);f.value=b+h+d;c=c+h.length;if(i=="ie"){f.focus();var e=document.selection.createRange();e.moveStart("character",-f.value.length);e.moveStart("character",c);e.moveEnd("character",0);e.select()}else{if(i=="ff"){f.selectionStart=c;f.selectionEnd=c;f.focus()}}f.scrollTop=a}function notNull(a){document.getElementById(a).checked=false}function disableText(a,b){if(a.checked){document.getElementById(b).value="";document.getElementById(b).disabled=true}else{document.getElementById(b).disabled=false}}function toggleExports(a){document.getElementById("exportoptions_sql").style.display="none";document.getElementById("exportoptions_csv").style.display="none";document.getElementById("exportoptions_"+a).style.display="block"}function toggleImports(a){document.getElementById("importoptions_sql").style.display="none";document.getElementById("importoptions_csv").style.display="none";document.getElementById("importoptions_"+a).style.display="block"}function openHelp(a){PopupCenter("?help=1#"+a,"Help Section")}var helpsec=false;function PopupCenter(a,b){helpsec=window.open(a,b,"toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300")}function checkLike(b,a){if(a=="LIKE%"){var c=document.getElementById(b);c.value="%"+c.value+"%"}};',
+			'data' => 'resources/phpliteadmin.js',
 		),
 		'favicon' => array(
 			'mime' => 'image/x-icon',
-			'data' => 'AAABAAEAEBAAAAEAIAAoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwoKZQAAABMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEMDJMAAAAdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASDg7BAAAASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAETDw9CCQkJ1QUFBb4AAABjAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgsLVgAAAO8YExP/AAAA7QAAALEAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNDUsAAADJGBMT/xgTE/8AAAD/AAAAuAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZERE8DQoKwhgTE/8QDQ2sGBMT/xgTE/8AAAA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwICHkAAAD/EQwMzQAAAMIAAAD/AAAA7gAAAGEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCwtWAAAA8RgTE/8IBQW1AAAA/wAAAP8AAADlAAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0KCsEAAAD/EQ8PzAAAAMkAAAD/AAAA/wAAAHoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAA/xgTE/8TDw/FAAAA8gAAAP8AAADqAAAAJgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAALUAAAD/GBMT/wAAALkAAAD/AAAA/wAAAIkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAAAA4wAAAP8GBgbFAAAA2QAAAP8AAADGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAAD5AAAA/RgTE/8AAAD/AAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQAAAOIAAAD/AAAA/wAAAHYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjAAAArgAAAG4AAAAAAAAAAAAAAAAAAAAA',
-			'base64' => true,
+			'data' => 'resources/favicon.ico',
+			'base64' => 'true',
 		),
 	);
-
-	// override the internal resource with an external file
-	public static function useExternal($resource, $filename)
-	{
-		if (isset(self::$_resources[$resource]) && is_readable($filename)) {
-			self::$_resources[$resource]['file'] = $filename;
-		}
-	}
 
 	// outputs the specified resource, if defined in this class.
 	// the main script should do no further output after calling this function.
@@ -5005,8 +5180,14 @@ class Resources {
 		if (isset(self::$_resources[$resource])) {
 			$res =& self::$_resources[$resource];
 
+			if (function_exists('getInternalResource') && $data = getInternalResource($res['data'])) {
+				$filename = self::$embedding_file;
+			} else {
+				$filename = $res['data'];
+			}
+
 			// use last-modified time as etag; etag must be quoted
-			$etag = '"' . filemtime(isset($res['file']) ? $res['file'] : PAGE) . '"';
+			$etag = '"' . filemtime($filename) . '"';
 
 			// check headers for matching etag; if etag hasn't changed, use the cached version
 			if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) {
@@ -5022,16 +5203,86 @@ class Resources {
 			// output resource
 			header('Content-type: ' . $res['mime']);
 
-			if (isset($res['file'])) {
-				readfile($res['file']);
-			} elseif (isset($res['base64'])) {
-				echo base64_decode($res['data']);
+			if (isset($data)) {
+				if (isset($res['base64'])) {
+					echo base64_decode($data);
+				} else {
+					echo $data;
+				}
 			} else {
-				echo $res['data'];
+				readfile($filename);
 			}
 		}
 	}
 
 }
 
-# - eof -
+
+// returns data from internal resources, available in single-file mode
+function getInternalResource($res) {
+	$resources = array('resources/phpliteadmin.css'=>array(0=>0,1=>3949,),'resources/phpliteadmin.js'=>array(0=>3949,1=>3674,),'resources/favicon.ico'=>array(0=>7623,1=>1448,),);
+
+	if (isset($resources[$res]) && $f = fopen(__FILE__, 'r')) {
+		fseek($f, __COMPILER_HALT_OFFSET__ + $resources[$res][0]);
+		$data = fread($f, $resources[$res][1]);
+		fclose($f);
+		return $data;
+	}
+	return false;  
+}
+
+// resources embedded below, do not edit!
+__halt_compiler() ?>body{margin:0px;padding:0px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#000;background-color:#e0ebf6;overflow:auto}.body_tbl td{padding:9px 2px 9px 9px}.left_td{width:100px}a{color:#03F;text-decoration:none;cursor:pointer}a:hover{color:#06F}hr{height:1px;border:0;color:#bbb;background-color:#bbb;width:100%}h1{margin:0px;padding:5px;font-size:24px;background-color:#f3cece;text-align:center;color:#000;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px}#headerlinks{text-align:center;margin-bottom:10px;padding:5px;border-color:#03F;border-width:1px;border-style:solid;border-left-style:none;border-right-style:none;font-size:12px;background-color:#e0ebf6;font-weight:bold}h1 #version{color:#000;font-size:16px}h1 #logo{color:#000}h2{margin:0px;padding:0px;font-size:14px;margin-bottom:20px}input,select,textarea{font-family:Arial,Helvetica,sans-serif;background-color:#eaeaea;color:#03F;border-color:#03F;border-style:solid;border-width:1px;margin:5px;border-radius:5px;-moz-border-radius:5px;padding:3px}input.btn{cursor:pointer}input.btn:hover{background-color:#ccc}fieldset{padding:15px;border-color:#03F;border-width:1px;border-style:solid;border-radius:5px;-moz-border-radius:5px;background-color:#f9f9f9}#container{padding:10px}#leftNav{min-width:250px;padding:0px;border-color:#03F;border-width:1px;border-style:solid;background-color:#FFF;padding-bottom:15px;border-radius:5px;-moz-border-radius:5px}.viewTable tr td{padding:1px}#loginBox{width:500px;margin-left:auto;margin-right:auto;margin-top:50px;border-color:#03F;border-width:1px;border-style:solid;background-color:#FFF;border-radius:5px;-moz-border-radius:5px}#main{border-color:#03F;border-width:1px;border-style:solid;padding:15px;background-color:#FFF;border-bottom-left-radius:5px;border-bottom-right-radius:5px;border-top-right-radius:5px;-moz-border-radius-bottomleft:5px;-moz-border-radius-bottomright:5px;-moz-border-radius-topright:5px}.td1{background-color:#f9e3e3;text-align:right;font-size:12px;padding-left:10px;padding-right:10px}.td2{background-color:#f3cece;text-align:right;font-size:12px;padding-left:10px;padding-right:10px}.tdheader{border-color:#03F;border-width:1px;border-style:solid;font-weight:bold;font-size:12px;padding-left:10px;padding-right:10px;background-color:#e0ebf6;border-radius:5px;-moz-border-radius:5px}.confirm{border-color:#03F;border-width:1px;border-style:dashed;padding:15px;background-color:#e0ebf6}.tab{display:block;padding:5px;padding-right:8px;padding-left:8px;border-color:#03F;border-width:1px;border-style:solid;margin-right:5px;float:left;border-bottom-style:none;position:relative;top:1px;padding-bottom:4px;background-color:#eaeaea;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px}.tab_pressed{display:block;padding:5px;padding-right:8px;padding-left:8px;border-color:#03F;border-width:1px;border-style:solid;margin-right:5px;float:left;border-bottom-style:none;position:relative;top:1px;background-color:#FFF;cursor:default;border-top-left-radius:5px;border-top-right-radius:5px;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px}.helpq{font-size:11px;font-weight:normal}#help_container{padding:0px;font-size:12px;margin-left:auto;margin-right:auto;background-color:#fff}.help_outer{background-color:#FFF;padding:0px;height:300px;position:relative}.help_list{padding:10px;height:auto}.headd{font-size:14px;font-weight:bold;display:block;padding:10px;background-color:#e0ebf6;border-color:#03F;border-width:1px;border-style:solid;border-left-style:none;border-right-style:none}.help_inner{padding:10px}.help_top{display:block;position:absolute;right:10px;bottom:10px}.warning,.delete,.empty,.drop,.delete_db{color:red}.sidebar_table{font-size:11px}.active_table,.active_db{text-decoration:underline}.null{color:#888}.found{background:#FF0;text-decoration:none}
+function initAutoincrement()
+{var i=0;while(document.getElementById('i'+i+'_autoincrement')!=undefined)
+{document.getElementById('i'+i+'_autoincrement').disabled=true;i++;}}
+function toggleAutoincrement(i)
+{var type=document.getElementById('i'+i+'_type');var primarykey=document.getElementById('i'+i+'_primarykey');var autoincrement=document.getElementById('i'+i+'_autoincrement');if(!autoincrement)return false;if(type.value=='INTEGER'&&primarykey.checked)
+autoincrement.disabled=false;else
+{autoincrement.disabled=true;autoincrement.checked=false;}}
+function toggleNull(i)
+{var pk=document.getElementById('i'+i+'_primarykey');var notnull=document.getElementById('i'+i+'_notnull');if(pk.checked)
+{notnull.disabled=true;notnull.checked=true;}
+else
+{notnull.disabled=false;}}
+function checkAll(field)
+{var i=0;while(document.getElementById('check_'+i)!=undefined)
+{document.getElementById('check_'+i).checked=true;i++;}}
+function uncheckAll(field)
+{var i=0;while(document.getElementById('check_'+i)!=undefined)
+{document.getElementById('check_'+i).checked=false;i++;}}
+function changeIgnore(area,e,u)
+{if(area.value!="")
+{if(document.getElementById(e)!=undefined)
+document.getElementById(e).checked=false;if(document.getElementById(u)!=undefined)
+document.getElementById(u).checked=false;}}
+function moveFields()
+{var fields=document.getElementById("fieldcontainer");var selected=new Array();for(var i=0;i<fields.options.length;i++)
+if(fields.options[i].selected)
+selected.push(fields.options[i].value);for(var i=0;i<selected.length;i++)
+insertAtCaret("queryval",'"'+selected[i].replace(/"/g,'""')+'"');}
+function insertAtCaret(areaId,text)
+{var txtarea=document.getElementById(areaId);var scrollPos=txtarea.scrollTop;var strPos=0;var br=((txtarea.selectionStart||txtarea.selectionStart=='0')?"ff":(document.selection?"ie":false));if(br=="ie")
+{txtarea.focus();var range=document.selection.createRange();range.moveStart('character',-txtarea.value.length);strPos=range.text.length;}
+else if(br=="ff")
+strPos=txtarea.selectionStart;var front=(txtarea.value).substring(0,strPos);var back=(txtarea.value).substring(strPos,txtarea.value.length);txtarea.value=front+text+back;strPos=strPos+text.length;if(br=="ie")
+{txtarea.focus();var range=document.selection.createRange();range.moveStart('character',-txtarea.value.length);range.moveStart('character',strPos);range.moveEnd('character',0);range.select();}
+else if(br=="ff")
+{txtarea.selectionStart=strPos;txtarea.selectionEnd=strPos;txtarea.focus();}
+txtarea.scrollTop=scrollPos;}
+function notNull(checker)
+{document.getElementById(checker).checked=false;}
+function disableText(checker,textie)
+{if(checker.checked)
+{document.getElementById(textie).value="";document.getElementById(textie).disabled=true;}
+else
+{document.getElementById(textie).disabled=false;}}
+function toggleExports(val)
+{document.getElementById("exportoptions_sql").style.display="none";document.getElementById("exportoptions_csv").style.display="none";document.getElementById("exportoptions_"+val).style.display="block";}
+function toggleImports(val)
+{document.getElementById("importoptions_sql").style.display="none";document.getElementById("importoptions_csv").style.display="none";document.getElementById("importoptions_"+val).style.display="block";}
+function openHelp(section)
+{PopupCenter('?help=1#'+section,"Help Section");}
+var helpsec=false;function PopupCenter(pageURL,title)
+{helpsec=window.open(pageURL,title,"toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300");}
+function checkLike(srchField,selOpt){if(selOpt=="LIKE%"){var textArea=document.getElementById(srchField);textArea.value="%"+textArea.value+"%";}}AAABAAEAEBAAAAEAIAAoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwoKZQAAABMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEMDJMAAAAdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASDg7BAAAASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAETDw9CCQkJ1QUFBb4AAABjAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgsLVgAAAO8YExP/AAAA7QAAALEAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNDUsAAADJGBMT/xgTE/8AAAD/AAAAuAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZERE8DQoKwhgTE/8QDQ2sGBMT/xgTE/8AAAA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwICHkAAAD/EQwMzQAAAMIAAAD/AAAA7gAAAGEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCwtWAAAA8RgTE/8IBQW1AAAA/wAAAP8AAADlAAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0KCsEAAAD/EQ8PzAAAAMkAAAD/AAAA/wAAAHoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAA/xgTE/8TDw/FAAAA8gAAAP8AAADqAAAAJgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAALUAAAD/GBMT/wAAALkAAAD/AAAA/wAAAIkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAAAA4wAAAP8GBgbFAAAA2QAAAP8AAADGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAAD5AAAA/RgTE/8AAAD/AAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQAAAOIAAAD/AAAA/wAAAHYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjAAAArgAAAG4AAAAAAAAAAAAAAAAAAAAA
