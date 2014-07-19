@@ -1,3 +1,5 @@
+**Pygmyphoto has been deprecated**
+
 Pygmyfoto is a crude solution for publishing a photo roll on the web. The application allows you to give a brief description and assign tags for each published photo. In addition to that, Pygmyfoto automatically processes and displays key EXIF data (exposure, aperture, and ISO), adds a link to the full-size version of the photo, and generates a map URL. The latter lets you view the exact place where the photo was taken using the OpenStreetMap service (provided the photo has been geotagged). Pygmyfoto features a few creature comforts, including the search by tags functionality, rating capabilities, and simple view statistics.
 
 ##Requirements
